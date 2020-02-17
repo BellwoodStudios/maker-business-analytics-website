@@ -8,6 +8,6 @@ module.exports = {
       }
     },
     babel: {
-      plugins: []
+      plugins: ["babel-plugin-styled-components"]
     }
   };
