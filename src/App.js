@@ -1,26 +1,31 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import 'App.css';
+import styled from 'styled-components';
+import Logo from 'components/Logo';
+import PrimaryNav from 'components/PrimaryNav';
+import CollateralMenu from 'components/CollateralMenu';
+import Content from 'components/Content';
+import { Router } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
+
+const Root = styled.div`
+  display: grid;
+  grid-template-columns: 80px auto;
+  grid-template-rows: 64px auto;
+  height: 100%;
+`;
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <Router history={createBrowserHistory()}>
+            <Root>
+                <Logo />
+                <PrimaryNav />
+                <CollateralMenu>CT Menu</CollateralMenu>
+                <Content>Content</Content>
+            </Root>
+        </Router>
+    );
 }
 
 export default App;
