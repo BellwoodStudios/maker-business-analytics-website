@@ -4,7 +4,6 @@ import styled, { css } from 'styled-components';
 const Divider = styled.div`
     border-right: solid 2px var(--color-foreground-secondary);
     height: calc(100% - 20px);
-    margin: 0 10px;
 
     ${props => props.orientation == 'horizontal' && css`
         height: auto;

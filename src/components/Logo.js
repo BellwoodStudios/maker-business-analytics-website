@@ -4,8 +4,8 @@ import LogoImageAsset from 'assets/logo.svg';
 import { NavLink } from 'react-router-dom';
 
 const LogoWrapper = styled.div`
-  padding: 20px;
-  background: rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.3);
 `;
 
 const LogoImage = styled.img`

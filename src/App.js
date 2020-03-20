@@ -9,10 +9,10 @@ import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 
 const Root = styled.div`
-  display: grid;
-  grid-template-columns: 80px auto;
-  grid-template-rows: 64px auto;
-  height: 100%;
+    display: grid;
+    grid-template-columns: 80px auto;
+    grid-template-rows: 64px auto;
+    height: 100%;
 `;
 
 function App() {

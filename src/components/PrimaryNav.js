@@ -4,14 +4,14 @@ import Divider from 'components/Divider';
 import { NavLink } from 'react-router-dom';
 
 const Wrapper = styled.nav`
-  display: flex;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.3);
 `;
 
 const NavLeft = styled.div`
     flex: 1;
-    padding: 0 15px;
+    padding: 0 20px;
 `;
 
 const NavRight = styled.div`
@@ -32,7 +32,7 @@ const NavListItem = styled.li`
 function PrimaryNav () {
     return (
         <Wrapper>
-            <Divider style={{ marginLeft: 0 }} />
+            <Divider />
             <NavLeft>Maker Business Analytics</NavLeft>
             <NavRight>
                 <NavList>
