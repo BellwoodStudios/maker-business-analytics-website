@@ -28,6 +28,21 @@ const NavLinkWrapper = styled(NavLink)`
         right: 0;
         height: calc(100% - 30px);
     }
+
+    .color-faded {
+        color: var(--color-foreground-15);
+    }
+    .color-regular {
+        color: var(--color-foreground-30);
+    }
+    &.active, &:hover {
+        .color-faded {
+            color: var(--color-foreground-30);
+        }
+        .color-regular {
+            color: var(--color-foreground-50);
+        }
+    }
 `;
 
 const Left = styled.div`
@@ -43,7 +58,6 @@ const Label = styled.div`
     font-size: 1rem;
     font-weight: 300;
     text-transform: uppercase;
-    color: var(--color-foreground-secondary);
 `;
 
 const Value = styled.div`
@@ -56,10 +70,10 @@ function VaultMenuItem ({ vault }) {
         <Wrapper>
             <NavLinkWrapper to={`/vaults/${vault.collateral}/${vault.name}`}>
                 <Left>
-                    <Label>Vault</Label>
-                    <Value>{vault.name}</Value>
+                    <Label className="color-faded">Vault</Label>
+                    <Value className="color-regular">{vault.name}</Value>
                 </Left>
-                <Right>
+                <Right className="color-regular">
                     {numberShort(vault.daiIssued)}
                 </Right>
                 <Divider className="divider" display="color" />

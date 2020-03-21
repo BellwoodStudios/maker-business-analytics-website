@@ -9,10 +9,13 @@ html, body, #root {
 body {
     --color-background-light: #384A61;
     --color-background-dark: #181D24;
+    --color-foreground-faded: rgba(197, 214, 226, 0.1);
     --color-foreground-primary: rgba(197, 214, 226, 0.5);
     --color-foreground-secondary: rgba(197, 214, 226, 0.2);
     --color-foreground-highlight: rgba(197, 214, 226, 0.8);
-    --color-foreground-faded: rgba(197, 214, 226, 0.1);
+    --color-foreground-15: rgba(197, 214, 226, 0.15);
+    --color-foreground-30: rgba(197, 214, 226, 0.30);
+    --color-foreground-50: rgba(197, 214, 226, 0.50);
 
     margin: 0;
     font-family: 'Roboto', sans-serif;
