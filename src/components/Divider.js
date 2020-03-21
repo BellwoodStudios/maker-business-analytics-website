@@ -1,15 +1,22 @@
-import React from 'react';
 import styled, { css } from 'styled-components';
 
 const Divider = styled.div`
-    border-right: solid 2px var(--color-foreground-secondary);
+    background: var(--color-foreground-secondary);
+    width: 2px;
     height: calc(100% - 20px);
+    border-radius: 2px;
 
-    ${props => props.orientation == 'horizontal' && css`
-        height: auto;
-        border-right: none;
-        border-bottom: solid 2px var(--color-foreground-secondary);
+    ${props => props.orientation === 'horizontal' && css`
+        height: 2px;
         width: calc(100% - 20px);
+    `}
+
+    ${props => props.display === 'color' && css`
+        background: linear-gradient(to top, #00FF88, #009191);
+    `}
+
+    ${props => props.display === 'color' && props.orientation === 'horizontal' && css`
+        background: linear-gradient(to right, #00FF88, #009191);
     `}
 `;
 
