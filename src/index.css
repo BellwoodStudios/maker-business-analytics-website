@@ -12,6 +12,7 @@ body {
     --color-foreground-primary: rgba(197, 214, 226, 0.5);
     --color-foreground-secondary: rgba(197, 214, 226, 0.2);
     --color-foreground-highlight: rgba(197, 214, 226, 0.8);
+    --color-foreground-faded: rgba(197, 214, 226, 0.1);
 
     margin: 0;
     font-family: 'Roboto', sans-serif;

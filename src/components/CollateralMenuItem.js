@@ -37,10 +37,10 @@ const NavLinkIcon = styled(NavLink)`
     }
 `;
 
-function CollateralMenuItem ({ to, children, title, style, nobackground }) {
+function CollateralMenuItem ({ to, children, title, style, nobackground, exact }) {
     return (
         <Wrapper style={style}>
-            <NavLinkIcon exact title={title} to={to} style={{ backgroundColor: nobackground ? "none" : "rgba(0, 0, 0, 0.2)" }}>
+            <NavLinkIcon exact={exact} title={title} to={to} style={{ backgroundColor: nobackground ? "none" : "rgba(0, 0, 0, 0.2)" }}>
                 {children}
                 { !nobackground ? <Divider className="divider" display="color" /> : null }
             </NavLinkIcon>

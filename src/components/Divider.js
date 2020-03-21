@@ -12,11 +12,11 @@ const Divider = styled.div`
     `}
 
     ${props => props.display === 'color' && css`
-        background: linear-gradient(to top, #00FF88, #009191);
+        background: linear-gradient(to bottom, #00FF88, #009191);
     `}
 
     ${props => props.display === 'color' && props.orientation === 'horizontal' && css`
-        background: linear-gradient(to right, #00FF88, #009191);
+        background: linear-gradient(to left, #00FF88, #009191);
     `}
 `;
 

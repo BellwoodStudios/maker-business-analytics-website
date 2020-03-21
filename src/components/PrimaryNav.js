@@ -12,6 +12,7 @@ const Wrapper = styled.nav`
 const NavLeft = styled.div`
     flex: 1;
     padding: 0 20px;
+    font-weight: 300;
 `;
 
 const NavRight = styled.div`

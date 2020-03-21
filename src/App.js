@@ -5,8 +5,7 @@ import Logo from 'components/Logo';
 import PrimaryNav from 'components/PrimaryNav';
 import CollateralMenu from 'components/CollateralMenu';
 import Content from 'components/Content';
-import { Router } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 const Root = styled.div`
     display: grid;
@@ -17,12 +16,12 @@ const Root = styled.div`
 
 function App() {
     return (
-        <Router history={createBrowserHistory()}>
+        <Router>
             <Root>
                 <Logo />
                 <PrimaryNav />
-                <CollateralMenu>CT Menu</CollateralMenu>
-                <Content>Content</Content>
+                <CollateralMenu />
+                <Content />
             </Root>
         </Router>
     );

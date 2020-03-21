@@ -22,17 +22,17 @@ const Collateral = styled.img`
 
 function CollateralMenu () {
     // TODO don't hardcode this
-    const collateralTypes = [
-        'eth',
-        'bat',
-        'usdc'
+    const collateralAvailable = [
+        { name:"Ethereum", ticker:"ETH" },
+        { name:"Basic Attention Token", ticker:"BAT" },
+        { name:"USDC", ticker:"USDC" }
     ];
 
     return (
         <Wrapper>
-            <CollateralMenuItem nobackground to="/" title="Dashboard" icon="dashboard"><Icon className="material-icons">dashboard</Icon></CollateralMenuItem>
+            <CollateralMenuItem exact nobackground to="/" title="Dashboard" icon="dashboard"><Icon className="material-icons">dashboard</Icon></CollateralMenuItem>
             <Divider style={{ margin: "10px 0" }} orientation='horizontal'></Divider>
-            { collateralTypes.map(type => <CollateralMenuItem style={{ marginBottom: "10px" }} title={type.toUpperCase()} to={`/collateral/${type}`} ><Collateral src={`/images/collateral/${type}.svg`} /></CollateralMenuItem>) }
+            { collateralAvailable.map(c => <CollateralMenuItem style={{ marginBottom: "10px" }} title={c.name} to={`/vaults/${c.ticker}`} ><Collateral src={`/images/collateral/${c.ticker.toLowerCase()}.svg`} /></CollateralMenuItem>) }
         </Wrapper>
     );
 }
