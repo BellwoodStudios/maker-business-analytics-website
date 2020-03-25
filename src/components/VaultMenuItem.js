@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
-import { numberShort } from 'util/Format';
+import { numberShort } from 'utils/FormatUtils';
 import Divider from './Divider';
 
 const Wrapper = styled.li`

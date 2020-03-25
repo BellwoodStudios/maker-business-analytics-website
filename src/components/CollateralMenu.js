@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import CollateralMenuItem from 'components/CollateralMenuItem';
 import Divider from 'components/Divider';
+import { useSelector } from 'react-redux';
 
 const Wrapper = styled.ul`
     display: flex;
@@ -21,18 +22,16 @@ const Collateral = styled.img`
 `;
 
 function CollateralMenu () {
-    // TODO don't hardcode this
-    const collateralAvailable = [
-        { name:"Ethereum", ticker:"ETH" },
-        { name:"Basic Attention Token", ticker:"BAT" },
-        { name:"USDC", ticker:"USDC" }
-    ];
+    const { loading, types } = useSelector(state => state.collateral);
 
     return (
         <Wrapper>
             <CollateralMenuItem exact nobackground to="/" title="Dashboard" icon="dashboard"><Icon className="material-icons">dashboard</Icon></CollateralMenuItem>
             <Divider style={{ margin: "10px 0" }} orientation='horizontal'></Divider>
-            { collateralAvailable.map(c => <CollateralMenuItem style={{ marginBottom: "10px" }} title={c.name} to={`/vaults/${c.ticker}`} ><Collateral src={`/images/collateral/${c.ticker.toLowerCase()}.svg`} /></CollateralMenuItem>) }
+            {
+                loading ? <div>...</div> :
+                types.map(c => <CollateralMenuItem style={{ marginBottom: "10px" }} title={c.name} to={`/vaults/${c.ticker}`} ><Collateral src={`/images/collateral/${c.ticker.toLowerCase()}.svg`} /></CollateralMenuItem>)
+            }
         </Wrapper>
     );
 }
