@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import Divider from 'components/Divider';
@@ -47,5 +48,13 @@ function CollateralMenuItem ({ to, children, title, style, nobackground, exact }
         </Wrapper>
     );
 }
+
+CollateralMenuItem.propTypes = {
+    to: PropTypes.string.isRequired,
+    title: PropTypes.string,
+    style: PropTypes.object,
+    nobackground: PropTypes.bool,
+    exact: PropTypes.bool
+};
 
 export default CollateralMenuItem;

@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import VaultMenuItem from 'components/VaultMenuItem';
+import { useSelector } from 'react-redux';
 
 const Wrapper = styled.ul`
     width: 320px;
@@ -10,51 +11,13 @@ const Wrapper = styled.ul`
 
 function VaultMenu () {
     const { ticker } = useParams();
+    const { loading, typesByCollateral } = useSelector(state => state.vaults);
 
-    // TODO don't hardcode this
-    const vaultsByCollateralTypeAvailable = {
-        'ETH': [
-            {
-                name: "ETH-A",
-                collateral: "ETH",
-                daiIssued: 1280000000
-            },
-            {
-                name: "ETH-B",
-                collateral: "ETH",
-                daiIssued: 370000000
-            },
-            {
-                name: "ETH-C",
-                collateral: "ETH",
-                daiIssued: 34563
-            },
-            {
-                name: "ETH-D",
-                collateral: "ETH",
-                daiIssued: 3834563
-            }
-        ],
-        'BAT': [
-            {
-                name: "BAT-A",
-                collateral: "BAT",
-                daiIssued: 300000
-            }
-        ],
-        'USDC': [
-            {
-                name: "USDC-A",
-                collateral: "USDC",
-                daiIssued: 6234723
-            }
-        ]
-    };
-    const vaultsAvailable = vaultsByCollateralTypeAvailable[ticker];
+    const vaultsAvailable = typesByCollateral[ticker];
 
     return (
         <Wrapper>
-            { vaultsAvailable.map(v => <VaultMenuItem vault={v} />) }
+            { loading ? <div>Loading</div> : vaultsAvailable.map(v => <VaultMenuItem vault={v} />) }
         </Wrapper>
     );
 }

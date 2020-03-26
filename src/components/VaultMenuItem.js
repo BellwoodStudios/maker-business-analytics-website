@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 import { numberShort } from 'utils/FormatUtils';
 import Divider from './Divider';
@@ -82,5 +83,9 @@ function VaultMenuItem ({ vault }) {
         </Wrapper>
     );
 }
+
+VaultMenuItem.propTypes = {
+    vault: PropTypes.object.isRequired
+};
 
 export default VaultMenuItem;

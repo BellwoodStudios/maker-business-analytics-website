@@ -1,24 +1,24 @@
 import React from 'react';
 import styled from 'styled-components';
-import LogoImageAsset from 'assets/logo.svg';
+import ImageAsset from 'assets/logo.svg';
 import { NavLink } from 'react-router-dom';
 
-const LogoWrapper = styled.div`
+const Wrapper = styled.div`
     padding: 20px;
     background: rgba(0, 0, 0, 0.3);
 `;
 
-const LogoImage = styled.img`
+const Image = styled.img`
 
 `;
 
 function Logo () {
     return (
-        <LogoWrapper>
+        <Wrapper>
             <NavLink to="/">
-                <LogoImage src={LogoImageAsset}></LogoImage>
+                <Image src={ImageAsset}></Image>
             </NavLink>
-        </LogoWrapper>
+        </Wrapper>
     );
 }
 
