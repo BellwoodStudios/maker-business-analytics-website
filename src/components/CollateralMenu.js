@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import CollateralMenuItem from 'components/CollateralMenuItem';
 import Divider from 'components/Divider';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchCollateral } from 'reducers/collateral';
 
 const Wrapper = styled.ul`
     display: flex;
@@ -23,6 +24,11 @@ const Collateral = styled.img`
 
 function CollateralMenu () {
     const { loading, types } = useSelector(state => state.collateral);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(fetchCollateral());
+    }, [dispatch]);
 
     return (
         <Wrapper>

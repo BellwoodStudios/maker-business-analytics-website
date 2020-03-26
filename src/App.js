@@ -1,5 +1,4 @@
 import React from 'react';
-import 'App.css';
 import styled from 'styled-components';
 import Logo from 'components/Logo';
 import PrimaryNav from 'components/PrimaryNav';
@@ -8,9 +7,10 @@ import Content from 'components/Content';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import rootReducer from 'reducers';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, applyMiddleware(thunk));
 
 const Root = styled.div`
     display: grid;

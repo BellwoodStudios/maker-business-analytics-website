@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import VaultMenuItem from 'components/VaultMenuItem';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchVaultsByCollateral } from 'reducers/vaults';
 
 const Wrapper = styled.ul`
     width: 320px;
@@ -11,13 +12,16 @@ const Wrapper = styled.ul`
 
 function VaultMenu () {
     const { ticker } = useParams();
-    const { loading, typesByCollateral } = useSelector(state => state.vaults);
+    const { loading, vaults } = useSelector(state => state.vaults);
+    const dispatch = useDispatch();
 
-    const vaultsAvailable = typesByCollateral[ticker];
+    useEffect(() => {
+        dispatch(fetchVaultsByCollateral(ticker));
+    }, [dispatch, ticker]);
 
     return (
         <Wrapper>
-            { loading ? <div>Loading</div> : vaultsAvailable.map(v => <VaultMenuItem vault={v} />) }
+            { loading ? <div>Loading</div> : vaults.map(v => <VaultMenuItem vault={v} />) }
         </Wrapper>
     );
 }

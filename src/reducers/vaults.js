@@ -1,7 +1,41 @@
-function vaults (state, action) {
+
+import { timeout } from 'utils/AsyncUtils';
+
+// Constants ----------------------------------------------
+
+export const FETCH_VAULTS_PENDING = 'FETCH_VAULTS_PENDING';
+export const FETCH_VAULTS_SUCCESS = 'FETCH_VAULTS_SUCCESS';
+export const FETCH_VAULTS_ERROR = 'FETCH_VAULTS_ERROR';
+
+export function fetchVaultsPending () {
     return {
-        loading: false,
-        typesByCollateral: {
+        type: FETCH_VAULTS_PENDING
+    }
+}
+
+export function fetchVaultsSuccess (vaults) {
+    return {
+        type: FETCH_VAULTS_SUCCESS,
+        vaults
+    }
+}
+
+export function fetchVaultsError (error) {
+    return {
+        type: FETCH_VAULTS_ERROR,
+        error
+    }
+}
+
+// Actions ----------------------------------------------
+
+export function fetchVaultsByCollateral (collateralTickerName) {
+    return async dispatch => {
+        dispatch(fetchVaultsPending());
+        await timeout(1000);
+
+        // TODO switch from mock api
+        const lookup = {
             'ETH': [
                 {
                     name: "ETH-A",
@@ -38,8 +72,42 @@ function vaults (state, action) {
                     daiIssued: 6234723
                 }
             ]
-        }
-    };
+        };
+
+        dispatch(fetchVaultsSuccess(lookup[collateralTickerName]));
+    }
+}
+
+// Reducer ----------------------------------------------
+
+const initialState = {
+    loading: false,
+    vaults: [],
+    error: null
+};
+
+export function vaults (state = initialState, action) {
+    switch(action.type) {
+        case FETCH_VAULTS_PENDING: 
+            return {
+                ...state,
+                loading: true
+            }
+        case FETCH_VAULTS_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                vaults: action.vaults
+            }
+        case FETCH_VAULTS_ERROR:
+            return {
+                ...state,
+                loading: false,
+                error: action.error
+            }
+        default: 
+            return state;
+    }
 }
 
 export default vaults;
