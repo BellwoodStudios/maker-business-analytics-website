@@ -6,6 +6,11 @@ import PrimaryNav from 'components/PrimaryNav';
 import CollateralMenu from 'components/CollateralMenu';
 import Content from 'components/Content';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import rootReducer from 'reducers';
+import { createStore } from 'redux';
+
+const store = createStore(rootReducer);
 
 const Root = styled.div`
     display: grid;
@@ -16,14 +21,16 @@ const Root = styled.div`
 
 function App() {
     return (
-        <Router>
-            <Root>
-                <Logo />
-                <PrimaryNav />
-                <CollateralMenu />
-                <Content />
-            </Root>
-        </Router>
+        <Provider store={store}>
+            <Router>
+                <Root>
+                    <Logo />
+                    <PrimaryNav />
+                    <CollateralMenu />
+                    <Content />
+                </Root>
+            </Router>
+        </Provider>
     );
 }
 
