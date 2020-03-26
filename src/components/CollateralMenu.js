@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import CollateralMenuItem from 'components/CollateralMenuItem';
 import Divider from 'components/Divider';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchCollateral } from 'reducers/collateral';
+import { loadCollateral } from 'reducers/collateral';
 
 const Wrapper = styled.ul`
     display: flex;
@@ -23,11 +23,11 @@ const Collateral = styled.img`
 `;
 
 function CollateralMenu () {
-    const { loading, types } = useSelector(state => state.collateral);
+    const { loaded, payload } = useSelector(state => state.collateral);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(fetchCollateral());
+        dispatch(loadCollateral());
     }, [dispatch]);
 
     return (
@@ -35,8 +35,8 @@ function CollateralMenu () {
             <CollateralMenuItem exact nobackground to="/" title="Dashboard" icon="dashboard"><Icon className="material-icons">dashboard</Icon></CollateralMenuItem>
             <Divider style={{ margin: "10px 0" }} orientation='horizontal'></Divider>
             {
-                loading ? <div>...</div> :
-                types.map(c => <CollateralMenuItem style={{ marginBottom: "10px" }} title={c.name} to={`/vaults/${c.ticker}`} ><Collateral src={`/images/collateral/${c.ticker.toLowerCase()}.svg`} /></CollateralMenuItem>)
+                !loaded ? <div>...</div> :
+                payload.map((c, i) => <CollateralMenuItem key={i} style={{ marginBottom: "10px" }} title={c.name} to={`/vaults/${c.ticker}`} ><Collateral src={`/images/collateral/${c.ticker.toLowerCase()}.svg`} /></CollateralMenuItem>)
             }
         </Wrapper>
     );
