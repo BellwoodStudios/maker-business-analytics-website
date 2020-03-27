@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import CollateralMenuItem from 'components/CollateralMenuItem';
 import Divider from 'components/Divider';
 import { useSelector, useDispatch } from 'react-redux';
-import { loadCollateral } from 'reducers/collateral';
+import { fetchCollateral } from 'reducers/collateral';
 
 const Wrapper = styled.ul`
     display: flex;
@@ -27,7 +27,7 @@ function CollateralMenu () {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(loadCollateral());
+        dispatch(fetchCollateral());
     }, [dispatch]);
 
     return (

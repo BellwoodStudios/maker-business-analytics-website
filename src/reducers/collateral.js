@@ -1,12 +1,12 @@
 import { apiReducer } from 'utils/ReduxUtils';
-import { fetchCollateral } from 'api';
+import { getCollateral } from 'api';
 
 const FETCH_COLLATERAL = 'FETCH_COLLATERAL';
 
-export function loadCollateral () {
+export function fetchCollateral () {
     return {
         type: FETCH_COLLATERAL,
-        promise: fetchCollateral()
+        promise: getCollateral()
     };
 };
 

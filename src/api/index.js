@@ -1,6 +1,9 @@
 import { timeout } from 'utils/AsyncUtils';
 
-export async function fetchCollateral () {
+/**
+ * Get a list of all available collateral types.
+ */
+export async function getCollateral () {
     await timeout(1000);
     
     // TODO switch from mock api
@@ -11,7 +14,10 @@ export async function fetchCollateral () {
     ];
 }
 
-export async function fetchVaultsByCollateral (collateralTickerName) {
+/**
+ * Get a list of all vaults with optional collateral filter.
+ */
+export async function getVaults ({ collateral }) {
     await timeout(1000);
 
     // TODO switch from mock api
@@ -54,5 +60,45 @@ export async function fetchVaultsByCollateral (collateralTickerName) {
         ]
     };
 
-    return lookup[collateralTickerName];
+    return lookup[collateral];
+}
+
+/**
+ * Get a list of all stats available with optional vault/collateral filters.
+ */
+export async function getAvailableStats ({ vault, collateral }) {
+    await timeout(1000);
+
+    return [
+        {
+            name: "DAI Supply",
+            value: 1280000000,
+            checked: true,
+            color: "#1AAB9B"
+        },
+        {
+            name: "Stability Fee",
+            value: 0.0725,
+            checked: true,
+            color: "#F4B731"
+        },
+        {
+            name: "Revenue",
+            value: 234743,
+            checked: false,
+            color: "#F4B731"
+        },
+        {
+            name: "Liquidations",
+            value: 43,
+            checked: false,
+            color: "#F4B731"
+        },
+        {
+            name: "Collateral",
+            value: 2234945,
+            checked: false,
+            color: "#F4B731"
+        }
+    ];
 }

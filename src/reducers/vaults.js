@@ -1,13 +1,13 @@
 
 import { apiReducer } from 'utils/ReduxUtils';
-import { fetchVaultsByCollateral } from 'api';
+import { getVaults } from 'api';
 
 const FETCH_VAULTS_BY_COLLATERAL = 'FETCH_VAULTS_BY_COLLATERAL';
 
-export function loadVaultsByCollateral (collateralTickerName) {
+export function fetchVaultsByCollateral (collateralTickerName) {
     return {
         type: FETCH_VAULTS_BY_COLLATERAL,
-        promise: fetchVaultsByCollateral(collateralTickerName)
+        promise: getVaults({ collateral: collateralTickerName })
     };
 };
 
