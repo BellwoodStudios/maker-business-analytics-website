@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export function numberShort (num) {
     const digits = 1;
     var si = [
@@ -15,4 +17,12 @@ export function numberShort (num) {
         }
     }
     return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
+}
+
+export function percent (num) {
+    return (num*100).toFixed(2) + "%";
+}
+
+export function dateLong (date = moment()) {
+    return date.format('dddd DD MMM. YYYY');
 }

@@ -72,26 +72,31 @@ export async function getAvailableStats ({ vault, collateral }) {
     return [
         {
             name: "Dai Supply",
+            type: "number",
             value: 1280000000,
             color: "#1AAB9B"
         },
         {
             name: "Stability Fee",
+            type: "percent",
             value: 0.0725,
             color: "#F4B731"
         },
         {
             name: "Revenue",
+            type: "number",
             value: 234743,
             color: "#F4B731"
         },
         {
             name: "Liquidations",
+            type: "number",
             value: 43,
             color: "#F4B731"
         },
         {
             name: "Collateral",
+            type: "number",
             value: 2234945,
             color: "#F4B731"
         }

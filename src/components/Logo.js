@@ -16,7 +16,7 @@ function Logo () {
     return (
         <Wrapper>
             <NavLink to="/">
-                <Image src={ImageAsset}></Image>
+                <Image src={ImageAsset} alt="Maker Logo"></Image>
             </NavLink>
         </Wrapper>
     );

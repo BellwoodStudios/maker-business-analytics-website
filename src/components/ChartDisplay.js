@@ -1,10 +1,13 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { fetchAvailableStats } from 'reducers/stats';
 import Divider from 'components/Divider';
 import StatsList from 'components/StatsList';
+import GraphSrc from 'assets/graph.png';
+import SummaryPill from 'components/SummaryPill';
+import { numberShort, percent, dateLong } from 'utils/FormatUtils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -25,21 +28,22 @@ const Right = styled.div`
 `;
 
 const Label = styled.div`
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     font-weight: 300;
     text-transform: uppercase;
     color: var(--color-foreground-30);
 `;
 
 const Value = styled.div`
-    font-size: 3rem;
+    font-size: 2.5rem;
+    line-height: 2.5rem;
     font-weight: bold;
     color: var(--color-foreground-50);
 `;
 
-const Header = styled.h1`
+const RightHeader = styled.h1`
     margin: 0;
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 300;
     text-transform: uppercase;
     color: var(--color-foreground-30);
@@ -47,9 +51,46 @@ const Header = styled.h1`
     padding: 10px;
 `;
 
+const ToolbarTop = styled.div`
+    display: flex;
+`;
+
+const DateRangeSelector = styled.div`
+    flex: 1;
+`;
+
+const DateGranularity = styled.select`
+    
+`;
+
+const DateRangeText = styled.div`
+    
+`;
+
+const DateRangeIcon = styled.div`
+    
+`;
+
+const SummaryDetails = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-column-gap: 20px;
+    grid-row-gap: 20px;
+`;
+
+function formatStatValue (stat) {
+    switch (stat.type) {
+        case "number": return numberShort(stat.value);
+        case "percent": return percent(stat.value);
+        default: throw new Error(`Unknown stat type '${stat.type}'.`);
+    }
+}
+
 function ChartDisplay () {
     const { collateral, vault } = useParams();
     const dispatch = useDispatch();
+    const { payload } = useSelector(state => state.stats);
+    const { activeStats } = useSelector(state => state.ui.stats);
 
     useEffect(() => {
         dispatch(fetchAvailableStats({ collateral, vault }));
@@ -63,9 +104,27 @@ function ChartDisplay () {
             <Content>
                 <Label>{filterLabel}</Label>
                 <Value>{filterValue}</Value>
+                <ToolbarTop>
+                    <DateRangeSelector />
+                    <DateGranularity>
+                        <option value="Monthly">Monthly</option>
+                        <option value="Daily">Daily</option>
+                        <option value="Hourly">Hourly</option>
+                    </DateGranularity>
+                    <DateRangeText />
+                    <DateRangeIcon />
+                </ToolbarTop>
+                <img style={{ margin: "30px 0" }} alt="Chart" src={GraphSrc} />
+                <SummaryDetails>
+                    { payload?.filter(stat => {
+                        return activeStats.includes(stat.name);
+                    }).map((stat, i) => {
+                        return <SummaryPill key={i} label={stat.name} sublabel={dateLong()} color={stat.color} value={formatStatValue(stat)} />;
+                    }) }
+                </SummaryDetails>
             </Content>
             <Right>
-                <Header>{`${filterValue} Statistics`}</Header>
+                <RightHeader>{`${filterValue} Statistics`}</RightHeader>
                 <Divider style={{ backgroundColor: "var(--color-foreground-15)" }} orientation="horizontal" />
                 <StatsList />
             </Right>
