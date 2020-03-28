@@ -1,13 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import ColoredCheckbox from 'components/ColoredCheckbox';
-import PropTypes from 'prop-types';
-
-const Wrapper = styled.div`
-    width: 100%;
-`;
+import { useSelector, useDispatch } from 'react-redux';
+import Loader from 'components/Loader';
+import { setStatActive } from 'reducers/ui';
 
 const List = styled.ul`
+    width: 100%;
 `;
 
 const ListItem = styled.li`
@@ -30,23 +29,25 @@ const Label = styled.div`
 /**
  * Display a list of stats that available.
  */
-function StatsList ({ stats }) {
+function StatsList () {
+    const dispatch = useDispatch();
+    const { loaded, payload } = useSelector(state => state.stats);
+    const { activeStats } = useSelector(state => state.ui.stats);
+
     return (
-        <Wrapper>
+        <Loader loading={!loaded}>
             <List>
-                {stats.map((s, i) => {
-                    return (<ListItem key={i}>
-                        <ColoredCheckbox color={s.color} checked={s.checked} />
-                        <Label style={{ color: !s.checked ? "var(--color-foreground-secondary)" : null }}>{s.name}</Label>
+                {payload?.map((s, i) => {
+                    const active = activeStats.includes(s.name);
+
+                    return (<ListItem key={i} onClick={() => dispatch(setStatActive(s.name, !active))}>
+                        <ColoredCheckbox color={s.color} checked={active} />
+                        <Label style={{ color: !active ? "var(--color-foreground-secondary)" : null }}>{s.name}</Label>
                     </ListItem>)
                 })}
             </List>
-        </Wrapper>
+        </Loader>
     );
 }
-
-StatsList.propTypes = {
-    color: PropTypes.array.isRequired
-};
 
 export default StatsList;

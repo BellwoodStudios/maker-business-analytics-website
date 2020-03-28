@@ -17,7 +17,7 @@ function ColoredCheckbox ({ color, checked }) {
     return (
         <Wrapper>
             { checked ? 
-                <i style={{ color }} className="material-icons">check_circle</i> :
+                <i style={{ color, display: "block" }} className="material-icons">check_circle</i> :
                 <Unchecked />
             }
         </Wrapper>

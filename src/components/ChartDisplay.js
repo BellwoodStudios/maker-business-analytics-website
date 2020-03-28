@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { fetchAvailableStats } from 'reducers/stats';
 import Divider from 'components/Divider';
 import StatsList from 'components/StatsList';
-import Loader from 'components/Loader';
 
 const Wrapper = styled.div`
     display: flex;
@@ -50,7 +49,6 @@ const Header = styled.h1`
 
 function ChartDisplay () {
     const { collateral, vault } = useParams();
-    const { loaded, payload } = useSelector(state => state.stats);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -69,7 +67,7 @@ function ChartDisplay () {
             <Right>
                 <Header>{`${filterValue} Statistics`}</Header>
                 <Divider style={{ backgroundColor: "var(--color-foreground-15)" }} orientation="horizontal" />
-                <Loader loading={!loaded}><StatsList stats={payload ?? []} /></Loader>
+                <StatsList />
             </Right>
         </Wrapper>
     );
