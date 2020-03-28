@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchAvailableStats } from 'reducers/stats';
 import Divider from 'components/Divider';
 import StatsList from 'components/StatsList';
+import Loader from 'components/Loader';
 
 const Wrapper = styled.div`
     display: flex;
@@ -68,7 +69,7 @@ function ChartDisplay () {
             <Right>
                 <Header>{`${filterValue} Statistics`}</Header>
                 <Divider style={{ backgroundColor: "var(--color-foreground-15)" }} orientation="horizontal" />
-                { !loaded ? <div>Loading...</div> : <StatsList stats={payload} /> }
+                <Loader loading={!loaded}><StatsList stats={payload ?? []} /></Loader>
             </Right>
         </Wrapper>
     );

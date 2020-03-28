@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import ColoredCheckbox from 'components/ColoredCheckbox';
+import PropTypes from 'prop-types';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -43,5 +44,9 @@ function StatsList ({ stats }) {
         </Wrapper>
     );
 }
+
+StatsList.propTypes = {
+    color: PropTypes.array.isRequired
+};
 
 export default StatsList;

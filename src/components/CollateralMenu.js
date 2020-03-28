@@ -4,6 +4,7 @@ import CollateralMenuItem from 'components/CollateralMenuItem';
 import Divider from 'components/Divider';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchCollateral } from 'reducers/collateral';
+import Loader from 'components/Loader';
 
 const Wrapper = styled.ul`
     display: flex;
@@ -34,10 +35,9 @@ function CollateralMenu () {
         <Wrapper>
             <CollateralMenuItem exact nobackground to="/" title="Dashboard" icon="dashboard"><Icon className="material-icons">dashboard</Icon></CollateralMenuItem>
             <Divider style={{ margin: "10px 0" }} orientation='horizontal'></Divider>
-            {
-                !loaded ? <div>...</div> :
-                payload.map((c, i) => <CollateralMenuItem key={i} style={{ marginBottom: "10px" }} title={c.name} to={`/vaults/${c.ticker}`} ><Collateral src={`/images/collateral/${c.ticker.toLowerCase()}.svg`} /></CollateralMenuItem>)
-            }
+            <Loader loading={!loaded}>
+                {payload?.map((c, i) => <CollateralMenuItem key={i} style={{ marginBottom: "10px" }} title={c.name} to={`/vaults/${c.ticker}`} ><Collateral src={`/images/collateral/${c.ticker.toLowerCase()}.svg`} /></CollateralMenuItem>)}
+            </Loader>
         </Wrapper>
     );
 }

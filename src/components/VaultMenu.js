@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import VaultMenuItem from 'components/VaultMenuItem';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchVaultsByCollateral } from 'reducers/vaults';
+import Loader from 'components/Loader';
 
 const Wrapper = styled.ul`
     width: 320px;
@@ -21,7 +22,9 @@ function VaultMenu () {
 
     return (
         <Wrapper>
-            { !loaded ? <div>Loading</div> : payload.map((v, i) => <VaultMenuItem key={i} vault={v} />) }
+            <Loader loading={!loaded}>
+                {payload?.map((v, i) => <VaultMenuItem key={i} vault={v} />)}
+            </Loader>
         </Wrapper>
     );
 }
