@@ -45,6 +45,30 @@ function stats (state = statsInitialState, action) {
  * ====================== ui.dateRange ======================
  */
 
+const SET_GRANULARITY = 'SET_GRANULARITY';
+const SET_DATE_RANGE = 'SET_DATE_RANGE';
+
+/**
+ * Set the granularity for the date range.
+ */
+export function setGranularity (granularity) {
+    return {
+        type: SET_GRANULARITY,
+        granularity
+    };
+}
+
+/**
+ * Set the date range we are looking at.
+ */
+export function setDateRange (start, end) {
+    return {
+        type: SET_DATE_RANGE,
+        start,
+        end
+    };
+}
+
 const dateRangeInitialState = {
     start: moment().startOf('month'),
     end: moment().startOf('day'),
@@ -75,6 +99,17 @@ const dateRangeInitialState = {
 
 function dateRange (state = dateRangeInitialState, action) {
     switch (action.type) {
+        case SET_GRANULARITY:
+            return {
+                ...state,
+                granularity: action.granularity
+            };
+    case SET_DATE_RANGE:
+        return {
+            ...state,
+            start: action.start,
+            end: action.end
+        };
         default:
             return state;
     }

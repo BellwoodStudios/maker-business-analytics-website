@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
+import { setGranularity } from 'reducers/ui';
 
 const Wrapper = styled.div`
     display: flex;
@@ -50,17 +51,18 @@ function formatTime (date, granularity) {
         case "week": return date.format("[Week] W YYYY");
         case "month": return date.format("MMM. YYYY");
         case "year": return date.format("YYYY");
+        default: return date.toString();
     }
 }
 
 function DateRangeToolbar () {
-    // TODO - move this all out into the data layer
     const { start, end, granularity, granularityOptions } = useSelector(state => state.ui.dateRange);
+    const dispatch = useDispatch();
 
     return (
         <Wrapper>
             <Scrubber />
-            <Granularity>
+            <Granularity onChange={(e) => dispatch(setGranularity(e.target.value))}>
                 { granularityOptions.map((g, i) => <option selected={g.name === granularity} key={i} value={g.name}>{g.label}</option>) }
             </Granularity>
             <RangeText>

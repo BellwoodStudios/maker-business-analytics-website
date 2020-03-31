@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
-import Dashboard from 'components/Dashboard';
 import VaultMenu from 'components/VaultMenu';
 import ChartDisplay from 'components/ChartDisplay';
 
@@ -19,7 +18,7 @@ function Content () {
             <Route path="/vaults/:collateral"><VaultMenu /></Route>
             <ContentInner>
                 <Switch>
-                    <Route exact path="/"><Dashboard /></Route>
+                    <Route exact path="/"><ChartDisplay /></Route>
                     <Route exact path="/vaults/:collateral/:vault?"><ChartDisplay /></Route>
                 </Switch>
             </ContentInner>

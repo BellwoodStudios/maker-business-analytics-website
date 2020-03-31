@@ -8,7 +8,7 @@ const Wrapper = styled.div`
 function Dashboard () {
     return (
         <Wrapper>
-            Main Page
+            TODO Dashboard?
         </Wrapper>
     );
 }

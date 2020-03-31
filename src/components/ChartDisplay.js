@@ -84,8 +84,22 @@ function ChartDisplay () {
         dispatch(fetchAvailableStats({ collateral, vault }));
     }, [dispatch, collateral, vault]);
 
-    const filterLabel = vault != null ? "Vault" : "Collateral";
-    const filterValue = vault ?? collateral;
+    let filterLabel;
+    let filterValue;
+
+    if (vault != null) {
+        // Vault specific view
+        filterLabel = "Vault";
+        filterValue = vault;
+    } else if (collateral != null) {
+        // Collateral specific view
+        filterLabel = "Collateral";
+        filterValue = collateral;
+    } else {
+        // Viewing across all collateral types
+        filterLabel = "Collateral";
+        filterValue = "All";
+    }
 
     return (
         <Wrapper>
