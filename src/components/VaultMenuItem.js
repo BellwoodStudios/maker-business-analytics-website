@@ -51,8 +51,12 @@ const Left = styled.div`
 `;
 
 const Right = styled.div`
-    font-size: 2rem;
+    font-size: 1.8rem;
     font-weight: bold;
+
+    @media (max-width: 1600px) {
+        display: none;
+    }
 `;
 
 const Label = styled.div`

@@ -22,7 +22,7 @@ const Root = styled.div`
     display: grid;
     grid-template-columns: 80px auto;
     grid-template-rows: 64px auto;
-    height: 100%;
+    min-height: 100vh;
 `;
 
 function App() {

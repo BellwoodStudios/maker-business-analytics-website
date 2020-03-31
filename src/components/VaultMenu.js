@@ -7,8 +7,12 @@ import { fetchVaultsByCollateral } from 'reducers/vaults';
 import Loader from 'components/Loader';
 
 const Wrapper = styled.ul`
-    width: 320px;
+    width: 280px;
     background: rgba(0, 0, 0, 0.1);
+
+    @media (max-width: 1600px) {
+        width: auto;
+    }
 `;
 
 function VaultMenu () {

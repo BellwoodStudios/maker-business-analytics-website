@@ -20,7 +20,7 @@ const Content = styled.div`
 `;
 
 const Right = styled.div`
-    width: 320px;
+    width: 250px;
     background: rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
@@ -76,6 +76,13 @@ const SummaryDetails = styled.div`
     grid-template-columns: 1fr 1fr 1fr;
     grid-column-gap: 20px;
     grid-row-gap: 20px;
+
+    @media (max-width: 1400px) {
+        grid-template-columns: 1fr 1fr;
+    }
+    @media (max-width: 1100px) {
+        grid-template-columns: 1fr;
+    }
 `;
 
 function formatStatValue (stat) {
