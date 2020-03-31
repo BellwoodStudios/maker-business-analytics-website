@@ -1,7 +1,12 @@
 import { combineReducers } from 'redux';
+import moment from 'moment';
 
 /**
  * Store UI state.
+ */
+
+/**
+ * ====================== ui.stats ======================
  */
 
 const SET_SHOW_STAT = 'SET_SHOW_STAT';
@@ -17,14 +22,14 @@ export function setStatActive (stat, active) {
     };
 }
 
-const initialState = {
+const statsInitialState = {
     activeStats: [
         "Dai Supply",
         "Stability Fee"
     ]
 };
 
-function stats (state = initialState, action) {
+function stats (state = statsInitialState, action) {
     switch (action.type) {
         case SET_SHOW_STAT:
             return {
@@ -36,6 +41,46 @@ function stats (state = initialState, action) {
     }
 }
 
+/**
+ * ====================== ui.dateRange ======================
+ */
+
+const dateRangeInitialState = {
+    start: moment().startOf('month'),
+    end: moment().startOf('day'),
+    granularity: "day",
+    granularityOptions: [
+        {
+            name: "hour",
+            label: "Hourly"
+        },
+        {
+            name: "day",
+            label: "Daily"
+        },
+        {
+            name: "week",
+            label: "Weekly"
+        },
+        {
+            name: "month",
+            label: "Monthly"
+        },
+        {
+            name: "year",
+            label: "Yearly"
+        }
+    ]
+};
+
+function dateRange (state = dateRangeInitialState, action) {
+    switch (action.type) {
+        default:
+            return state;
+    }
+}
+
 export default combineReducers({
-    stats
+    stats,
+    dateRange
 });

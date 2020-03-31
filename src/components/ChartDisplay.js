@@ -8,6 +8,7 @@ import StatsList from 'components/StatsList';
 import GraphSrc from 'assets/graph.png';
 import SummaryPill from 'components/SummaryPill';
 import { numberShort, percent, dateLong } from 'utils/FormatUtils';
+import DateRangeToolbar from 'components/DateRangeToolbar';
 
 const Wrapper = styled.div`
     display: flex;
@@ -51,26 +52,6 @@ const RightHeader = styled.h1`
     padding: 10px;
 `;
 
-const ToolbarTop = styled.div`
-    display: flex;
-`;
-
-const DateRangeSelector = styled.div`
-    flex: 1;
-`;
-
-const DateGranularity = styled.select`
-    
-`;
-
-const DateRangeText = styled.div`
-    
-`;
-
-const DateRangeIcon = styled.div`
-    
-`;
-
 const SummaryDetails = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -111,16 +92,7 @@ function ChartDisplay () {
             <Content>
                 <Label>{filterLabel}</Label>
                 <Value>{filterValue}</Value>
-                <ToolbarTop>
-                    <DateRangeSelector />
-                    <DateGranularity>
-                        <option value="Monthly">Monthly</option>
-                        <option value="Daily">Daily</option>
-                        <option value="Hourly">Hourly</option>
-                    </DateGranularity>
-                    <DateRangeText />
-                    <DateRangeIcon />
-                </ToolbarTop>
+                <DateRangeToolbar />
                 <img style={{ margin: "30px 0" }} alt="Chart" src={GraphSrc} />
                 <SummaryDetails>
                     { payload?.filter(stat => {

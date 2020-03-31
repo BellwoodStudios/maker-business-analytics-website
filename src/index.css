@@ -60,6 +60,26 @@ ul {
     margin: 0;
 }
 
+select {
+    display: block;
+	border: none;
+	box-shadow: none;
+	border-radius: 16px;
+    appearance: none;
+    background: url("data:image/svg+xml;charset=US-ASCII,%3C?xml%20version=%221.0%22%20?%3E%3C!DOCTYPE%20svg%20%20PUBLIC%20'-//W3C//DTD%20SVG%201.1//EN'%20%20'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E%3Csvg%20enable-background=%22new%200%200%2050%2050%22%20height=%2250px%22%20id=%22Layer_1%22%20version=%221.1%22%20viewBox=%220%200%2050%2050%22%20width=%2250px%22%20xml:space=%22preserve%22%20xmlns=%22http://www.w3.org/2000/svg%22%20xmlns:xlink=%22http://www.w3.org/1999/xlink%22%3E%3Crect%20fill=%22none%22%20height=%2250%22%20width=%2250%22/%3E%3Cpolygon%20fill=%22rgba(197,%20214,%20226,%200.5)%22%20points=%2247.25,15%2045.164,12.914%2025,33.078%204.836,12.914%202.75,15%2025,37.25%20%22/%3E%3C/svg%3E"),
+        rgba(0, 0, 0, 0.15);
+    background-repeat: no-repeat, repeat;
+    background-position: right .7em top 50%, 0 0;
+    background-size: 1rem auto, 100%;
+    font-size: 1rem;
+    color: #C5D6E2;
+    font-weight: bold;
+    padding: 10px 40px 10px 20px;
+}
+select:focus {
+    outline: none;
+}
+
 *::-webkit-scrollbar-track { border-radius: 10px; background-color: rgba(0, 0, 0, 0.2); }
 *::-webkit-scrollbar { width: 8px; height: 8px; background: none; }
 *::-webkit-scrollbar-thumb { border-radius: 10px; background-color: #555; }
