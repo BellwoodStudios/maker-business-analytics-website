@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import ColoredCheckbox from 'components/ColoredCheckbox';
 import { useSelector, useDispatch } from 'react-redux';
 import Loader from 'components/Loader';
-import { setStatActive } from 'reducers/ui';
+import { setStatActive, setActiveStats } from 'reducers/ui';
 
 const List = styled.ul`
     width: 100%;
@@ -33,6 +33,15 @@ function StatsList () {
     const dispatch = useDispatch();
     const { loaded, payload } = useSelector(state => state.stats);
     const { activeStats } = useSelector(state => state.ui.stats);
+
+    // If the URL contains active stats then set this right away on load
+    useEffect(() => {
+        const query = new URLSearchParams(window.location.search);
+        const activeStats = query.get("activeStats");
+        if (activeStats) {
+            dispatch(setActiveStats(activeStats.split(",")));
+        }
+    }, [dispatch]);
 
     return (
         <Loader loading={!loaded}>

@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const Wrapper = styled.div`
     display: flex;
@@ -54,5 +55,12 @@ function SummaryPill ({ label, sublabel, value, color }) {
         </Wrapper>
     );
 }
+
+SummaryPill.propTypes = {
+    label: PropTypes.string.isRequired,
+    sublabel: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired,
+    color: PropTypes.string
+};
 
 export default SummaryPill;

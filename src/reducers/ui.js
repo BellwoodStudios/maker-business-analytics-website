@@ -10,6 +10,7 @@ import moment from 'moment';
  */
 
 const SET_SHOW_STAT = 'SET_SHOW_STAT';
+const SET_ACTIVE_STATS = 'SET_ACTIVE_STATS';
 
 /**
  * Show or hide a stat. Stat should just be the string name.
@@ -19,6 +20,13 @@ export function setStatActive (stat, active) {
         type: SET_SHOW_STAT,
         stat,
         active
+    };
+}
+
+export function setActiveStats (activeStats) {
+    return {
+        type: SET_ACTIVE_STATS,
+        activeStats
     };
 }
 
@@ -35,6 +43,11 @@ function stats (state = statsInitialState, action) {
             return {
                 ...state,
                 activeStats: action.active ? state.activeStats.filter(s => s !== action.stat).concat([action.stat]) : state.activeStats.filter(s => s !== action.stat)
+            };
+        case SET_ACTIVE_STATS:
+            return {
+                ...state,
+                activeStats: action.activeStats
             };
         default:
             return state;

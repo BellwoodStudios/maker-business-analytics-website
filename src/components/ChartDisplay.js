@@ -9,6 +9,7 @@ import GraphSrc from 'assets/graph.png';
 import SummaryPill from 'components/SummaryPill';
 import { numberShort, percent, dateLong } from 'utils/FormatUtils';
 import DateRangeToolbar from 'components/DateRangeToolbar';
+import Share from 'components/Share';
 
 const Wrapper = styled.div`
     display: flex;
@@ -18,6 +19,18 @@ const Wrapper = styled.div`
 const Content = styled.div`
     flex: 1;
     padding: 20px;
+`;
+
+const ContentTop = styled.div`
+    display: flex;
+`;
+
+const ContentLeft = styled.div`
+    flex: 1;
+`;
+
+const ContentRight = styled.div`
+    
 `;
 
 const Right = styled.div`
@@ -104,8 +117,15 @@ function ChartDisplay () {
     return (
         <Wrapper>
             <Content>
-                <Label>{filterLabel}</Label>
-                <Value>{filterValue}</Value>
+                <ContentTop>
+                    <ContentLeft>
+                        <Label>{filterLabel}</Label>
+                        <Value>{filterValue}</Value>
+                    </ContentLeft>
+                    <ContentRight>
+                        <Share />
+                    </ContentRight>
+                </ContentTop>
                 <DateRangeToolbar />
                 <img style={{ margin: "30px 0" }} alt="Chart" src={GraphSrc} />
                 <SummaryDetails>

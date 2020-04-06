@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 import { setGranularity, setDateRange } from 'reducers/ui';
 import { DateRangePicker } from 'react-date-range';
+import Icon from 'components/Icon';
 import moment from 'moment';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
@@ -72,18 +73,34 @@ function DateRangeToolbar () {
     const dispatch = useDispatch();
     const [showDatePicker, setShowDatePicker] = useState(false);
 
+    // If the URL contains date range / granularity then set this right away on load
+    useEffect(() => {
+        const query = new URLSearchParams(window.location.search);
+
+        const granularity = query.get("granularity");
+        if (granularity) {
+            dispatch(setGranularity(granularity));
+        }
+        
+        const start = query.get("start");
+        const end = query.get("end");
+        if (start && end) {
+            dispatch(setDateRange(moment(start), moment(end)));
+        }
+    }, [dispatch]);
+
     return (
         <Wrapper>
             <Scrubber />
-            <Granularity onChange={(e) => dispatch(setGranularity(e.target.value))}>
-                { granularityOptions.map((g, i) => <option selected={g.name === granularity} key={i} value={g.name}>{g.label}</option>) }
+            <Granularity value={granularity} onChange={(e) => dispatch(setGranularity(e.target.value))}>
+                { granularityOptions.map((g, i) => <option key={i} value={g.name}>{g.label}</option>) }
             </Granularity>
             <RangeText>
                 <RangeStartText>{formatTime(start, granularity)}</RangeStartText>
                 <RangeEndText>{formatTime(end, granularity)}</RangeEndText>
             </RangeText>
             <RangeIcon href="#" onClick={() => setShowDatePicker(!showDatePicker)}>
-                <i className="material-icons">date_range</i>
+                <Icon name="date_range" />
             </RangeIcon>
             <DateRangePickerWrapper style={{ display: showDatePicker ? "block" : "none" }}>
                 <DateRangePicker
