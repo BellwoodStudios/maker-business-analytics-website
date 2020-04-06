@@ -29,14 +29,14 @@ const Right = styled.div`
 `;
 
 const Label = styled.div`
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     font-weight: 300;
     text-transform: uppercase;
     color: var(--color-foreground-30);
 `;
 
 const Value = styled.div`
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     line-height: 2.5rem;
     font-weight: bold;
     color: var(--color-foreground-50);

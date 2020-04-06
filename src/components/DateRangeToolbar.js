@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
-import { setGranularity } from 'reducers/ui';
+import { setGranularity, setDateRange } from 'reducers/ui';
+import { DateRangePicker } from 'react-date-range';
+import moment from 'moment';
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css'; // theme css file
 
 const Wrapper = styled.div`
     display: flex;
+    position: relative;
 `;
 
 const Scrubber = styled.div`
@@ -44,6 +49,13 @@ const RangeIcon = styled.a`
     height: 38px;
 `;
 
+const DateRangePickerWrapper = styled.div`
+    position: absolute;
+    right: 0;
+    top: 100%;
+    margin: 8px;
+`;
+
 function formatTime (date, granularity) {
     switch (granularity) {
         case "hour": return date.format("D MMM. YYYY HH:00");
@@ -58,6 +70,7 @@ function formatTime (date, granularity) {
 function DateRangeToolbar () {
     const { start, end, granularity, granularityOptions } = useSelector(state => state.ui.dateRange);
     const dispatch = useDispatch();
+    const [showDatePicker, setShowDatePicker] = useState(false);
 
     return (
         <Wrapper>
@@ -69,9 +82,15 @@ function DateRangeToolbar () {
                 <RangeStartText>{formatTime(start, granularity)}</RangeStartText>
                 <RangeEndText>{formatTime(end, granularity)}</RangeEndText>
             </RangeText>
-            <RangeIcon href="#">
+            <RangeIcon href="#" onClick={() => setShowDatePicker(!showDatePicker)}>
                 <i className="material-icons">date_range</i>
             </RangeIcon>
+            <DateRangePickerWrapper style={{ display: showDatePicker ? "block" : "none" }}>
+                <DateRangePicker
+                    onChange={({ main }) => dispatch(setDateRange(moment(main.startDate), moment(main.endDate)))}
+                    ranges={[{ startDate:start.toDate(), endDate:end.toDate(), key:"main" }]}
+                />
+            </DateRangePickerWrapper>
         </Wrapper>
     );
 }
