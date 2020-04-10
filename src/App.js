@@ -10,12 +10,10 @@ import rootReducer from 'reducers';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { middleware as reduxPackMiddleware } from 'redux-pack';
-import logger from 'redux-logger';
 
 const store = createStore(rootReducer, applyMiddleware(
     thunk,
-    reduxPackMiddleware,
-    logger
+    reduxPackMiddleware
 ));
 
 const Root = styled.div`

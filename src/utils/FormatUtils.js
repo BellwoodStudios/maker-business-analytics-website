@@ -1,6 +1,8 @@
 import moment from 'moment';
 
 export function numberShort (num) {
+    if (num == null || num === 0) return "-";
+
     const digits = 1;
     var si = [
         { value: 1, symbol: "" },

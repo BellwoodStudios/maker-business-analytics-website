@@ -73,10 +73,10 @@ const Value = styled.div`
 function VaultMenuItem ({ vault }) {
     return (
         <Wrapper>
-            <NavLinkWrapper to={`/vaults/${vault.collateral}/${vault.name}`}>
+            <NavLinkWrapper to={`/vaults/${vault.collateral.ticker}/${vault.identifier}`}>
                 <Left>
                     <Label className="color-faded">Vault</Label>
-                    <Value className="color-regular">{vault.name}</Value>
+                    <Value className="color-regular">{vault.identifier}</Value>
                 </Left>
                 <Right className="color-regular">
                     {numberShort(vault.daiIssued)}

@@ -1,66 +1,91 @@
 import { timeout } from 'utils/AsyncUtils';
 
+let _vaults = null;
+let _collateral = null;
+
+/**
+ * Get all vaults and cache it for future use.
+ */
+async function fetchVaults () {
+    if (_vaults === null) {
+        try {
+            // TODO this should be configurable
+            var result = await (await fetch("http://localhost:5000/graphql", {
+                method: "POST",
+                headers: new Headers({
+                    "Content-Type": "application/json"
+                }),
+                body: JSON.stringify({
+                    query: `
+                        {
+                            allIlks {
+                                nodes {
+                                    id,
+                                    ilk,
+                                    identifier
+                                }
+                            }
+                        }
+                    `
+                })
+            })).json();
+    
+            _vaults = result.data.allIlks.nodes.map(ilk => {
+                return {
+                    id: ilk.id,
+                    ilk: ilk.ilk,
+                    identifier: ilk.identifier
+                };
+            });
+        } catch {
+            await timeout(1000);
+
+            // Fallback to mock api for now if no connection available
+            alert("PostGraphile not running.")
+    
+            _vaults = [
+                { id:1, ilk:"ilk1", identifier:"ETH-A" },
+                { id:2, ilk:"ilk2", identifier:"BAT-A" },
+                { id:3, ilk:"ilk3", identifier:"USDC-A" }
+            ];
+        }
+    }
+
+    // Hook up all the data
+    _collateral = [];
+    for (const vault of _vaults) {
+        const name = vault.identifier.split("-")[0];
+        let collateral = _collateral.find(c => c.name === name);
+        if (collateral == null) {
+            _collateral.push(collateral = {
+                name,
+                ticker: name,
+                vaults: []
+            });
+        }
+        vault.collateral = collateral;
+        collateral.vaults.push(vault);
+    }
+
+    return _vaults;
+}
+
 /**
  * Get a list of all available collateral types.
  */
 export async function getCollateral () {
-    await timeout(1000);
-    
-    // TODO switch from mock api
-    return [
-        { name:"Ethereum", ticker:"ETH" },
-        { name:"Basic Attention Token", ticker:"BAT" },
-        { name:"USDC", ticker:"USDC" }
-    ];
+    await fetchVaults();
+
+    return _collateral;
 }
 
 /**
  * Get a list of all vaults with optional collateral filter.
  */
 export async function getVaults ({ collateral }) {
-    await timeout(1000);
+    await fetchVaults();
 
-    // TODO switch from mock api
-    const lookup = {
-        'ETH': [
-            {
-                name: "ETH-A",
-                collateral: "ETH",
-                daiIssued: 1280000000
-            },
-            {
-                name: "ETH-B",
-                collateral: "ETH",
-                daiIssued: 370000000
-            },
-            {
-                name: "ETH-C",
-                collateral: "ETH",
-                daiIssued: 34563
-            },
-            {
-                name: "ETH-D",
-                collateral: "ETH",
-                daiIssued: 3834563
-            }
-        ],
-        'BAT': [
-            {
-                name: "BAT-A",
-                collateral: "BAT",
-                daiIssued: 300000
-            }
-        ],
-        'USDC': [
-            {
-                name: "USDC-A",
-                collateral: "USDC",
-                daiIssued: 6234723
-            }
-        ]
-    };
-
-    return lookup[collateral];
+    return _vaults.filter(v => collateral != null && v.collateral.name === collateral);
 }
 
 /**
