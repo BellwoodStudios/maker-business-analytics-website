@@ -4,10 +4,10 @@ import { getAvailableStats } from 'api';
 
 const FETCH_AVAILABLE_STATS = 'FETCH_AVAILABLE_STATS';
 
-export function fetchAvailableStats ({ collateral, vault }) {
+export function fetchAvailableStats ({ collateralName, vaultName }) {
     return {
         type: FETCH_AVAILABLE_STATS,
-        promise: getAvailableStats({ collateral, vault })
+        promise: getAvailableStats({ collateralName, vaultName })
     };
 };
 

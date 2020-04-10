@@ -4,10 +4,10 @@ import { getVaults } from 'api';
 
 const FETCH_VAULTS_BY_COLLATERAL = 'FETCH_VAULTS_BY_COLLATERAL';
 
-export function fetchVaultsByCollateral (collateralTickerName) {
+export function fetchVaultsByCollateral (collateralName) {
     return {
         type: FETCH_VAULTS_BY_COLLATERAL,
-        promise: getVaults({ collateral: collateralTickerName })
+        promise: getVaults({ collateralName })
     };
 };
 

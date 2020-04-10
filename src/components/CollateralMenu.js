@@ -36,7 +36,7 @@ function CollateralMenu () {
             <CollateralMenuItem exact nobackground to="/" title="Dashboard" icon="dashboard"><Icon className="material-icons">dashboard</Icon></CollateralMenuItem>
             <Divider style={{ margin: "10px 0" }} orientation='horizontal'></Divider>
             <Loader loading={!loaded}>
-                {payload?.map((c, i) => <CollateralMenuItem key={i} style={{ marginBottom: "10px" }} title={c.name} to={`/vaults/${c.ticker}`} ><Collateral src={`/images/collateral/${c.ticker.toLowerCase()}.svg`} /></CollateralMenuItem>)}
+                {payload?.map((c, i) => <CollateralMenuItem key={i} style={{ marginBottom: "10px" }} title={c.name} to={`/vaults/${c.name}`} ><Collateral src={`/images/collateral/${c.name.toLowerCase()}.svg`} /></CollateralMenuItem>)}
             </Loader>
         </Wrapper>
     );
