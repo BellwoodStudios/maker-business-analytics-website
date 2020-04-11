@@ -22,6 +22,8 @@ export function numberShort (num) {
 }
 
 export function percent (num) {
+    if (num == null || num === 0) return "-";
+
     return (num*100).toFixed(2) + "%";
 }
 

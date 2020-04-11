@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchAvailableStats } from 'reducers/stats';
+import { fetchStatsData } from 'reducers/statsData';
 import Divider from 'components/Divider';
 import StatsList from 'components/StatsList';
 import GraphSrc from 'assets/graph.png';
@@ -90,12 +91,18 @@ function formatStatValue (stat) {
 function ChartDisplay () {
     const { collateralName, vaultName } = useParams();
     const dispatch = useDispatch();
-    const { payload } = useSelector(state => state.stats);
     const { activeStats } = useSelector(state => state.ui.stats);
+    const stats = useSelector(state => state.stats).payload;
+    const { start, end, granularity } = useSelector(state => state.ui.dateRange);
+    const statsData = useSelector(state => state.statsData).payload;
 
     useEffect(() => {
         dispatch(fetchAvailableStats({ collateralName, vaultName }));
     }, [dispatch, collateralName, vaultName]);
+
+    useEffect(() => {
+        if (stats != null) dispatch(fetchStatsData(stats, { collateralName, vaultName, start, end, granularity }));
+    }, [dispatch, stats, collateralName, vaultName, start, end, granularity]);
 
     let filterLabel;
     let filterValue;
@@ -129,9 +136,7 @@ function ChartDisplay () {
                 <DateRangeToolbar />
                 <img style={{ margin: "30px 0" }} alt="Chart" src={GraphSrc} />
                 <SummaryDetails>
-                    { payload?.filter(stat => {
-                        return activeStats.includes(stat.name);
-                    }).map((stat, i) => {
+                    { stats?.filter(stat => activeStats.includes(stat.name)).map((stat, i) => {
                         return <SummaryPill key={i} label={stat.name} sublabel={dateLong()} color={stat.color} value={formatStatValue(stat)} />;
                     }) }
                 </SummaryDetails>
