@@ -6,11 +6,11 @@ import { fetchAvailableStats } from 'reducers/stats';
 import { fetchStatsData } from 'reducers/statsData';
 import Divider from 'components/Divider';
 import StatsList from 'components/StatsList';
-import GraphSrc from 'assets/graph.png';
 import SummaryPill from 'components/SummaryPill';
 import { numberShort, percent, dateLong } from 'utils/FormatUtils';
 import DateRangeToolbar from 'components/DateRangeToolbar';
 import Share from 'components/Share';
+import { Chart } from "react-google-charts";
 
 const Wrapper = styled.div`
     display: flex;
@@ -95,6 +95,7 @@ function ChartDisplay () {
     const stats = useSelector(state => state.stats).payload;
     const { start, end, granularity } = useSelector(state => state.ui.dateRange);
     const statsData = useSelector(state => state.statsData).payload;
+    console.log(statsData);
 
     useEffect(() => {
         dispatch(fetchAvailableStats({ collateralName, vaultName }));
@@ -134,7 +135,14 @@ function ChartDisplay () {
                     </ContentRight>
                 </ContentTop>
                 <DateRangeToolbar />
-                <img style={{ margin: "30px 0" }} alt="Chart" src={GraphSrc} />
+                { statsData != null && statsData.find(s => s != null) != null ? 
+                    <Chart
+                        chartType="LineChart"
+                        data={[["Date", "Stability Fee"], ...statsData.find(s => s != null).filter(s => s.fee != -1).map(s => [s.block.timestamp.toDate(), s.fee])]}
+                        width="100%"
+                        height="400px"
+                        legendToggle
+                    /> : null }
                 <SummaryDetails>
                     { stats?.filter(stat => activeStats.includes(stat.name)).map((stat, i) => {
                         return <SummaryPill key={i} label={stat.name} sublabel={dateLong()} color={stat.color} value={formatStatValue(stat)} />;
