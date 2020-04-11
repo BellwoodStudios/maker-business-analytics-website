@@ -17,11 +17,11 @@ const ContentInner = styled.div`
 function Content () {
     return (
         <Wrapper>
-            <Route path="/vaults/:collateral"><VaultMenu /></Route>
+            <Route path="/vaults/:collateralName"><VaultMenu /></Route>
             <ContentInner>
                 <Switch>
                     <Route exact path="/"><ChartDisplay /></Route>
-                    <Route exact path="/vaults/:collateral/:vault?"><ChartDisplay /></Route>
+                    <Route exact path="/vaults/:collateralName/:vaultName?"><ChartDisplay /></Route>
                     <Route exact path="/developer"><Developer /></Route>
                     <Route exact path="/about"><About /></Route>
                 </Switch>

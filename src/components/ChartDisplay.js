@@ -88,26 +88,26 @@ function formatStatValue (stat) {
 }
 
 function ChartDisplay () {
-    const { collateral, vault } = useParams();
+    const { collateralName, vaultName } = useParams();
     const dispatch = useDispatch();
     const { payload } = useSelector(state => state.stats);
     const { activeStats } = useSelector(state => state.ui.stats);
 
     useEffect(() => {
-        dispatch(fetchAvailableStats({ collateral, vault }));
-    }, [dispatch, collateral, vault]);
+        dispatch(fetchAvailableStats({ collateralName, vaultName }));
+    }, [dispatch, collateralName, vaultName]);
 
     let filterLabel;
     let filterValue;
 
-    if (vault != null) {
+    if (vaultName != null) {
         // Vault specific view
         filterLabel = "Vault";
-        filterValue = vault;
-    } else if (collateral != null) {
+        filterValue = vaultName;
+    } else if (collateralName != null) {
         // Collateral specific view
         filterLabel = "Collateral";
-        filterValue = collateral;
+        filterValue = collateralName;
     } else {
         // Viewing across all collateral types
         filterLabel = "Collateral";

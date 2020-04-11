@@ -19,18 +19,18 @@ const Wrapper = styled.pre`
  * Automatically build the link for the active url or manually provide one via the "link" parameter.
  */
 function Share ({ link }) {
-    const { collateral, vault } = useParams();
+    const { collateralName, vaultName } = useParams();
     const { activeStats } = useSelector(state => state.ui.stats);
     const { start, end, granularity } = useSelector(state => state.ui.dateRange);
     const origin = window.location.origin;
 
     if (link == null) {
         link = origin;
-        if (collateral != null) {
-            link += `/vaults/${collateral}`;
+        if (collateralName != null) {
+            link += `/vaults/${collateralName}`;
         }
-        if (vault != null) {
-            link += `/${vault}`;
+        if (vaultName != null) {
+            link += `/${vaultName}`;
         }
         const params = {
             activeStats,

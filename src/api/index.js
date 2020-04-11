@@ -1,4 +1,6 @@
 import { timeout } from 'utils/AsyncUtils';
+import { feeToAPY } from 'utils/MathUtils';
+import moment from 'moment';
 
 let _vaults = null;
 let _collateral = null;
@@ -148,7 +150,10 @@ export async function getFees (vaultId) {
                     headerId,
                     ilkId,
                     what,
-                    data
+                    data,
+                    headerByHeaderId {
+                        blockTimestamp
+                    }
                 }
             }
         }
@@ -157,8 +162,9 @@ export async function getFees (vaultId) {
     // TODO - shouldn't be filtering on client for performance reasons
     return result.data.allJugFileIlks.nodes.filter(n => n.what === "duty" && n.ilkId === vaultId).map(n => {
         return {
-            headerId: n.headerId,               // TODO - get timestamp from block id
-            fee: Math.pow(n.data, 31536000)     // TODO - need bignum library
+            headerId: n.headerId,
+            timestamp: moment.unix(n.headerByHeaderId.blockTimestamp),
+            fee: feeToAPY(n.data)
         };
     });
 }

@@ -16,13 +16,13 @@ const Wrapper = styled.ul`
 `;
 
 function VaultMenu () {
-    const { collateral } = useParams();
+    const { collateralName } = useParams();
     const { loaded, payload } = useSelector(state => state.vaults);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(fetchVaultsByCollateral(collateral));
-    }, [dispatch, collateral]);
+        dispatch(fetchVaultsByCollateral(collateralName));
+    }, [dispatch, collateralName]);
 
     return (
         <Wrapper>
