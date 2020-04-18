@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { QueryGranularity } from 'model';
 
 export function numberShort (num) {
     if (num == null || num === 0) return "-";
@@ -29,4 +30,15 @@ export function percent (num) {
 
 export function dateLong (date = moment()) {
     return date.format('dddd DD MMM. YYYY');
+}
+
+export function dateWithGranularity (date, granularity) {
+    switch (granularity) {
+        case QueryGranularity.HOUR: return date.format("D MMM. YYYY HH:00");
+        case QueryGranularity.DAY: return date.format("D MMM. YYYY");
+        case QueryGranularity.WEEK: return date.format("[Week] W YYYY");
+        case QueryGranularity.MONTH: return date.format("MMM. YYYY");
+        case QueryGranularity.YEAR: return date.format("YYYY");
+        default: return date.toString();
+    }
 }

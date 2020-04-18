@@ -1,10 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
 import VaultMenuItem from 'components/VaultMenuItem';
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchVaultsByCollateral } from 'reducers/vaults';
-import Loader from 'components/Loader';
+import { useSelector } from 'react-redux';
 
 const Wrapper = styled.ul`
     width: 280px;
@@ -16,19 +13,11 @@ const Wrapper = styled.ul`
 `;
 
 function VaultMenu () {
-    const { collateralName } = useParams();
-    const { loaded, payload } = useSelector(state => state.vaults);
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(fetchVaultsByCollateral(collateralName));
-    }, [dispatch, collateralName]);
+    const { activeQuery } = useSelector(state => state.query);
 
     return (
         <Wrapper>
-            <Loader loading={!loaded}>
-                {payload?.map((v, i) => <VaultMenuItem key={i} vault={v} />)}
-            </Loader>
+            {activeQuery.collateral?.vaults.map((v, i) => <VaultMenuItem key={i} vault={v} />)}
         </Wrapper>
     );
 }

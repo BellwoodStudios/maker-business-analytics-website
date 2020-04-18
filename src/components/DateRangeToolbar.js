@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
-import { setGranularity, setDateRange } from 'reducers/ui';
+import { setActiveQuery } from 'reducers/query';
 import { DateRangePicker } from 'react-date-range';
 import Icon from 'components/Icon';
 import moment from 'moment';
+import { dateWithGranularity } from 'utils/FormatUtils';
+import { QueryGranularity } from 'model';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 
@@ -57,55 +59,28 @@ const DateRangePickerWrapper = styled.div`
     margin: 8px;
 `;
 
-function formatTime (date, granularity) {
-    switch (granularity) {
-        case "hour": return date.format("D MMM. YYYY HH:00");
-        case "day": return date.format("D MMM. YYYY");
-        case "week": return date.format("[Week] W YYYY");
-        case "month": return date.format("MMM. YYYY");
-        case "year": return date.format("YYYY");
-        default: return date.toString();
-    }
-}
-
 function DateRangeToolbar () {
-    const { start, end, granularity, granularityOptions } = useSelector(state => state.ui.dateRange);
+    const { activeQuery } = useSelector(state => state.query);
     const dispatch = useDispatch();
     const [showDatePicker, setShowDatePicker] = useState(false);
-
-    // If the URL contains date range / granularity then set this right away on load
-    useEffect(() => {
-        const query = new URLSearchParams(window.location.search);
-
-        const granularity = query.get("granularity");
-        if (granularity) {
-            dispatch(setGranularity(granularity));
-        }
-        
-        const start = query.get("start");
-        const end = query.get("end");
-        if (start && end) {
-            dispatch(setDateRange(moment(start), moment(end)));
-        }
-    }, [dispatch]);
 
     return (
         <Wrapper>
             <Scrubber />
-            <Granularity value={granularity} onChange={(e) => dispatch(setGranularity(e.target.value))}>
-                { granularityOptions.map((g, i) => <option key={i} value={g.name}>{g.label}</option>) }
+            <Granularity value={activeQuery.granularity} onChange={(e) => dispatch(setActiveQuery(activeQuery.clone({ granularity:e.target.value })))}>
+                { Object.values(QueryGranularity).map((g, i) => <option key={i} value={g}>{g}</option>) }
             </Granularity>
             <RangeText>
-                <RangeStartText>{formatTime(start, granularity)}</RangeStartText>
-                <RangeEndText>{formatTime(end, granularity)}</RangeEndText>
+                <RangeStartText>{dateWithGranularity(activeQuery.start, activeQuery.granularity)}</RangeStartText>
+                <RangeEndText>{dateWithGranularity(activeQuery.end, activeQuery.granularity)}</RangeEndText>
             </RangeText>
             <RangeIcon href="#" onClick={() => setShowDatePicker(!showDatePicker)}>
                 <Icon name="date_range" />
             </RangeIcon>
             <DateRangePickerWrapper style={{ display: showDatePicker ? "block" : "none" }}>
                 <DateRangePicker
-                    onChange={({ main }) => dispatch(setDateRange(moment(main.startDate), moment(main.endDate)))}
-                    ranges={[{ startDate:start.toDate(), endDate:end.toDate(), key:"main" }]}
+                    onChange={({ main }) => dispatch(setActiveQuery(activeQuery.clone({ start:moment(main.startDate), end:moment(main.endDate) })))}
+                    ranges={[{ startDate:activeQuery.start.toDate(), endDate:activeQuery.end.toDate(), key:"main" }]}
                 />
             </DateRangePickerWrapper>
         </Wrapper>

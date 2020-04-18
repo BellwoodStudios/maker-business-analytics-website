@@ -2,8 +2,6 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchAvailableStats } from 'reducers/stats';
-import { fetchStatsData } from 'reducers/statsData';
 import Divider from 'components/Divider';
 import StatsList from 'components/StatsList';
 import SummaryPill from 'components/SummaryPill';
@@ -11,6 +9,9 @@ import { numberShort, percent, dateLong } from 'utils/FormatUtils';
 import DateRangeToolbar from 'components/DateRangeToolbar';
 import Share from 'components/Share';
 import { Chart } from "react-google-charts";
+import { Query, QueryType } from 'model';
+import { getStats } from 'api';
+import { setActiveQuery } from 'reducers/query';
 
 const Wrapper = styled.div`
     display: flex;
@@ -89,37 +90,45 @@ function formatStatValue (stat) {
 }
 
 function ChartDisplay () {
-    const { collateralName, vaultName } = useParams();
     const dispatch = useDispatch();
-    const { activeStats } = useSelector(state => state.ui.stats);
-    const stats = useSelector(state => state.stats).payload;
-    const { start, end, granularity } = useSelector(state => state.ui.dateRange);
-    const statsData = useSelector(state => state.statsData).payload;
-    console.log(statsData);
+    const { collateralName, vaultName } = useParams();
+    const { activeQuery } = useSelector(state => state.query);
+    const stats = getStats(activeQuery);
+    const statsData = null;
 
     useEffect(() => {
-        dispatch(fetchAvailableStats({ collateralName, vaultName }));
-    }, [dispatch, collateralName, vaultName]);
+        const newQuery = Query.createFromParams({ collateralName, vaultName });
+        dispatch(setActiveQuery(activeQuery.clone({ collateral:newQuery.collateral, vault:newQuery.vault })));
+    }, [collateralName, vaultName, dispatch]);
 
-    useEffect(() => {
+
+    /*useEffect(() => {
         if (stats != null) dispatch(fetchStatsData(stats, { collateralName, vaultName, start, end, granularity }));
-    }, [dispatch, stats, collateralName, vaultName, start, end, granularity]);
+    }, [dispatch, stats, collateralName, vaultName, start, end, granularity]);*/
 
     let filterLabel;
     let filterValue;
 
-    if (vaultName != null) {
-        // Vault specific view
-        filterLabel = "Vault";
-        filterValue = vaultName;
-    } else if (collateralName != null) {
-        // Collateral specific view
-        filterLabel = "Collateral";
-        filterValue = collateralName;
-    } else {
-        // Viewing across all collateral types
-        filterLabel = "Collateral";
-        filterValue = "All";
+    switch (activeQuery.type) {
+        case QueryType.VAULT:
+            // Vault specific view
+            filterLabel = "Vault";
+            filterValue = activeQuery.vault.name;
+
+            break;
+        case QueryType.COLLATERAL:
+            // Collateral specific view
+            filterLabel = "Collateral";
+            filterValue = activeQuery.collateral.name;
+
+            break;
+        case QueryType.GLOBAL:
+            // Viewing across all collateral types
+            filterLabel = "Collateral";
+            filterValue = "All";
+
+            break;
+        default: throw new Error('Unknown query type');
     }
 
     return (
@@ -138,13 +147,12 @@ function ChartDisplay () {
                 { statsData != null && statsData.find(s => s != null) != null ? 
                     <Chart
                         chartType="LineChart"
-                        data={[["Date", "Stability Fee"], ...statsData.find(s => s != null).filter(s => s.fee != -1).map(s => [s.block.timestamp.toDate(), s.fee])]}
+                        data={[["Date", "Stability Fee"], ...statsData.find(s => s != null).filter(s => s.fee !== -1).map(s => [s.block.timestamp.toDate(), s.fee])]}
                         width="100%"
                         height="400px"
-                        legendToggle
                     /> : null }
                 <SummaryDetails>
-                    { stats?.filter(stat => activeStats.includes(stat.name)).map((stat, i) => {
+                    { activeQuery.filterActiveStats(stats).map((stat, i) => {
                         return <SummaryPill key={i} label={stat.name} sublabel={dateLong()} color={stat.color} value={formatStatValue(stat)} />;
                     }) }
                 </SummaryDetails>
