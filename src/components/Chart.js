@@ -16,7 +16,7 @@ function Chart ({ query, data }) {
         legend: "none",
         backgroundColor: "none",
         chartArea: {
-            left: 40,
+            left: 80,
             top: 40,
             right: 40,
             bottom: 40
@@ -40,7 +40,7 @@ function Chart ({ query, data }) {
             minorGridlines: {
                 color: "#303d4d"
             },
-            format: 'percent'
+            format: query.type === "Global" ? "decimal" : 'percent'
         },
         axisTitlesPosition: "none",
         colors: query.stats.map(s => s.color)
@@ -51,7 +51,7 @@ function Chart ({ query, data }) {
             <Loader loading={data == null || data.length === 0}>
                 { (data != null && data.length > 0) ? <GChart
                     chartType="LineChart"
-                    data={[["Date", "Stability Fee"], ...data[0].packedData.map(s => [s.timestamp.toDate(), s.value])]}
+                    data={[["Date", query.type === "Global" ? "Vaults Created" : "Stability Fee"], ...data[0].packedData.map(s => [s.timestamp.toDate(), s.value])]}
                     width="100%"
                     height="400px"
                     options={options}

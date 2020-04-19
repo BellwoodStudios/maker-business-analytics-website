@@ -29,10 +29,10 @@ export default class StatData {
         }
         let curr = query.start.clone().startOf(granularity);
         // Want to inclusively add the last period
-        const end = query.end.clone().startOf(granularity).add(granularity, 1);
+        const end = query.end.clone().startOf(granularity).add(1, granularity);
         this.packedData = [];
         while (curr.isBefore(end)) {
-            const endOfPeriod = curr.clone().add(granularity, 1);
+            const endOfPeriod = curr.clone().add(1, granularity);
             let value = null;
             switch (this.stat.aggregation) {
                 case StatAggregations.REPLACE:
@@ -68,7 +68,7 @@ export class StatDataItem {
     constructor (data) {
         this.block = data.block;
         this.value = data.value;
-        this.extraData = data.extraData;
+        if (data.extraData != null) this.extraData = data.extraData;
     }
 
 }

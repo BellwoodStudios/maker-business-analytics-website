@@ -81,10 +81,10 @@ const SummaryDetails = styled.div`
     }
 `;
 
-function formatStatValue (stat) {
+function formatStatData (stat, data) {
     switch (stat.type) {
-        case "number": return numberShort(stat.value);
-        case "percent": return percent(stat.value);
+        case "number": return numberShort(data.value);
+        case "percent": return percent(data.value);
         default: throw new Error(`Unknown stat type '${stat.type}'.`);
     }
 }
@@ -149,7 +149,8 @@ function ChartDisplay () {
                 <Chart query={activeQuery} data={activeQueryResult.payload} />
                 <SummaryDetails>
                     { activeQuery.filterActiveStats(stats).map((stat, i) => {
-                        return <SummaryPill key={i} label={stat.name} sublabel={dateLong()} color={stat.color} value={formatStatValue(stat)} />;
+                        const data = activeQueryResult.payload?.find(sd => sd.stat.name === stat.name).packedData;
+                        return <SummaryPill key={i} label={stat.name} sublabel={dateLong()} color={stat.color} value={data != null ? formatStatData(stat, data[data.length - 1]) : "-"} />;
                     }) }
                 </SummaryDetails>
             </Content>

@@ -31,7 +31,7 @@ export default class Query {
         this.type = QueryType.GLOBAL;
         if (this.vault != null) this.type = QueryType.VAULT;
         else if (this.collateral != null) this.type = QueryType.COLLATERAL;
-        this.start = data.start ?? moment().subtract('month', 3);
+        this.start = data.start ?? moment().subtract(3, 'month');
         this.end = data.end ?? moment();
         this.granularity = data.granularity ?? QueryGranularity.DAY;
 
@@ -74,7 +74,7 @@ export default class Query {
      * Execute the query and return the data.
      */
     async execute () {
-        const results = await Promise.all(this.stats.map(s => s.fetch(this)));
+        const results = await Promise.all(this.stats.filter(s => s.isAvailableForQuery(this)).map(s => s.fetch(this)));
         // Do a sanity check to verify the result is in a proper format
         for (const result of results) {
             if (!(result instanceof StatData)) {
@@ -82,7 +82,6 @@ export default class Query {
             }
 
             result.pack(this);
-            console.log(result.packedData);
         }
         return results;
     }

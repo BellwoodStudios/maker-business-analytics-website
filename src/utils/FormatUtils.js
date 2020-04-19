@@ -2,7 +2,7 @@ import moment from 'moment';
 import { QueryGranularity } from 'model';
 
 export function numberShort (num) {
-    if (num == null || num === 0) return "-";
+    if (num == null) return "-";
 
     const digits = 1;
     var si = [

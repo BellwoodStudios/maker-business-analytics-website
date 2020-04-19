@@ -35,7 +35,7 @@ export const StatAggregations = {
     #1AAB9B - Stability Fee
     #F4B731 - Base Fee
     #00E676 - Vault Fee
-    #FF7043
+    #FF7043 - New Vaults
     #26C6DA
     #448AFF
     #7E57C2
