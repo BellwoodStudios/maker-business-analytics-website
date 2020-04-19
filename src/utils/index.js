@@ -17,3 +17,12 @@ export function arrayEquals (a1, a2) {
 
     return true;
 }
+
+/**
+ * Sum the values of an array.
+ */
+export function arraySum (arr) {
+    let value = 0;
+    for (const v of arr) value += v;
+    return value;
+}

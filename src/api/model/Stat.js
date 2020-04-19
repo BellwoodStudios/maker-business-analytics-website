@@ -65,11 +65,11 @@ export const StatAggregations = {
 /**
  * A Maker stat such as Stability Fee. This class is the stat definition and not the actual data.
  * 
- * Stat is an abstract class and should be extended with a proper resolverFn to perform the actual query.
+ * Stat is an abstract class and should be extended with a proper fetch() to perform the actual query.
  */
 export default class Stat {
 
-    constructor (data, resolverFn) {
+    constructor (data) {
         this.name = data.name;
         this.color = data.color;
         this.type = data.type ?? StatTypes.NUMBER;

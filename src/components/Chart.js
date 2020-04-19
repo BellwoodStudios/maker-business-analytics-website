@@ -51,7 +51,7 @@ function Chart ({ query, data }) {
             <Loader loading={data == null || data.length === 0}>
                 { (data != null && data.length > 0) ? <GChart
                     chartType="LineChart"
-                    data={[["Date", "Stability Fee"], ...data[0].data.filter(s => s.value !== -1).map(s => [s.block.timestamp.toDate(), s.value])]}
+                    data={[["Date", "Stability Fee"], ...data[0].packedData.map(s => [s.timestamp.toDate(), s.value])]}
                     width="100%"
                     height="400px"
                     options={options}

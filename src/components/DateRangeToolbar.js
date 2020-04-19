@@ -57,6 +57,7 @@ const DateRangePickerWrapper = styled.div`
     right: 0;
     top: 100%;
     margin: 8px;
+    z-index: 10;
 `;
 
 function DateRangeToolbar () {

@@ -31,8 +31,8 @@ export default class Query {
         this.type = QueryType.GLOBAL;
         if (this.vault != null) this.type = QueryType.VAULT;
         else if (this.collateral != null) this.type = QueryType.COLLATERAL;
-        this.start = data.start ?? moment().startOf('month');
-        this.end = data.end ?? moment().startOf('day');
+        this.start = data.start ?? moment().subtract('month', 3);
+        this.end = data.end ?? moment();
         this.granularity = data.granularity ?? QueryGranularity.DAY;
 
         enumValidValue(QueryGranularity, 'granularity', this.granularity);
@@ -80,6 +80,9 @@ export default class Query {
             if (!(result instanceof StatData)) {
                 throw new Error("Stat is not returning type 'StatData'.");
             }
+
+            result.pack(this);
+            console.log(result.packedData);
         }
         return results;
     }
