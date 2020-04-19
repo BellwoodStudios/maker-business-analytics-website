@@ -1,5 +1,3 @@
-import { feeToAPY, sumFees } from 'utils/MathUtils';
-import moment from 'moment';
 import { Vault, Collateral } from 'api/model';
 import StabilityFeeStat from 'api/model/stats/StabilityFeeStat';
 
@@ -9,7 +7,7 @@ const _stats = [
     new StabilityFeeStat()
 ];
 
-async function query (graphql) {
+export async function fetchGraphQL (graphql) {
     // TODO this should be configurable
     return (await fetch("https://vulcanize.mkranalytics.com/graphql", {
         method: "POST",
@@ -26,7 +24,7 @@ async function query (graphql) {
  * Initialize the collateral types. This must be called before using the api.
  */
 export async function init () {
-    const result = await query(`
+    const result = await fetchGraphQL(`
         {
             allIlks {
                 nodes {
@@ -131,126 +129,3 @@ export function getStats (query) {
         aggregate: "sum"
     }
 ];*/
-
-/**
- * Fetch data for all the requested stats.
- */
-export async function getStatsData (stats, options) {
-    return Promise.all(stats.map(s => {
-        return getStatData(s, options);
-    }));
-}
-
-/**
- * Fetch data for a given stat with required start, end and granularity filters.
- */
-export async function getStatData (stat, { vaultName, collateralName, start, end, granularity }) {
-    let result = null;
-
-    const vault = vaultName != null ? await getVaultByName(vaultName) : null;
-    //const collateral = collateralName != null ? await getCollateralByName(collateralName) : null;
-
-    switch (stat.name) {
-        case "Stability Fee":
-            result = await fetchStabilityFees(vault);
-
-            break;
-        case "Base Fee":
-            result = await fetchBaseFees();
-
-            break;
-        case "Vault Fee":
-            result = await fetchVaultFees(vault);
-
-            break;
-        default:
-    }
-
-    return result;
-}
-
-function parseBlock (headerData) {
-    return {
-        number: headerData.blockNumber,
-        timestamp: moment.unix(headerData.blockTimestamp)
-    };
-}
-
-async function fetchVaultFees (vault) {
-    const result = await query(`
-        {
-            allJugFileIlks {
-                nodes {
-                    id,
-                    headerId,
-                    ilkId,
-                    what,
-                    data,
-                    headerByHeaderId {
-                        blockNumber,
-                        blockTimestamp
-                    }
-                }
-            }
-        }
-    `);
-
-    // TODO - shouldn't be filtering on client for performance reasons
-    return Promise.all(result.data.allJugFileIlks.nodes.filter(n => n.what === "duty" && n.ilkId === vault.id).map(async n => {
-        return {
-            block: parseBlock(n.headerByHeaderId),
-            compoundingFee: n.data,
-            fee: feeToAPY(n.data),
-            vault: await getVaultById(n.ilkId)
-        };
-    }));
-}
-
-async function fetchBaseFees () {
-    const result = await query(`
-        {
-            allJugFileBases {
-                nodes {
-                    id,
-                    headerId,
-                    what,
-                    data,
-                    headerByHeaderId {
-                        blockNumber,
-                        blockTimestamp
-                    }
-                }
-            }
-        }
-    `);
-
-    // TODO - shouldn't be filtering on client for performance reasons
-    return result.data.allJugFileBases.nodes.filter(n => n.what === "base").map(n => {
-        return {
-            block: parseBlock(n.headerByHeaderId),
-            compoundingFee: n.data,
-            fee: feeToAPY(n.data)
-        };
-    });
-}
-
-async function fetchStabilityFees (vault) {
-    const combined = (await fetchVaultFees(vault)).concat(await fetchBaseFees());
-    combined.sort((a, b) => a.block.number < b.block.number ? -1 : 1);
-
-    let baseFee = 0;
-    let vaultFee = 0;
-    for (const stat of combined) {
-        if (stat.vault != null) {
-            // Vault fee
-            vaultFee = stat.compoundingFee;
-        } else {
-            // Base fee
-            baseFee = stat.compoundingFee;
-        }
-
-        stat.fee = feeToAPY(sumFees(baseFee, vaultFee));
-    }
-
-    return combined;
-}

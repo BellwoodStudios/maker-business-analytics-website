@@ -1,6 +1,7 @@
 import moment from 'moment';
-import { enumValidValue } from 'utils';
+import { enumValidValue, arrayEquals } from 'utils';
 import { getVaultByName, getCollateralByName } from 'api';
+import { StatData } from 'api/model';
 
 export const QueryType = {
     GLOBAL: 'Global',
@@ -25,8 +26,8 @@ export default class Query {
 
     constructor (data = {}) {
         this.stats = data.stats ?? [];
-        this.collateral = data.collateral;
-        this.vault = data.vault;
+        this.collateral = typeof(data.collateral) === 'string' ? getCollateralByName(data.collateral) : data.collateral;
+        this.vault = typeof(data.vault) === 'string' ? getVaultByName(data.vault) : data.vault;
         this.type = QueryType.GLOBAL;
         if (this.vault != null) this.type = QueryType.VAULT;
         else if (this.collateral != null) this.type = QueryType.COLLATERAL;
@@ -44,6 +45,15 @@ export default class Query {
         });
     }
 
+    equals (q) {
+        return arrayEquals(this.stats, q.stats) &&
+            this.collateral === q.collateral &&
+            this.vault === q.vault &&
+            this.start === q.start &&
+            this.end === q.end &&
+            this.granularity === q.granularity;
+    }
+
     /**
      * Filter stats down to those which are currently active.
      */
@@ -58,6 +68,20 @@ export default class Query {
         return this.clone({
             stats: this.stats.filter(s => s !== stat).concat(active ? [stat] : [])
         });
+    }
+
+    /**
+     * Execute the query and return the data.
+     */
+    async execute () {
+        const results = await Promise.all(this.stats.map(s => s.fetch(this)));
+        // Do a sanity check to verify the result is in a proper format
+        for (const result of results) {
+            if (!(result instanceof StatData)) {
+                throw new Error("Stat is not returning type 'StatData'.");
+            }
+        }
+        return results;
     }
 
     /**
@@ -80,20 +104,6 @@ export default class Query {
         url += "?" + Object.keys(params).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`).join("&");
 
         return url;
-    }
-
-    /**
-     * Build the filter query from useParams().
-     */
-    static createFromParams (params) {
-        const { vaultName, collateralName } = params;
-        const vault = getVaultByName(vaultName);
-        const collateral = getCollateralByName(collateralName);
-
-        return new Query({
-            vault,
-            collateral
-        });
     }
 
 }

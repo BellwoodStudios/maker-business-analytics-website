@@ -1,10 +1,9 @@
 import { Query } from 'model';
+import { apiInitialState, apiHandle } from 'utils/ReduxUtils';
 
 const SET_ACTIVE_QUERY = 'SET_ACTIVE_QUERY';
+const EXECUTE_QUERY = 'EXECUTE_QUERY';
 
-/**
- * Set the active query.
- */
 export function setActiveQuery (query) {
     return {
         type: SET_ACTIVE_QUERY,
@@ -12,8 +11,16 @@ export function setActiveQuery (query) {
     };
 }
 
+export function executeQuery (query) {
+    return {
+        type: EXECUTE_QUERY,
+        promise: query.execute()
+    };
+}
+
 const initialState = {
-    activeQuery: new Query()
+    activeQuery: new Query(),
+    activeQueryResult: apiInitialState
 };
 
 function reducer (state = initialState, action) {
@@ -21,8 +28,14 @@ function reducer (state = initialState, action) {
         case SET_ACTIVE_QUERY:
             return {
                 ...state,
-                activeQuery: action.query
+                activeQuery: action.query,
+                activeQueryResult: apiInitialState
             };
+        case EXECUTE_QUERY:
+            return {
+                ...state,
+                activeQueryResult: apiHandle(state.activeQueryResult, action)
+            }
         default:
             return state;
     }

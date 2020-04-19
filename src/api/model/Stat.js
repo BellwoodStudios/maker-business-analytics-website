@@ -17,8 +17,15 @@ export const StatTargets = {
     ALL: 7
 };
 
+/**
+ * How to aggregate multiple results in the same granularity period.
+ */
 export const StatAggregations = {
-    NONE: 'none',
+    // Replace the previous value
+    // Used for stats like Stability Fees where the next value replaces the previous one
+    REPLACE: 'replace',
+    // Sum all the values together
+    // Used for stats like Dai Supply where all the values contribute to say the daily total for example
     SUM: 'sum'
 };
 
@@ -57,15 +64,17 @@ export const StatAggregations = {
 
 /**
  * A Maker stat such as Stability Fee. This class is the stat definition and not the actual data.
+ * 
+ * Stat is an abstract class and should be extended with a proper resolverFn to perform the actual query.
  */
 export default class Stat {
 
-    constructor (data) {
+    constructor (data, resolverFn) {
         this.name = data.name;
         this.color = data.color;
         this.type = data.type ?? StatTypes.NUMBER;
         this.targets = data.targets ?? StatTargets.ALL;
-        this.aggregation = data.aggregation ?? StatAggregations.NONE;
+        this.aggregation = data.aggregation ?? StatAggregations.REPLACE;
         this.stats = data.stats ?? [];
 
         enumValidValue(StatTypes, 'type', this.type);
@@ -86,6 +95,22 @@ export default class Stat {
             default:
                 return false;
         }
+    }
+
+    /**
+     * Fetch all the child stats and combine them into a flattened, ordered StatDataItem array.
+     */
+    async fetchAllChildStats (query) {
+        const combined = (await Promise.all(this.stats.map(s => s.fetch(query)))).flatMap(sd => sd.data);
+        combined.sort((a, b) => a.block.number < b.block.number ? -1 : 1);
+        return combined;
+    }
+
+    /**
+     * Fetch stat data given the query. This is abstract and needs a subclass implementation.
+     */
+    async fetch (query) {
+        throw new Error('Not implemented');
     }
 
 }

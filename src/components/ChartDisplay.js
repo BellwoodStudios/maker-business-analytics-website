@@ -9,9 +9,9 @@ import { numberShort, percent, dateLong } from 'utils/FormatUtils';
 import DateRangeToolbar from 'components/DateRangeToolbar';
 import Share from 'components/Share';
 import { Chart } from "react-google-charts";
-import { Query, QueryType } from 'model';
+import { QueryType } from 'model';
 import { getStats } from 'api';
-import { setActiveQuery } from 'reducers/query';
+import { setActiveQuery, executeQuery } from 'reducers/query';
 
 const Wrapper = styled.div`
     display: flex;
@@ -92,19 +92,22 @@ function formatStatValue (stat) {
 function ChartDisplay () {
     const dispatch = useDispatch();
     const { collateralName, vaultName } = useParams();
-    const { activeQuery } = useSelector(state => state.query);
+    const { activeQuery, activeQueryResult } = useSelector(state => state.query);
     const stats = getStats(activeQuery);
-    const statsData = null;
+    console.log(activeQueryResult);
 
+    // Update the query from the URL
     useEffect(() => {
-        const newQuery = Query.createFromParams({ collateralName, vaultName });
-        dispatch(setActiveQuery(activeQuery.clone({ collateral:newQuery.collateral, vault:newQuery.vault })));
-    }, [collateralName, vaultName, dispatch]);
+        const newQuery = activeQuery.clone({ collateral:collateralName, vault:vaultName });
+        if (!newQuery.equals(activeQuery)) {
+            dispatch(setActiveQuery(newQuery));
+        }
+    }, [activeQuery, collateralName, vaultName, dispatch]);
 
-
-    /*useEffect(() => {
-        if (stats != null) dispatch(fetchStatsData(stats, { collateralName, vaultName, start, end, granularity }));
-    }, [dispatch, stats, collateralName, vaultName, start, end, granularity]);*/
+    // Fetch new data if the query url changes
+    useEffect(() => {
+        dispatch(executeQuery(activeQuery));
+    }, [activeQuery, dispatch]);
 
     let filterLabel;
     let filterValue;
@@ -144,10 +147,10 @@ function ChartDisplay () {
                     </ContentRight>
                 </ContentTop>
                 <DateRangeToolbar />
-                { statsData != null && statsData.find(s => s != null) != null ? 
+                { activeQueryResult.loaded && activeQueryResult.error == null && activeQueryResult.payload.length > 0 ? 
                     <Chart
                         chartType="LineChart"
-                        data={[["Date", "Stability Fee"], ...statsData.find(s => s != null).filter(s => s.fee !== -1).map(s => [s.block.timestamp.toDate(), s.fee])]}
+                        data={[["Date", "Stability Fee"], ...activeQueryResult.payload.find(s => s != null).data.filter(s => s.value !== -1).map(s => [s.block.timestamp.toDate(), s.value])]}
                         width="100%"
                         height="400px"
                     /> : null }
