@@ -8,10 +8,10 @@ import SummaryPill from 'components/SummaryPill';
 import { numberShort, percent, dateLong } from 'utils/FormatUtils';
 import DateRangeToolbar from 'components/DateRangeToolbar';
 import Share from 'components/Share';
-import { Chart } from "react-google-charts";
 import { QueryType } from 'model';
 import { getStats } from 'api';
 import { setActiveQuery, executeQuery } from 'reducers/query';
+import Chart from 'components/Chart';
 
 const Wrapper = styled.div`
     display: flex;
@@ -94,7 +94,6 @@ function ChartDisplay () {
     const { collateralName, vaultName } = useParams();
     const { activeQuery, activeQueryResult } = useSelector(state => state.query);
     const stats = getStats(activeQuery);
-    console.log(activeQueryResult);
 
     // Update the query from the URL
     useEffect(() => {
@@ -147,13 +146,7 @@ function ChartDisplay () {
                     </ContentRight>
                 </ContentTop>
                 <DateRangeToolbar />
-                { activeQueryResult.loaded && activeQueryResult.error == null && activeQueryResult.payload.length > 0 ? 
-                    <Chart
-                        chartType="LineChart"
-                        data={[["Date", "Stability Fee"], ...activeQueryResult.payload.find(s => s != null).data.filter(s => s.value !== -1).map(s => [s.block.timestamp.toDate(), s.value])]}
-                        width="100%"
-                        height="400px"
-                    /> : null }
+                <Chart query={activeQuery} data={activeQueryResult.payload} />
                 <SummaryDetails>
                     { activeQuery.filterActiveStats(stats).map((stat, i) => {
                         return <SummaryPill key={i} label={stat.name} sublabel={dateLong()} color={stat.color} value={formatStatValue(stat)} />;

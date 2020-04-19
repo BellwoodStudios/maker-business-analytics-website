@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { enumValidValue, arrayEquals } from 'utils';
-import { getVaultByName, getCollateralByName } from 'api';
+import { getVaultByName, getCollateralByName, getStats } from 'api';
 import { StatData } from 'api/model';
 
 export const QueryType = {
@@ -25,7 +25,7 @@ export const QueryGranularity = {
 export default class Query {
 
     constructor (data = {}) {
-        this.stats = data.stats ?? [];
+        this.stats = data.stats ?? getStats();
         this.collateral = typeof(data.collateral) === 'string' ? getCollateralByName(data.collateral) : data.collateral;
         this.vault = typeof(data.vault) === 'string' ? getVaultByName(data.vault) : data.vault;
         this.type = QueryType.GLOBAL;

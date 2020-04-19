@@ -33,12 +33,23 @@ export function dateLong (date = moment()) {
 }
 
 export function dateWithGranularity (date, granularity) {
+    return date.format(getFormatFromGranularity(granularity));
+}
+
+export function getFormatFromGranularity (granularity) {
     switch (granularity) {
-        case QueryGranularity.HOUR: return date.format("D MMM. YYYY HH:00");
-        case QueryGranularity.DAY: return date.format("D MMM. YYYY");
-        case QueryGranularity.WEEK: return date.format("[Week] W YYYY");
-        case QueryGranularity.MONTH: return date.format("MMM. YYYY");
-        case QueryGranularity.YEAR: return date.format("YYYY");
-        default: return date.toString();
+        case QueryGranularity.HOUR: return "DD MMM. YYYY HH:00";
+        case QueryGranularity.DAY: return "DD MMM. YYYY";
+        case QueryGranularity.WEEK: return "[Week] W YYYY";
+        case QueryGranularity.MONTH: return "MMM. YYYY";
+        case QueryGranularity.YEAR: return "YYYY";
+        default: return null;
     }
+}
+
+/**
+ * Google Charts uses a slightly different format from moment. Do conversion here.
+ */
+export function toGoogleChartsDateFormat (format) {
+    return format.replace(/DD/g, "dd");
 }
