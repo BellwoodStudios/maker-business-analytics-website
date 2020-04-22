@@ -94,6 +94,7 @@ function ChartDisplay () {
     const { collateralName, vaultName } = useParams();
     const { activeQuery, activeQueryResult } = useSelector(state => state.query);
     const stats = getStats(activeQuery);
+    const activeStats = activeQuery.filterActiveStats(stats);
 
     // Update the query from the URL
     useEffect(() => {
@@ -146,10 +147,10 @@ function ChartDisplay () {
                     </ContentRight>
                 </ContentTop>
                 <DateRangeToolbar />
-                <Chart query={activeQuery} data={activeQueryResult.payload} />
+                <Chart query={activeQuery} activeStats={activeStats} data={activeQueryResult.payload} />
                 <SummaryDetails>
-                    { activeQuery.filterActiveStats(stats).map((stat, i) => {
-                        const data = activeQueryResult.payload?.find(sd => sd.stat.name === stat.name).packedData;
+                    { activeStats.map((stat, i) => {
+                        const data = activeQueryResult.payload?.find(sd => sd.stat.name === stat.name)?.packedData;
                         return <SummaryPill key={i} label={stat.name} sublabel={dateLong()} color={stat.color} value={data != null ? formatStatData(stat, data[data.length - 1]) : "-"} />;
                     }) }
                 </SummaryDetails>

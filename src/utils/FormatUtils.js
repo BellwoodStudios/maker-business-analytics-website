@@ -23,7 +23,7 @@ export function numberShort (num) {
 }
 
 export function percent (num) {
-    if (num == null || num === 0) return "-";
+    if (num == null) return "-";
 
     return (num*100).toFixed(2) + "%";
 }

@@ -52,7 +52,7 @@ export class BaseFeeStat extends Stat {
             name: "Base Fee",
             color: "#F4B731",
             type: StatTypes.PERCENT,
-            targets: StatTargets.VAULT,
+            targets: StatTargets.ALL,
             aggregation: StatAggregations.REPLACE
         });
     }

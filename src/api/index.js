@@ -1,12 +1,12 @@
 import { Vault, Collateral } from 'api/model';
 import StabilityFeeStat from 'api/model/stats/StabilityFeeStat';
-import NewVaultStat from 'api/model/stats/NewVaultStat';
+import DaiSavingsRateStat from 'api/model/stats/DaiSavingsRateStat';
 
 let _vaults = null;
 let _collateral = null;
 const _stats = [
     new StabilityFeeStat(),
-    new NewVaultStat()
+    new DaiSavingsRateStat()
 ];
 
 export async function fetchGraphQL (graphql) {

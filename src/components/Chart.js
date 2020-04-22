@@ -11,7 +11,30 @@ const Wrapper = styled.div`
     margin: 20px 0;
 `;
 
-function Chart ({ query, data }) {
+const NoData = styled.div`
+
+`;
+
+function buildChartData (activeStats, data) {
+    if (data.length === 0) return null;
+
+    // Merge packed stats together
+    const packedData = data.map(sd => sd.packedData);
+    const merged = [];
+    for (let i = 0; i < packedData[0].length; i++) {
+        merged.push([
+            packedData[0][i].timestamp.toDate(),
+            ...packedData.map(d => d[i].value)
+        ]);
+    }
+
+    return [
+        ["Date", ...activeStats.map(s => s.name)],
+        ...merged
+    ];
+}
+
+function Chart ({ query, activeStats, data }) {
     const options = {
         legend: "none",
         backgroundColor: "none",
@@ -40,22 +63,24 @@ function Chart ({ query, data }) {
             minorGridlines: {
                 color: "#303d4d"
             },
-            format: query.type === "Global" ? "decimal" : 'percent'
+            format: 'percent'
         },
         axisTitlesPosition: "none",
-        colors: query.stats.map(s => s.color)
+        colors: activeStats.map(s => s.color)
     };
+
+    const chartData = data != null ? buildChartData(activeStats, data) : null;
 
     return (
         <Wrapper>
-            <Loader loading={data == null || data.length === 0}>
+            <Loader loading={data == null}>
                 { (data != null && data.length > 0) ? <GChart
                     chartType="LineChart"
-                    data={[["Date", query.type === "Global" ? "Vaults Created" : "Stability Fee"], ...data[0].packedData.map(s => [s.timestamp.toDate(), s.value])]}
+                    data={chartData}
                     width="100%"
                     height="400px"
                     options={options}
-                /> : null }
+                /> : <NoData>No Data</NoData> }
             </Loader>
         </Wrapper>
     );

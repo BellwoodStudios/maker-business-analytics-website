@@ -54,7 +54,7 @@ export default class StatData {
                 value
             })
 
-            curr.add(granularity, 1);
+            curr.add(1, granularity);
         }
     }
 
