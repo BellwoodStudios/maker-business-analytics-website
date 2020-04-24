@@ -1,4 +1,4 @@
-import { Stat, StatTypes, StatTargets, StatAggregations, Block, StatData, StatDataItem } from 'api/model';
+import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem } from 'api/model';
 import { fetchGraphQL } from 'api';
 import { feeToAPY, sumFees } from 'utils/MathUtils';
 
@@ -8,9 +8,10 @@ export default class StabilityFeeStat extends Stat {
         super({
             name: "Stability Fee",
             color: "#1AAB9B",
-            type: StatTypes.PERCENT,
+            type: StatTypes.VALUE,
+            format: StatFormats.PERCENT,
             targets: StatTargets.VAULT,
-            aggregation: StatAggregations.REPLACE,
+            aggregation: StatAggregations.AVERAGE,
 
             // Stability fee is made up of the base fee and the vault-specific fee
             stats: [
@@ -20,27 +21,14 @@ export default class StabilityFeeStat extends Stat {
         });
     }
 
-    async fetch (query) {
-        const combined = await this.fetchAllChildStats(query);
-
-        let baseFee = 0;
-        let vaultFee = 0;
-        for (const stat of combined) {
-            if (stat.vault != null) {
-                // Vault fee
-                vaultFee = stat.extraData.compoundingFee;
-            } else {
-                // Base fee
-                baseFee = stat.extraData.compoundingFee;
-            }
-
-            stat.value = feeToAPY(sumFees(baseFee, vaultFee));
-        }
-
-        return new StatData({
-            stat:this,
-            data:combined
-        });
+    /**
+     * Stat sum requires use of BigNumber.
+     */
+    combine (values) {
+        let total = 0;
+        for (const v of values) if (v != null) sumFees(total, v.extraData.compoundingFee);
+        const apy = feeToAPY(total);
+        return apy > 0 ? apy : null;
     }
 
 }
@@ -51,9 +39,10 @@ export class BaseFeeStat extends Stat {
         super({
             name: "Base Fee",
             color: "#F4B731",
-            type: StatTypes.PERCENT,
-            targets: StatTargets.ALL,
-            aggregation: StatAggregations.REPLACE
+            type: StatTypes.VALUE,
+            format: StatFormats.PERCENT,
+            targets: StatTargets.VAULT,
+            aggregation: StatAggregations.AVERAGE,
         });
     }
 
@@ -101,9 +90,10 @@ export class VaultFeeStat extends Stat {
         super({
             name: "Vault Fee",
             color: "#00E676",
-            type: StatTypes.PERCENT,
+            type: StatTypes.VALUE,
+            format: StatFormats.PERCENT,
             targets: StatTargets.VAULT,
-            aggregation: StatAggregations.REPLACE
+            aggregation: StatAggregations.AVERAGE,
         });
     }
 
@@ -127,13 +117,14 @@ export class VaultFeeStat extends Stat {
         `);
 
         // TODO - shouldn't be filtering on client for performance reasons
-        const data = result.data.allJugFileIlks.nodes.filter(n => n.what === "duty" && n.ilkId === query.vault.id).map(n => {
+        const data = result.data.allJugFileIlks.nodes.filter(n => query.filterByIlk(n)).map(n => {
             return {
                 block: new Block(n.headerByHeaderId),
                 value: feeToAPY(n.data),
                 extraData: {
                     compoundingFee: n.data,
-                    fee: feeToAPY(n.data)
+                    fee: feeToAPY(n.data),
+                    group: n.ilkId
                 }
             };
         });
@@ -141,7 +132,7 @@ export class VaultFeeStat extends Stat {
         return new StatData({
             stat: this,
             data: data
-        });
+        }).mergeByGroup();
     }
 
 }

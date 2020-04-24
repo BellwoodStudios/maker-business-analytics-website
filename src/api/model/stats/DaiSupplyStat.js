@@ -1,4 +1,4 @@
-import { Stat, StatTypes, StatTargets, StatAggregations, Block, StatData, StatDataItem } from 'api/model';
+import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem } from 'api/model';
 import { fetchGraphQL } from 'api';
 import { weiToDai } from 'utils/MathUtils';
 
@@ -8,9 +8,10 @@ export default class DaiSupplyStat extends Stat {
         super({
             name: "Dai Supply",
             color: "#448AFF",
-            type: StatTypes.NUMBER,
-            targets: StatTargets.VAULT,
-            aggregation: StatAggregations.REPLACE
+            type: StatTypes.VALUE,
+            format: StatFormats.NUMBER,
+            targets: StatTargets.ALL,
+            aggregation: StatAggregations.SUM
         });
     }
 
@@ -32,17 +33,21 @@ export default class DaiSupplyStat extends Stat {
         `);
 
         // TODO - shouldn't be filtering on client for performance reasons
-        const data = result.data.allVatIlkArts.nodes.filter(n => n.ilkId === query.vault.id).map(n => {
+        const data = result.data.allVatIlkArts.nodes.filter(n => query.filterByIlk(n)).map(n => {
             return new StatDataItem({
                 block: new Block(n.headerByHeaderId),
-                value: weiToDai(n.art)
+                value: weiToDai(n.art),
+                extraData: {
+                    group: n.ilkId,
+                    wei: n.art
+                }
             });
         });
 
         return new StatData({
             stat: this,
             data: data
-        });
+        }).mergeByGroup();
     }
 
 }

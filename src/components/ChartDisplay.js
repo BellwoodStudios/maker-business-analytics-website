@@ -10,6 +10,7 @@ import DateRangeToolbar from 'components/DateRangeToolbar';
 import Share from 'components/Share';
 import { QueryType } from 'model';
 import { getStats } from 'api';
+import { StatFormats } from 'api/model';
 import { setActiveQuery, executeQuery } from 'reducers/query';
 import Chart from 'components/Chart';
 
@@ -82,9 +83,9 @@ const SummaryDetails = styled.div`
 `;
 
 function formatStatData (stat, data) {
-    switch (stat.type) {
-        case "number": return numberShort(data.value);
-        case "percent": return percent(data.value);
+    switch (stat.format) {
+        case StatFormats.NUMBER: return numberShort(data.value);
+        case StatFormats.PERCENT: return percent(data.value);
         default: throw new Error(`Unknown stat type '${stat.type}'.`);
     }
 }

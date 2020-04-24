@@ -1,7 +1,17 @@
 import { enumValidValue } from 'utils';
 import { QueryType } from 'model';
+import { StatData } from 'api/model';
 
+/**
+ * Value types are single values where the next time series value replaces the previous one. Ex) Stability Fee
+ * Events are independant values that do not relate to the previous value. Ex) Vault Created
+ */
 export const StatTypes = {
+    VALUE: 'value',
+    EVENT: 'event'
+};
+
+export const StatFormats = {
     NUMBER: 'number',
     PERCENT: 'percent'
 };
@@ -23,7 +33,7 @@ export const StatTargets = {
 export const StatAggregations = {
     // Replace the previous value
     // Used for stats like Stability Fees where the next value replaces the previous one
-    REPLACE: 'replace',
+    AVERAGE: 'average',
     // Sum all the values together
     // Used for stats like Dai Supply where all the values contribute to say the daily total for example
     SUM: 'sum'
@@ -72,9 +82,10 @@ export default class Stat {
     constructor (data) {
         this.name = data.name;
         this.color = data.color;
-        this.type = data.type ?? StatTypes.NUMBER;
+        this.type = data.type ?? StatTypes.VALUE;
+        this.format = data.format ?? StatFormats.NUMBER;
         this.targets = data.targets ?? StatTargets.ALL;
-        this.aggregation = data.aggregation ?? StatAggregations.REPLACE;
+        this.aggregation = data.aggregation ?? StatAggregations.AVERAGE;
         this.stats = data.stats ?? [];
 
         enumValidValue(StatTypes, 'type', this.type);
@@ -101,16 +112,29 @@ export default class Stat {
      * Fetch all the child stats and combine them into a flattened, ordered StatDataItem array.
      */
     async fetchAllChildStats (query) {
-        const combined = (await Promise.all(this.stats.map(s => s.fetch(query)))).flatMap(sd => sd.data);
-        combined.sort((a, b) => a.block.number < b.block.number ? -1 : 1);
-        return combined;
+        return Promise.all(this.stats.map(s => s.fetch(query)));
+    }
+
+    /**
+     * Combine two values together. By default will just use the aggregation method.
+     */
+    combine (values) {
+        let total = 0;
+        for (const v of values) total += v != null ? v.value : 0;
+        if (this.aggregation === StatAggregations.AVERAGE) total /= values.length;
+        return total;
     }
 
     /**
      * Fetch stat data given the query. This is abstract and needs a subclass implementation.
      */
     async fetch (query) {
-        throw new Error('Not implemented');
+        if (this.stats.length > 0) {
+            // Stat is built out of two sub-stats
+            return StatData.merge(this, await this.fetchAllChildStats(query));
+        } else {
+            throw new Error('Not implemented');
+        }
     }
 
 }

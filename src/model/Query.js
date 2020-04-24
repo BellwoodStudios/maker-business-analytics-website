@@ -71,6 +71,18 @@ export default class Query {
     }
 
     /**
+     * Filter a given node by query type.
+     */
+    filterByIlk (node) {
+        switch (this.type) {
+            case QueryType.GLOBAL: return true;
+            case QueryType.COLLATERAL: return this.collateral.vaults.any(v => v.id === node.ilkId);
+            case QueryType.VAULT: return this.vault.id === node.ilkId;
+            default: return false;
+        }
+    }
+
+    /**
      * Execute the query and return the data.
      */
     async execute () {

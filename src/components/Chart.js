@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Loader from 'components/Loader';
 import { Chart as GChart } from "react-google-charts";
 import { getFormatFromGranularity, toGoogleChartsDateFormat } from 'utils/FormatUtils';
+import { StatFormats } from 'api/model';
 
 const Wrapper = styled.div`
     height: 400px;
@@ -15,10 +16,11 @@ const NoData = styled.div`
 
 `;
 
-function typeToChartFormat (type) {
-    switch (type) {
-        case 'number': return 'short';
-        default: return type;
+function toChartFormat (format) {
+    switch (format) {
+        case StatFormats.NUMBER: return 'short';
+        case StatFormats.PERCENT: return 'percent';
+        default: return format;
     }
 }
 
@@ -42,9 +44,9 @@ function buildChartData (activeStats, data) {
 }
 
 function Chart ({ query, activeStats, data }) {
-    const axisTypes = Array.from(new Set(activeStats.map(s => s.type)));
-    const vAxes = axisTypes.map(type => ({ format:typeToChartFormat(type) }));
-    const series = activeStats.map(s => ({ targetAxisIndex: axisTypes.indexOf(s.type) }));
+    const axisFormatTypes = Array.from(new Set(activeStats.map(s => s.format)));
+    const vAxes = axisFormatTypes.map(f => ({ format:toChartFormat(f) }));
+    const series = activeStats.map(s => ({ targetAxisIndex: axisFormatTypes.indexOf(s.format) }));
 
     const options = {
         legend: "none",
@@ -81,10 +83,8 @@ function Chart ({ query, activeStats, data }) {
         axisTitlesPosition: "none",
         colors: activeStats.map(s => s.color)
     };
-    console.log(options);
 
     const chartData = data != null ? buildChartData(activeStats, data) : null;
-    console.log(chartData);
 
     return (
         <Wrapper>

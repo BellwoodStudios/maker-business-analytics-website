@@ -26,3 +26,12 @@ export function arraySum (arr) {
     for (const v of arr) value += v;
     return value;
 }
+
+/**
+ * Average the values of an array.
+ */
+export function arrayAvg (arr) {
+    let value = 0;
+    for (const v of arr) value += v;
+    return value / arr.length;
+}
