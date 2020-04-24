@@ -15,6 +15,13 @@ const NoData = styled.div`
 
 `;
 
+function typeToChartFormat (type) {
+    switch (type) {
+        case 'number': return 'short';
+        default: return type;
+    }
+}
+
 function buildChartData (activeStats, data) {
     if (data.length === 0) return null;
 
@@ -35,13 +42,17 @@ function buildChartData (activeStats, data) {
 }
 
 function Chart ({ query, activeStats, data }) {
+    const axisTypes = Array.from(new Set(activeStats.map(s => s.type)));
+    const vAxes = axisTypes.map(type => ({ format:typeToChartFormat(type) }));
+    const series = activeStats.map(s => ({ targetAxisIndex: axisTypes.indexOf(s.type) }));
+
     const options = {
         legend: "none",
         backgroundColor: "none",
         chartArea: {
             left: 80,
             top: 40,
-            right: 40,
+            right: 80,
             bottom: 40
         },
         hAxis: {
@@ -53,6 +64,8 @@ function Chart ({ query, activeStats, data }) {
             },
             format: toGoogleChartsDateFormat(getFormatFromGranularity(query.granularity))
         },
+        series,
+        vAxes,
         vAxis: {
             textStyle: {
                 color: "#7c8a98"
@@ -68,8 +81,10 @@ function Chart ({ query, activeStats, data }) {
         axisTitlesPosition: "none",
         colors: activeStats.map(s => s.color)
     };
+    console.log(options);
 
     const chartData = data != null ? buildChartData(activeStats, data) : null;
+    console.log(chartData);
 
     return (
         <Wrapper>

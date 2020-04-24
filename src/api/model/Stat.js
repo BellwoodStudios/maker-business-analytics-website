@@ -37,7 +37,7 @@ export const StatAggregations = {
     #00E676 - Vault Fee
     #FF7043 - New Vaults
     #26C6DA - Dai Savings Rate
-    #448AFF
+    #448AFF - Dai Supply
     #7E57C2
     #E040FB
     #FF4081
