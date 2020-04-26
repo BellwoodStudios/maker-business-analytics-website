@@ -107,8 +107,11 @@ function ChartDisplay () {
 
     // Fetch new data if the query url changes
     useEffect(() => {
+        // This is a little hacky, but it skips loading 2 things at once
+        if ((collateralName != null && activeQuery.collateral == null) || (vaultName != null && activeQuery.vault == null)) return;
+
         dispatch(executeQuery(activeQuery));
-    }, [activeQuery, dispatch]);
+    }, [activeQuery, dispatch, collateralName, vaultName]);
 
     let filterLabel;
     let filterValue;

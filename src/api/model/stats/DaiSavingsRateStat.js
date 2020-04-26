@@ -44,7 +44,7 @@ export default class DaiSavingsRateStat extends Stat {
                 }
             });
         });
-
+        
         return new StatData({
             stat: this,
             data: data

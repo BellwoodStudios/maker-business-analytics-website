@@ -11,6 +11,9 @@ export default class StatData {
         this.stat = data.stat;
         this.data = data.data;
         this.packedData = null;
+
+        // Do this by default
+        this.sortByBlock();
     }
 
     /**
@@ -82,7 +85,6 @@ export default class StatData {
             stat,
             data: statDataArray.flatMap((sd, i) => sd.data.map(d => new StatDataItem({ block:d.block, value:d.value, extraData:{ ...d.extraData, _sourceIndex:i } })))
         });
-        combined.sortByBlock();
         const values = statDataArray.map(_ => null);
         for (const d of combined.data) {
             values[d.extraData._sourceIndex] = d.clone();

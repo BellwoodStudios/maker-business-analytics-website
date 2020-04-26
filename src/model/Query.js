@@ -76,7 +76,7 @@ export default class Query {
     filterByIlk (node) {
         switch (this.type) {
             case QueryType.GLOBAL: return true;
-            case QueryType.COLLATERAL: return this.collateral.vaults.any(v => v.id === node.ilkId);
+            case QueryType.COLLATERAL: return this.collateral.vaults.some(v => v.id === node.ilkId);
             case QueryType.VAULT: return this.vault.id === node.ilkId;
             default: return false;
         }

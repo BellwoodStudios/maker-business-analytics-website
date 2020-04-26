@@ -1,6 +1,7 @@
-import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem } from 'api/model';
+import { Stat, StatTypes, StatTargets, StatFormats, Block, StatData, StatDataItem } from 'api/model';
 import { fetchGraphQL } from 'api';
 import { feeToAPY, sumFees } from 'utils/MathUtils';
+import BigNumber from 'bignumber.js';
 
 export default class StabilityFeeStat extends Stat {
 
@@ -11,7 +12,6 @@ export default class StabilityFeeStat extends Stat {
             type: StatTypes.VALUE,
             format: StatFormats.PERCENT,
             targets: StatTargets.VAULT,
-            aggregation: StatAggregations.AVERAGE,
 
             // Stability fee is made up of the base fee and the vault-specific fee
             stats: [
@@ -25,10 +25,10 @@ export default class StabilityFeeStat extends Stat {
      * Stat sum requires use of BigNumber.
      */
     combine (values) {
-        let total = 0;
-        for (const v of values) if (v != null) sumFees(total, v.extraData.compoundingFee);
+        let total = new BigNumber(0);
+        for (const v of values) if (v != null) total = sumFees(total, v.extraData.compoundingFee);
         const apy = feeToAPY(total);
-        return apy > 0 ? apy : null;
+        return apy >= 0 ? apy : null;
     }
 
 }
@@ -42,7 +42,6 @@ export class BaseFeeStat extends Stat {
             type: StatTypes.VALUE,
             format: StatFormats.PERCENT,
             targets: StatTargets.VAULT,
-            aggregation: StatAggregations.AVERAGE,
         });
     }
 
@@ -93,7 +92,6 @@ export class VaultFeeStat extends Stat {
             type: StatTypes.VALUE,
             format: StatFormats.PERCENT,
             targets: StatTargets.VAULT,
-            aggregation: StatAggregations.AVERAGE,
         });
     }
 
@@ -132,7 +130,7 @@ export class VaultFeeStat extends Stat {
         return new StatData({
             stat: this,
             data: data
-        }).mergeByGroup();
+        });
     }
 
 }

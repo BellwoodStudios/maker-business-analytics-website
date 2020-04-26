@@ -130,7 +130,7 @@ export default class Stat {
      */
     async fetch (query) {
         if (this.stats.length > 0) {
-            // Stat is built out of two sub-stats
+            // Stat is built out of one or more sub-stats
             return StatData.merge(this, await this.fetchAllChildStats(query));
         } else {
             throw new Error('Not implemented');
