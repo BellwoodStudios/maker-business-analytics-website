@@ -40,7 +40,7 @@ export function getFormatFromGranularity (granularity) {
     switch (granularity) {
         case QueryGranularity.HOUR: return "DD MMM. YYYY HH:00";
         case QueryGranularity.DAY: return "DD MMM. YYYY";
-        case QueryGranularity.WEEK: return "[Week] W YYYY";
+        case QueryGranularity.WEEK: return "DD MMM. YYYY";
         case QueryGranularity.MONTH: return "MMM. YYYY";
         case QueryGranularity.YEAR: return "YYYY";
         default: return null;

@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Loader from 'components/Loader';
 import { Chart as GChart } from "react-google-charts";
 import { getFormatFromGranularity, toGoogleChartsDateFormat } from 'utils/FormatUtils';
 import { StatFormats } from 'api/model';
+import { useWindowWidth } from '@react-hook/window-size';
 
 const Wrapper = styled.div`
     height: 400px;
@@ -44,6 +45,8 @@ function buildChartData (activeStats, data) {
 }
 
 function Chart ({ query, activeStats, data }) {
+    const windowWidth = useWindowWidth();
+
     const axisFormatTypes = Array.from(new Set(activeStats.map(s => s.format)));
     const vAxes = axisFormatTypes.map(f => ({ format:toChartFormat(f) }));
     const series = activeStats.map(s => ({ targetAxisIndex: axisFormatTypes.indexOf(s.format) }));
@@ -90,6 +93,8 @@ function Chart ({ query, activeStats, data }) {
         <Wrapper>
             <Loader loading={data == null}>
                 { (data != null && data.length > 0) ? <GChart
+                    // Force a redraw on window resize to fix a sizing issue
+                    key={windowWidth}
                     chartType="LineChart"
                     data={chartData}
                     width="100%"
