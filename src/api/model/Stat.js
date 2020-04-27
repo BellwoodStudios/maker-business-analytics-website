@@ -48,7 +48,7 @@ export const StatAggregations = {
     #FF7043 - New Vaults
     #26C6DA - Dai Savings Rate
     #448AFF - Dai Supply
-    #7E57C2
+    #7E57C2 - Collateral Price
     #E040FB
     #FF4081
     #FF5252
@@ -61,13 +61,11 @@ export const StatAggregations = {
     #FFA143
     #4AC9F1
     #567FEE
-    #7E57C2
     #FA65FF
     #FF658F
     #FF5D51
     #ABEB63
     #8287FF
-    #89A74D
     #9C64FF
     #A4FF9E
  */
