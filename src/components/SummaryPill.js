@@ -9,7 +9,7 @@ const Wrapper = styled.div`
 `;
 
 const Left = styled.div`
-    width: 96px;
+    width: 120px;
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
     display: flex;

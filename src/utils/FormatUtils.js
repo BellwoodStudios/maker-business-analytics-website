@@ -28,6 +28,16 @@ export function percent (num) {
     return (num*100).toFixed(2) + "%";
 }
 
+export function dollars (num) {
+    if (num == null) return "-";
+
+    if (num >= 1) {
+        return "$" + numberShort(num);
+    } else {
+        return "$" + num.toFixed(3);
+    }
+}
+
 export function dateLong (date = moment()) {
     return date.format('dddd DD MMM. YYYY');
 }

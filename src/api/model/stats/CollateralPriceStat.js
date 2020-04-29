@@ -9,7 +9,7 @@ export default class CollateralPriceStat extends Stat {
             name: "Collateral Price",
             color: "#7E57C2",
             type: StatTypes.VALUE,
-            format: StatFormats.NUMBER,
+            format: StatFormats.DOLLARS,
             targets: StatTargets.COLLATERAL | StatTargets.VAULT,
             aggregation: StatAggregations.AVERAGE
         });

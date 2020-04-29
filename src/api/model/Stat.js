@@ -13,7 +13,8 @@ export const StatTypes = {
 
 export const StatFormats = {
     NUMBER: 'number',
-    PERCENT: 'percent'
+    PERCENT: 'percent',
+    DOLLARS: 'dollars'
 };
 
 /**

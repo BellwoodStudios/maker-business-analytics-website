@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Divider from 'components/Divider';
 import StatsList from 'components/StatsList';
 import SummaryPill from 'components/SummaryPill';
-import { numberShort, percent, dateLong } from 'utils/FormatUtils';
+import { numberShort, percent, dateLong, dollars } from 'utils/FormatUtils';
 import DateRangeToolbar from 'components/DateRangeToolbar';
 import Share from 'components/Share';
 import { QueryType } from 'model';
@@ -86,6 +86,7 @@ function formatStatData (stat, data) {
     switch (stat.format) {
         case StatFormats.NUMBER: return numberShort(data.value);
         case StatFormats.PERCENT: return percent(data.value);
+        case StatFormats.DOLLARS: return dollars(data.value);
         default: throw new Error(`Unknown stat type '${stat.type}'.`);
     }
 }
