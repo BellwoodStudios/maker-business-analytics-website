@@ -1,6 +1,6 @@
 import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem } from 'api/model';
 import { fetchGraphQL } from 'api';
-import { weiToDai } from 'utils/MathUtils';
+import { fromWad } from 'utils/MathUtils';
 
 export default class DaiSupplyStat extends Stat {
 
@@ -36,7 +36,7 @@ export default class DaiSupplyStat extends Stat {
         const data = result.data.allVatIlkArts.nodes.filter(n => query.filterByIlk(n)).map(n => {
             return new StatDataItem({
                 block: new Block(n.headerByHeaderId),
-                value: weiToDai(n.art),
+                value: fromWad(n.art),
                 extraData: {
                     group: n.ilkId,
                     wei: n.art

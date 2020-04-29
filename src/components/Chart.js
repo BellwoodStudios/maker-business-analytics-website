@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import Loader from 'components/Loader';
 import { Chart as GChart } from "react-google-charts";

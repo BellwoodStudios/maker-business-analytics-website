@@ -2,13 +2,15 @@ import { Vault, Collateral } from 'api/model';
 import StabilityFeeStat from 'api/model/stats/StabilityFeeStat';
 import DaiSavingsRateStat from 'api/model/stats/DaiSavingsRateStat';
 import DaiSupplyStat from 'api/model/stats/DaiSupplyStat';
+import CollateralPriceStat from 'api/model/stats/CollateralPriceStat';
 
 let _vaults = null;
 let _collateral = null;
 const _stats = [
     new StabilityFeeStat(),
     new DaiSavingsRateStat(),
-    new DaiSupplyStat()
+    new DaiSupplyStat(),
+    new CollateralPriceStat()
 ];
 
 export async function fetchGraphQL (graphql) {

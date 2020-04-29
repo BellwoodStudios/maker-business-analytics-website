@@ -83,6 +83,28 @@ export default class Query {
     }
 
     /**
+     * Returns a standard graphql filter which sets a start, end and granularity.
+     */
+    toGraphQLFilter () {
+        let granularity;
+        switch (this.granularity) {
+            case QueryGranularity.HOUR: granularity = "{ hours:1 }"; break;
+            case QueryGranularity.DAY: granularity = "{ days:1 }"; break;
+            case QueryGranularity.WEEK: granularity = "{ weeks:1 }"; break;
+            case QueryGranularity.MONTH: granularity = "{ months:1 }"; break;
+            case QueryGranularity.YEAR: granularity = "{ years:1 }"; break;
+            default: throw new Error('Invalid granularity');
+        }
+
+        // Filter takes the form 's:"2020-01-01", e:"2020-03-01", g:{ days:1 }'
+        return `
+            s: "${this.start.toISOString()}",
+            e: "${this.end.toISOString()}",
+            g: ${granularity}
+        `;
+    }
+
+    /**
      * Execute the query and return the data.
      */
     async execute () {

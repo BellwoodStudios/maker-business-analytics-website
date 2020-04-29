@@ -113,6 +113,13 @@ function ChartDisplay () {
         dispatch(executeQuery(activeQuery));
     }, [activeQuery, dispatch, collateralName, vaultName]);
 
+    // Log api errors
+    useEffect(() => {
+        if (activeQueryResult.error) {
+            console.error(activeQueryResult.error)
+        }
+    }, [activeQueryResult]);
+
     let filterLabel;
     let filterValue;
 

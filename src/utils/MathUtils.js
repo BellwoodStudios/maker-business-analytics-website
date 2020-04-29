@@ -13,6 +13,6 @@ export function sumFees (fee1, fee2) {
     return new BigNumber(fee1).plus(fee2);
 }
 
-export function weiToDai (weiAmount) {
-    return new BigNumber(weiAmount).dividedBy(10e17).toNumber();
+export function fromWad (wadAmount) {
+    return new BigNumber(wadAmount).dividedBy(10e17).toNumber();
 }
