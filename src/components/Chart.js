@@ -21,6 +21,7 @@ function toChartFormat (format) {
     switch (format) {
         case StatFormats.NUMBER: return 'short';
         case StatFormats.PERCENT: return 'percent';
+        case StatFormats.DOLLARS: return 'short';
         default: return format;
     }
 }
