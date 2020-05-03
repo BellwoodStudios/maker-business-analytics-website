@@ -1,5 +1,6 @@
 import moment from 'moment';
 import { QueryGranularity } from 'model';
+import { StatFormats } from 'api/model';
 
 export function numberShort (num) {
     if (num == null) return "-";
@@ -62,4 +63,16 @@ export function getFormatFromGranularity (granularity) {
  */
 export function toGoogleChartsDateFormat (format) {
     return format.replace(/DD/g, "dd");
+}
+
+/**
+ * Nicely print out the data value for this stat.
+ */
+export function statData (stat, data) {
+    switch (stat.format) {
+        case StatFormats.NUMBER: return numberShort(data.value);
+        case StatFormats.PERCENT: return percent(data.value);
+        case StatFormats.DOLLARS: return dollars(data.value);
+        default: throw new Error(`Unknown stat type '${stat.type}'.`);
+    }
 }

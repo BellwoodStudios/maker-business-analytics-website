@@ -4,15 +4,13 @@ import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import Divider from 'components/Divider';
 import StatsList from 'components/StatsList';
-import SummaryPill from 'components/SummaryPill';
-import { numberShort, percent, dateLong, dollars } from 'utils/FormatUtils';
 import DateRangeToolbar from 'components/DateRangeToolbar';
 import Share from 'components/Share';
 import { QueryType } from 'model';
 import { getStats } from 'api';
-import { StatFormats } from 'api/model';
 import { setActiveQuery, executeQuery } from 'reducers/query';
 import Chart from 'components/Chart';
+import StatDataSummaryPill from 'components/StatDataSummaryPill';
 
 const Wrapper = styled.div`
     display: flex;
@@ -70,26 +68,14 @@ const RightHeader = styled.h1`
 
 const SummaryDetails = styled.div`
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     grid-column-gap: 20px;
     grid-row-gap: 20px;
 
-    @media (max-width: 1400px) {
-        grid-template-columns: 1fr 1fr;
-    }
-    @media (max-width: 1100px) {
+    @media (max-width: 1300px) {
         grid-template-columns: 1fr;
     }
 `;
-
-function formatStatData (stat, data) {
-    switch (stat.format) {
-        case StatFormats.NUMBER: return numberShort(data.value);
-        case StatFormats.PERCENT: return percent(data.value);
-        case StatFormats.DOLLARS: return dollars(data.value);
-        default: throw new Error(`Unknown stat type '${stat.type}'.`);
-    }
-}
 
 function ChartDisplay () {
     const dispatch = useDispatch();
@@ -163,7 +149,7 @@ function ChartDisplay () {
                 <SummaryDetails>
                     { activeStats.map((stat, i) => {
                         const data = activeQueryResult.payload?.find(sd => sd.stat.name === stat.name)?.packedData;
-                        return <SummaryPill key={i} label={stat.name} sublabel={dateLong()} color={stat.color} value={data != null ? formatStatData(stat, data[data.length - 1]) : "-"} />;
+                        return <StatDataSummaryPill key={i} stat={stat} data={data != null && data.length > 0 ? data[data.length - 1] : null} />;
                     }) }
                 </SummaryDetails>
             </Content>
