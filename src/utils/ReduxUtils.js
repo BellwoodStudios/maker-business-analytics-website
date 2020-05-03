@@ -24,7 +24,11 @@ export function apiHandle (state, action) {
             error: null
         }),
         finish: prevState => ({ ...prevState, loading:false, loaded: true }),
-        failure: prevState => ({ ...prevState, error: payload }),
+        failure: prevState => {
+            console.error(payload);
+
+            return { ...prevState, error: payload };
+        },
         success: prevState => ({ ...prevState, payload: payload })
     });
 }

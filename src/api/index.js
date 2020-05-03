@@ -93,45 +93,6 @@ export function getStats (query) {
     return query != null ? _stats.filter(s => s.isAvailableForQuery(query)) : _stats;
 }
 
-/*const statList = [
-    {
-        name: "Dai Supply",
-        type: "number",
-        aggregate: "sum"
-    },
-    {
-        name: "Stability Fee",
-        type: "percent",
-        target: "vault-only",
-        substats: [
-            {
-                name: "Base Fee",
-                type: "percent"
-            },
-            {
-                name: "Vault Fee",
-                type: "percent"
-            }
-        ]
-    },
-    {
-        name: "Base Fee",
-        type: "percent",
-        target: "global-only"
-    },
-    {
-        name: "Revenue",
-        type: "number",
-        aggregate: "sum"
-    },
-    {
-        name: "Liquidations",
-        type: "number",
-        aggregate: "sum"
-    },
-    {
-        name: "Collateral",
-        type: "number",
-        aggregate: "sum"
-    }
-];*/
+export function getStatByName (name) {
+    return _stats.find(s => s.name === name);
+}

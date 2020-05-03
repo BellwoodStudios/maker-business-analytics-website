@@ -4,16 +4,20 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { init } from 'api';
-import rootReducer from 'reducers';
+import createRootReducer from 'reducers';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { middleware as reduxPackMiddleware } from 'redux-pack';
 import { Provider } from 'react-redux';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
+import { ConnectedRouter as Router, routerMiddleware } from 'connected-react-router';
 
-const store = createStore(rootReducer, applyMiddleware(
+const history = createBrowserHistory();
+
+const store = createStore(createRootReducer(history), applyMiddleware(
     thunk,
-    reduxPackMiddleware
+    reduxPackMiddleware,
+    routerMiddleware(history)
 ));
 
 (async () => {
@@ -26,7 +30,7 @@ const store = createStore(rootReducer, applyMiddleware(
 
     ReactDOM.render(
         <Provider store={store}>
-            <Router>
+            <Router history={history}>
                 <App />
             </Router>
         </Provider>,

@@ -1,14 +1,13 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import Divider from 'components/Divider';
 import StatsList from 'components/StatsList';
 import DateRangeToolbar from 'components/DateRangeToolbar';
-import Share from 'components/Share';
-import { QueryType } from 'model';
+import { Query, QueryType } from 'model';
 import { getStats } from 'api';
-import { setActiveQuery, executeQuery } from 'reducers/query';
+import { setActiveQuery } from 'reducers/query';
 import Chart from 'components/Chart';
 import StatDataSummaryPill from 'components/StatDataSummaryPill';
 
@@ -23,15 +22,6 @@ const Content = styled.div`
 `;
 
 const ContentTop = styled.div`
-    display: flex;
-`;
-
-const ContentLeft = styled.div`
-    flex: 1;
-`;
-
-const ContentRight = styled.div`
-    
 `;
 
 const Right = styled.div`
@@ -79,33 +69,22 @@ const SummaryDetails = styled.div`
 
 function ChartDisplay () {
     const dispatch = useDispatch();
-    const { collateralName, vaultName } = useParams();
-    const { activeQuery, activeQueryResult } = useSelector(state => state.query);
+    const { activeQuery, results } = useSelector(state => state.query);
     const stats = getStats(activeQuery);
     const activeStats = activeQuery.filterActiveStats(stats);
+    const params = { ...useParams() };
+    for (const param of new URLSearchParams(useLocation().search).entries()) {
+        params[param[0]] = param[1];
+    }
+    const activeQueryResult = results[activeQuery.toUrl()];
 
     // Update the query from the URL
     useEffect(() => {
-        const newQuery = activeQuery.clone({ collateral:collateralName, vault:vaultName });
+        const newQuery = Query.fromParams(params);
         if (!newQuery.equals(activeQuery)) {
             dispatch(setActiveQuery(newQuery));
         }
-    }, [activeQuery, collateralName, vaultName, dispatch]);
-
-    // Fetch new data if the query url changes
-    useEffect(() => {
-        // This is a little hacky, but it skips loading 2 things at once
-        if ((collateralName != null && activeQuery.collateral == null) || (vaultName != null && activeQuery.vault == null)) return;
-
-        dispatch(executeQuery(activeQuery));
-    }, [activeQuery, dispatch, collateralName, vaultName]);
-
-    // Log api errors
-    useEffect(() => {
-        if (activeQueryResult.error) {
-            console.error(activeQueryResult.error)
-        }
-    }, [activeQueryResult]);
+    }, [activeQuery, params, dispatch]);
 
     let filterLabel;
     let filterValue;
@@ -136,19 +115,14 @@ function ChartDisplay () {
         <Wrapper>
             <Content>
                 <ContentTop>
-                    <ContentLeft>
-                        <Label>{filterLabel}</Label>
-                        <Value>{filterValue}</Value>
-                    </ContentLeft>
-                    <ContentRight>
-                        <Share />
-                    </ContentRight>
+                    <Label>{filterLabel}</Label>
+                    <Value>{filterValue}</Value>
                 </ContentTop>
                 <DateRangeToolbar />
-                <Chart query={activeQuery} activeStats={activeStats} data={activeQueryResult.payload} />
+                <Chart query={activeQuery} activeStats={activeStats} data={activeQueryResult?.payload} />
                 <SummaryDetails>
                     { activeStats.map((stat, i) => {
-                        const data = activeQueryResult.payload?.find(sd => sd.stat.name === stat.name)?.packedData;
+                        const data = activeQueryResult?.payload?.find(sd => sd.stat.name === stat.name)?.packedData;
                         return <StatDataSummaryPill key={i} stat={stat} data={data != null && data.length > 0 ? data[data.length - 1] : null} />;
                     }) }
                 </SummaryDetails>

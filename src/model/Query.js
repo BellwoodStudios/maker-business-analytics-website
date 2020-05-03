@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { enumValidValue, arrayEquals } from 'utils';
-import { getVaultByName, getCollateralByName, getStats } from 'api';
+import { getVaultByName, getCollateralByName, getStats, getStatByName } from 'api';
 import { StatData } from 'api/model';
 
 export const QueryType = {
@@ -26,13 +26,23 @@ export default class Query {
 
     constructor (data = {}) {
         this.stats = data.stats ?? getStats();
+        if (typeof(this.stats) === 'string') this.stats = this.stats.split(",");
+        this.stats = this.stats.map(s => {
+            if (typeof s === 'string') {
+                return getStatByName(s);
+            } else {
+                return s;
+            }
+        }).filter(s => s != null);
         this.collateral = typeof(data.collateral) === 'string' ? getCollateralByName(data.collateral) : data.collateral;
         this.vault = typeof(data.vault) === 'string' ? getVaultByName(data.vault) : data.vault;
         this.type = QueryType.GLOBAL;
         if (this.vault != null) this.type = QueryType.VAULT;
         else if (this.collateral != null) this.type = QueryType.COLLATERAL;
         this.start = data.start ?? moment().subtract(3, 'month');
+        if (typeof(this.start) === 'string') this.start = moment.unix(this.start);
         this.end = data.end ?? moment();
+        if (typeof(this.end) === 'string') this.end = moment.unix(this.end);
         this.granularity = data.granularity ?? QueryGranularity.DAY;
 
         enumValidValue(QueryGranularity, 'granularity', this.granularity);
@@ -49,8 +59,8 @@ export default class Query {
         return arrayEquals(this.stats, q.stats) &&
             this.collateral === q.collateral &&
             this.vault === q.vault &&
-            this.start === q.start &&
-            this.end === q.end &&
+            this.start.isSame(q.start) &&
+            this.end.isSame(q.end) &&
             this.granularity === q.granularity;
     }
 
@@ -124,7 +134,7 @@ export default class Query {
      * Build a full url from the state.
      */
     toUrl () {
-        let url = window.location.origin;
+        let url = "";
 
         switch (this.type) {
             case QueryType.COLLATERAL: url += `/vaults/${this.collateral.name}`; break;
@@ -133,13 +143,24 @@ export default class Query {
         }
         const params = {
             stats: this.stats.map(s => s.name),
-            start: this.start,
-            end: this.end,
+            start: this.start.unix(),
+            end: this.end.unix(),
             granularity: this.granularity
         };
         url += "?" + Object.keys(params).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`).join("&");
 
         return url;
+    }
+
+    static fromParams (params) {
+        return new Query({
+            stats: params.stats,
+            collateral: params.collateralName,
+            vault: params.vaultName,
+            start: params.start,
+            end: params.end,
+            granularity: params.granularity
+        });
     }
 
 }
