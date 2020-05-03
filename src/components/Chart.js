@@ -46,6 +46,18 @@ function buildChartData (activeStats, data) {
 }
 
 function Chart ({ query, activeStats, data }) {
+    // Trim off any stats that have no data
+    if (data != null) {
+        for (let i = 0; i < data.length; i++) {
+            if (!data[i].packedData.some(d => d.value != null)) {
+                // Axe this data
+                activeStats = activeStats.filter((s, idx) => idx !== i);
+                data = data.filter((d, idx) => idx !== i);
+                i--;
+            }
+        }
+    }
+
     const windowWidth = useWindowWidth();
 
     const axisFormatTypes = Array.from(new Set(activeStats.map(s => s.format)));
