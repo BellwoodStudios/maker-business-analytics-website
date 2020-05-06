@@ -4,6 +4,7 @@ import DaiSavingsRateStat from 'api/model/stats/DaiSavingsRateStat';
 import DaiSupplyStat from 'api/model/stats/DaiSupplyStat';
 import CollateralPriceStat from 'api/model/stats/CollateralPriceStat';
 import DebtCeilingStat from 'api/model/stats/DebtCeilingStat';
+import SystemSurplusStat from 'api/model/stats/SystemSurplusStat';
 import SystemDebtStat from 'api/model/stats/SystemDebtStat';
 
 let _vaults = null;
@@ -14,6 +15,7 @@ const _stats = [
     new DaiSupplyStat(),
     new CollateralPriceStat(),
     new DebtCeilingStat(),
+    new SystemSurplusStat(),
     new SystemDebtStat()
 ];
 

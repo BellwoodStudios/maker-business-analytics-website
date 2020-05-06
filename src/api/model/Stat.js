@@ -65,7 +65,7 @@ export const StatAggregations = {
     #FA65FF
     #FF658F
     #FF5D51
-    #ABEB63
+    #ABEB63 - System Surplus
     #8287FF
     #9C64FF
     #A4FF9E
