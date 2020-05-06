@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
-import { numberShort } from 'utils/FormatUtils';
 import Divider from './Divider';
 import { useSelector } from 'react-redux';
 
@@ -51,15 +50,6 @@ const Left = styled.div`
     flex: 1;
 `;
 
-const Right = styled.div`
-    font-size: 1.8rem;
-    font-weight: bold;
-
-    @media (max-width: 1600px) {
-        display: none;
-    }
-`;
-
 const Label = styled.div`
     font-size: 1rem;
     font-weight: 300;
@@ -81,9 +71,6 @@ function VaultMenuItem ({ vault }) {
                     <Label className="color-faded">Vault</Label>
                     <Value className="color-regular">{vault.identifier}</Value>
                 </Left>
-                <Right className="color-regular">
-                    {numberShort(vault.daiIssued)}
-                </Right>
                 <Divider className="divider" display="color" />
             </NavLinkWrapper>
             <Divider style={{ backgroundColor: "var(--color-foreground-faded)" }} orientation="horizontal" />

@@ -4,12 +4,8 @@ import VaultMenuItem from 'components/VaultMenuItem';
 import { useSelector } from 'react-redux';
 
 const Wrapper = styled.ul`
-    width: 280px;
+    width: 160px;
     background: rgba(0, 0, 0, 0.1);
-
-    @media (max-width: 1600px) {
-        width: 150px;
-    }
 `;
 
 function VaultMenu () {
