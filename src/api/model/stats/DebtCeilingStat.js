@@ -2,7 +2,7 @@ import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, Sta
 import { fetchGraphQL } from 'api';
 import { fromRad } from 'utils/MathUtils';
 
-export default class NewVaultStat extends Stat {
+export default class DebtCeilingStat extends Stat {
 
     constructor () {
         super({
@@ -11,7 +11,8 @@ export default class NewVaultStat extends Stat {
             type: StatTypes.VALUE,
             format: StatFormats.NUMBER,
             targets: StatTargets.ALL,
-            aggregation: StatAggregations.SUM
+            aggregation: StatAggregations.SUM,
+            group: "dai"
         });
     }
 

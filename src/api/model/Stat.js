@@ -51,7 +51,7 @@ export const StatAggregations = {
     #448AFF - Dai Supply
     #7E57C2 - Collateral Price
     #E040FB - Debt Ceiling
-    #FF4081
+    #FF4081 - System Debt
     #FF5252
     #9CCC65
     #5C6BC0
@@ -86,6 +86,7 @@ export default class Stat {
         this.targets = data.targets ?? StatTargets.ALL;
         this.aggregation = data.aggregation ?? StatAggregations.AVERAGE;
         this.stats = data.stats ?? [];
+        this.group = data.group ?? this.format;
 
         enumValidValue(StatTypes, 'type', this.type);
         enumValidValue(StatAggregations, 'aggregation', this.aggregation);

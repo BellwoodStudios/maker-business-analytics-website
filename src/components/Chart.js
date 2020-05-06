@@ -60,9 +60,9 @@ function Chart ({ query, activeStats, data }) {
 
     const windowWidth = useWindowWidth();
 
-    const axisFormatTypes = Array.from(new Set(activeStats.map(s => s.format)));
-    const vAxes = axisFormatTypes.map((f, i) => ({ format:toChartFormat(f), textPosition: i >= 2 ? 'none' : 'out' }));
-    const series = activeStats.map(s => ({ targetAxisIndex: axisFormatTypes.indexOf(s.format) }));
+    const axisGroups = Array.from(new Set(activeStats.map(s => ({ format:s.format, group:s.group }))));
+    const vAxes = axisGroups.map((g, i) => ({ format:toChartFormat(g.format), textPosition: i >= 2 ? 'none' : 'out' }));
+    const series = activeStats.map(s => ({ targetAxisIndex: axisGroups.findIndex(g => g.group === s.group) }));
 
     const options = {
         legend: "none",
