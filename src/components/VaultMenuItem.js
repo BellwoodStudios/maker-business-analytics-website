@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 import { numberShort } from 'utils/FormatUtils';
 import Divider from './Divider';
+import { useSelector } from 'react-redux';
 
 const Wrapper = styled.li`
     display: flex;
@@ -71,9 +72,11 @@ const Value = styled.div`
 `;
 
 function VaultMenuItem ({ vault }) {
+    const { activeQuery } = useSelector(state => state.query);
+
     return (
         <Wrapper>
-            <NavLinkWrapper to={`/vaults/${vault.collateral.name}/${vault.identifier}`}>
+            <NavLinkWrapper to={activeQuery.clone({ collateral:vault.collateral, vault }).toUrl()}>
                 <Left>
                     <Label className="color-faded">Vault</Label>
                     <Value className="color-regular">{vault.identifier}</Value>

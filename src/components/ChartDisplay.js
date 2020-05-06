@@ -69,7 +69,7 @@ const SummaryDetails = styled.div`
 
 function ChartDisplay () {
     const dispatch = useDispatch();
-    const { activeQuery, results } = useSelector(state => state.query);
+    const { activeQuery, firstLoad, results } = useSelector(state => state.query);
     const stats = getStats(activeQuery);
     const activeStats = activeQuery.filterActiveStats(stats);
     const params = { ...useParams() };
@@ -81,10 +81,10 @@ function ChartDisplay () {
     // Update the query from the URL
     useEffect(() => {
         const newQuery = Query.fromParams(params);
-        if (!newQuery.equals(activeQuery)) {
-            dispatch(setActiveQuery(newQuery));
+        if (firstLoad || !newQuery.equals(activeQuery)) {
+            dispatch(setActiveQuery(newQuery, true));
         }
-    }, [activeQuery, params, dispatch]);
+    }, [activeQuery, params, dispatch, firstLoad]);
 
     let filterLabel;
     let filterValue;

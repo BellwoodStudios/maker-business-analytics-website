@@ -39,11 +39,13 @@ export default class Query {
         this.type = QueryType.GLOBAL;
         if (this.vault != null) this.type = QueryType.VAULT;
         else if (this.collateral != null) this.type = QueryType.COLLATERAL;
+        this.granularity = data.granularity ?? QueryGranularity.DAY;
         this.start = data.start ?? moment().subtract(3, 'month');
         if (typeof(this.start) === 'string') this.start = moment.unix(this.start);
+        this.start = this.start.startOf(this.getMomentGranularity());       // Use start of period for better caching
         this.end = data.end ?? moment();
         if (typeof(this.end) === 'string') this.end = moment.unix(this.end);
-        this.granularity = data.granularity ?? QueryGranularity.DAY;
+        this.end = this.end.startOf(this.getMomentGranularity());           // Use start of period for better caching
 
         enumValidValue(QueryGranularity, 'granularity', this.granularity);
     }
@@ -92,19 +94,22 @@ export default class Query {
         }
     }
 
+    getMomentGranularity () {
+        switch (this.granularity) {
+            case QueryGranularity.HOUR: return "hour";
+            case QueryGranularity.DAY: return "day";
+            case QueryGranularity.WEEK: return "week";
+            case QueryGranularity.MONTH: return "month";
+            case QueryGranularity.YEAR: return "year";
+            default: throw new Error('Invalid granularity');
+        }
+    }
+
     /**
      * Returns a standard graphql filter which sets a start, end and granularity.
      */
     toGraphQLFilter () {
-        let granularity;
-        switch (this.granularity) {
-            case QueryGranularity.HOUR: granularity = "{ hours:1 }"; break;
-            case QueryGranularity.DAY: granularity = "{ days:1 }"; break;
-            case QueryGranularity.WEEK: granularity = "{ weeks:1 }"; break;
-            case QueryGranularity.MONTH: granularity = "{ months:1 }"; break;
-            case QueryGranularity.YEAR: granularity = "{ years:1 }"; break;
-            default: throw new Error('Invalid granularity');
-        }
+        const granularity = `{ ${this.getMomentGranularity()}s:1 }`;
 
         // Filter takes the form 's:"2020-01-01", e:"2020-03-01", g:{ days:1 }'
         return `
@@ -127,6 +132,7 @@ export default class Query {
 
             result.pack(this);
         }
+
         return results;
     }
 

@@ -5,8 +5,8 @@ import { push } from 'connected-react-router';
 const SET_ACTIVE_QUERY = 'SET_ACTIVE_QUERY';
 const EXECUTE_QUERY = 'EXECUTE_QUERY';
 
-export const setActiveQuery = (query) => (dispatch) => {
-    dispatch(push(query.toUrl()));
+export const setActiveQuery = (query, skipUrlSet = false) => (dispatch) => {
+    if (!skipUrlSet) dispatch(push(query.toUrl()));
     dispatch({
         type: SET_ACTIVE_QUERY,
         query
@@ -20,6 +20,7 @@ export const setActiveQuery = (query) => (dispatch) => {
 
 const initialState = {
     activeQuery: new Query(),
+    firstLoad: true,
     results: {}
 };
 
@@ -28,7 +29,8 @@ function reducer (state = initialState, action) {
         case SET_ACTIVE_QUERY:
             return {
                 ...state,
-                activeQuery: action.query
+                activeQuery: action.query,
+                firstLoad: false
             };
         case EXECUTE_QUERY:
             const key = state.activeQuery.toUrl();
