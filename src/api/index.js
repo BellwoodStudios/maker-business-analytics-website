@@ -3,6 +3,7 @@ import StabilityFeeStat from 'api/model/stats/StabilityFeeStat';
 import DaiSavingsRateStat from 'api/model/stats/DaiSavingsRateStat';
 import DaiSupplyStat from 'api/model/stats/DaiSupplyStat';
 import CollateralPriceStat from 'api/model/stats/CollateralPriceStat';
+import DebtCeilingStat from 'api/model/stats/DebtCeilingStat';
 
 let _vaults = null;
 let _collateral = null;
@@ -10,7 +11,8 @@ const _stats = [
     new StabilityFeeStat(),
     new DaiSavingsRateStat(),
     new DaiSupplyStat(),
-    new CollateralPriceStat()
+    new CollateralPriceStat(),
+    new DebtCeilingStat()
 ];
 
 export async function fetchGraphQL (graphql) {

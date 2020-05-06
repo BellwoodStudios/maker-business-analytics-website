@@ -61,7 +61,7 @@ function Chart ({ query, activeStats, data }) {
     const windowWidth = useWindowWidth();
 
     const axisFormatTypes = Array.from(new Set(activeStats.map(s => s.format)));
-    const vAxes = axisFormatTypes.map(f => ({ format:toChartFormat(f) }));
+    const vAxes = axisFormatTypes.map((f, i) => ({ format:toChartFormat(f), textPosition: i >= 2 ? 'none' : 'out' }));
     const series = activeStats.map(s => ({ targetAxisIndex: axisFormatTypes.indexOf(s.format) }));
 
     const options = {

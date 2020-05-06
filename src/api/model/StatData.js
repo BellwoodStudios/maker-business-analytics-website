@@ -44,7 +44,7 @@ export default class StatData {
                     if (beforeEntries.length > 0) value = beforeEntries[beforeEntries.length - 1].value;
 
                     break;
-                case StatAggregations.EVENT:
+                case StatTypes.EVENT:
                     // Apply the aggregation function on all the values that occur in this period
                     const aggf = this.stat.aggregation === StatAggregations.SUM ? arraySum : arrayAvg;
                     value = aggf(this.data.filter(d => d.block.timestamp.isBetween(curr, endOfPeriod, granularity, "[)")).map(d => d.value));

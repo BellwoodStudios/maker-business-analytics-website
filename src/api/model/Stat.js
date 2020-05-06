@@ -50,7 +50,7 @@ export const StatAggregations = {
     #26C6DA - Dai Savings Rate
     #448AFF - Dai Supply
     #7E57C2 - Collateral Price
-    #E040FB
+    #E040FB - Debt Ceiling
     #FF4081
     #FF5252
     #9CCC65

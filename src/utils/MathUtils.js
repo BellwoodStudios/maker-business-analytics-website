@@ -16,3 +16,7 @@ export function sumFees (fee1, fee2) {
 export function fromWad (wadAmount) {
     return new BigNumber(wadAmount).dividedBy(10e17).toNumber();
 }
+
+export function fromRad (radAmount) {
+    return new BigNumber(radAmount).dividedBy(10e44).toNumber();
+}

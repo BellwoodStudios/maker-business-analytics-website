@@ -1,13 +1,13 @@
 import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem } from 'api/model';
 import { fetchGraphQL } from 'api';
-import { fromWad } from 'utils/MathUtils';
+import { fromRad } from 'utils/MathUtils';
 
-export default class DaiSupplyStat extends Stat {
+export default class NewVaultStat extends Stat {
 
     constructor () {
         super({
-            name: "Dai Supply",
-            color: "#448AFF",
+            name: "Debt Ceiling",
+            color: "#E040FB",
             type: StatTypes.VALUE,
             format: StatFormats.NUMBER,
             targets: StatTargets.ALL,
@@ -18,11 +18,10 @@ export default class DaiSupplyStat extends Stat {
     async fetch (query) {
         const result = await fetchGraphQL(`
             {
-                allVatIlkArts {
+                allVatIlkLines {
                     nodes {
-                        headerId,
                         ilkId,
-                        art,
+                        line
                         headerByHeaderId {
                             blockNumber,
                             blockTimestamp
@@ -33,13 +32,13 @@ export default class DaiSupplyStat extends Stat {
         `);
 
         // TODO - shouldn't be filtering on client for performance reasons
-        const data = result.data.allVatIlkArts.nodes.filter(n => query.filterByIlk(n)).map(n => {
+        const data = result.data.allVatIlkLines.nodes.filter(n => query.filterByIlk(n)).map(n => {
             return new StatDataItem({
                 block: new Block(n.headerByHeaderId),
-                value: fromWad(n.art),
+                value: fromRad(n.line),
                 extraData: {
                     group: n.ilkId,
-                    art: n.art
+                    line: n.line
                 }
             });
         });
