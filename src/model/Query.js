@@ -40,12 +40,12 @@ export default class Query {
         if (this.vault != null) this.type = QueryType.VAULT;
         else if (this.collateral != null) this.type = QueryType.COLLATERAL;
         this.granularity = data.granularity ?? QueryGranularity.DAY;
-        this.start = data.start ?? moment().subtract(3, 'month');
-        if (typeof(this.start) === 'string') this.start = moment.unix(this.start);
-        this.start = this.start.startOf(this.getMomentGranularity());       // Use start of period for better caching
         this.end = data.end ?? moment();
         if (typeof(this.end) === 'string') this.end = moment.unix(this.end);
-        this.end = this.end.startOf(this.getMomentGranularity());           // Use start of period for better caching
+        this.end = this.end.endOf(this.getMomentGranularity());
+        this.start = data.start ?? this.end.clone().subtract(3, 'month');
+        if (typeof(this.start) === 'string') this.start = moment.unix(this.start);
+        this.start = this.start.startOf(this.getMomentGranularity());
 
         enumValidValue(QueryGranularity, 'granularity', this.granularity);
     }

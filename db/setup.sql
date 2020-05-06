@@ -1,5 +1,7 @@
 /** Run these queries to set up vulcanize for custom queries **/
 
+create index if not exists headers_block_timestamp_idx ON public.headers (block_timestamp);
+
 drop type if exists spot_poke_time_result;
 create type spot_poke_time_result AS (
     date timestamptz,
@@ -14,7 +16,7 @@ create or replace function spot_poke_time(s date, e date, g interval)
             SELECT generate_series(s, e, g) AS d
         ),
         ilk_values AS (
-            SELECT input.d AS date, ilk_id, MAX(s.header_id) AS header_id FROM maker.spot_poke s CROSS JOIN input LEFT JOIN public.headers h ON (h.id = s.header_id) WHERE h.block_timestamp >= extract(epoch FROM input.d) AND h.block_timestamp < extract(epoch FROM input.d) + 86400 GROUP BY input.d, ilk_id
+            SELECT input.d AS date, ilk_id, MAX(s.header_id) AS header_id FROM maker.spot_poke s CROSS JOIN input LEFT JOIN public.headers h ON (h.id = s.header_id) WHERE h.block_timestamp >= extract(epoch FROM input.d) AND h.block_timestamp < extract(epoch FROM (input.d + g)) GROUP BY input.d, ilk_id
         )
         SELECT i.date, i.ilk_id, s.value, h.block_number, h.block_timestamp FROM ilk_values i LEFT JOIN maker.spot_poke s ON (s.header_id = i.header_id AND s.ilk_id = i.ilk_id) LEFT JOIN public.headers h ON (h.id = s.header_id)
     $$ language sql stable;
