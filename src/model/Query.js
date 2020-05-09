@@ -25,7 +25,9 @@ export const QueryGranularity = {
 export default class Query {
 
     constructor (data = {}) {
-        this.stats = data.stats ?? getStats();
+        // What stats to display?
+        const apiStats = getStats();
+        this.stats = data.stats ?? apiStats;
         if (typeof(this.stats) === 'string') this.stats = this.stats.split(",");
         this.stats = this.stats.map(s => {
             if (typeof s === 'string') {
@@ -34,11 +36,18 @@ export default class Query {
                 return s;
             }
         }).filter(s => s != null);
+
+        // Enforce the active stat ordering of what's defined in the api otherwise the Chart will not align with the data
+        this.stats.sort((a, b) => apiStats.indexOf(a) < apiStats.indexOf(b) ? -1 : 1);
+
+        // Collateral/vault filtering
         this.collateral = typeof(data.collateral) === 'string' ? getCollateralByName(data.collateral) : data.collateral;
         this.vault = typeof(data.vault) === 'string' ? getVaultByName(data.vault) : data.vault;
         this.type = QueryType.GLOBAL;
         if (this.vault != null) this.type = QueryType.VAULT;
         else if (this.collateral != null) this.type = QueryType.COLLATERAL;
+
+        // Date range and granularity
         this.granularity = data.granularity ?? QueryGranularity.DAY;
         this.end = data.end ?? moment();
         if (typeof(this.end) === 'string') this.end = moment.unix(this.end);
