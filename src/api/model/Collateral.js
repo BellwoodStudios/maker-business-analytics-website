@@ -20,9 +20,18 @@ export default class Collateral {
 
     /**
      * Return the collateral string name identifier from the vault identifier.
+     * 
+     * Since there is not really a concept of "collateral" in Maker, we have to follow naming conventions and probably adapt
+     * as the system grows.
      */
     static getCollateralNameFromVaultIdentifier (vaultIdentifier) {
-        return vaultIdentifier.split("-")[0];
+        const collateralPart = vaultIdentifier.split("-")[0];
+
+        // Sometimes we are using wrapper tokens for the same underlying token
+        const collateralGroups = ["BTC", "USD"];
+        const collateralGroup = collateralGroups.find(g => collateralPart.indexOf(g) >= 0);
+
+        return collateralGroup ?? collateralPart;
     }
 
     /**
