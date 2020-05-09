@@ -10,7 +10,7 @@ export default class DaiSavingsRateStat extends Stat {
             color: "#26C6DA",
             type: StatTypes.VALUE,
             format: StatFormats.PERCENT,
-            targets: StatTargets.ALL,
+            targets: StatTargets.GLOBAL,
             aggregation: StatAggregations.AVERAGE
         });
     }

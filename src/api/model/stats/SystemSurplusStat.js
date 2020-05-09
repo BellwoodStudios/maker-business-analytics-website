@@ -12,7 +12,7 @@ export default class SystemSurplusStat extends Stat {
             color: "#ABEB63",
             type: StatTypes.VALUE,
             format: StatFormats.NUMBER,
-            targets: StatTargets.ALL,
+            targets: StatTargets.GLOBAL,
             aggregation: StatAggregations.SUM,
             group: "sysdai"
         });

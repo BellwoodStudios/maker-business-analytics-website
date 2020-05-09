@@ -10,7 +10,7 @@ export default class SystemDebtStat extends Stat {
             color: "#FF4081",
             type: StatTypes.VALUE,
             format: StatFormats.NUMBER,
-            targets: StatTargets.ALL,
+            targets: StatTargets.GLOBAL,
             aggregation: StatAggregations.SUM,
             group: "sysdai"
         });
