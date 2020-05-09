@@ -51,11 +51,11 @@ export const StatAggregations = {
     #448AFF - Dai Supply
     #7E57C2 - Collateral Price
     #E040FB - Debt Ceiling
+    #ABEB63 - System Surplus
     #FF4081 - System Debt
-    #FF5252
-    #9CCC65
-    #5C6BC0
+    #5C6BC0 - Savings Dai
     #89A74D
+    #FF5252
     #B584FF
     #83D17E
     #3FDFC9
@@ -63,9 +63,9 @@ export const StatAggregations = {
     #4AC9F1
     #567FEE
     #FA65FF
+    #9CCC65
     #FF658F
     #FF5D51
-    #ABEB63 - System Surplus
     #8287FF
     #9C64FF
     #A4FF9E

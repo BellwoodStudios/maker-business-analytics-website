@@ -6,13 +6,15 @@ import CollateralPriceStat from 'api/model/stats/CollateralPriceStat';
 import DebtCeilingStat from 'api/model/stats/DebtCeilingStat';
 import SystemSurplusStat from 'api/model/stats/SystemSurplusStat';
 import SystemDebtStat from 'api/model/stats/SystemDebtStat';
+import SavingsDaiStat from 'api/model/stats/SavingsDaiStat';
 
 let _vaults = null;
 let _collateral = null;
 const _stats = [
+    new DaiSupplyStat(),
     new StabilityFeeStat(),
     new DaiSavingsRateStat(),
-    new DaiSupplyStat(),
+    new SavingsDaiStat(),
     new CollateralPriceStat(),
     new DebtCeilingStat(),
     new SystemSurplusStat(),
