@@ -118,7 +118,7 @@ export default class Query {
      * Returns a standard graphql filter which sets a start, end and granularity.
      */
     toGraphQLFilter () {
-        const granularity = `{ ${this.getMomentGranularity()}s:1 }`;
+        const granularity = this.granularity === QueryGranularity.WEEK ? `{ days:7 }` : `{ ${this.getMomentGranularity()}s:1 }`;
 
         // Filter takes the form 's:"2020-01-01", e:"2020-03-01", g:{ days:1 }'
         return `
