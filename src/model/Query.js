@@ -122,9 +122,9 @@ export default class Query {
 
         // Filter takes the form 's:"2020-01-01", e:"2020-03-01", g:{ days:1 }'
         return `
-            s: "${this.start.toISOString()}",
-            e: "${this.end.toISOString()}",
-            g: ${granularity}
+            startTime: "${this.start.toISOString()}",
+            endTime: "${this.end.toISOString()}",
+            granularity: ${granularity}
         `;
     }
 
