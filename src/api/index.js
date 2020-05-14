@@ -7,11 +7,13 @@ import DebtCeilingStat from 'api/model/stats/DebtCeilingStat';
 import SystemSurplusStat from 'api/model/stats/SystemSurplusStat';
 import SystemDebtStat from 'api/model/stats/SystemDebtStat';
 import SavingsDaiStat from 'api/model/stats/SavingsDaiStat';
+import CollateralLockedStat from 'api/model/stats/CollateralLockedStat';
 
 let _vaults = null;
 let _collateral = null;
 const _stats = [
     new DaiSupplyStat(),
+    new CollateralLockedStat(),
     new StabilityFeeStat(),
     new DaiSavingsRateStat(),
     new SavingsDaiStat(),
