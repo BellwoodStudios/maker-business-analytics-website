@@ -54,7 +54,7 @@ export const StatAggregations = {
     #ABEB63 - System Surplus
     #FF4081 - System Debt
     #5C6BC0 - Savings Dai
-    #89A74D
+    #89A74D - Collateral Locked
     #FF5252
     #B584FF
     #83D17E

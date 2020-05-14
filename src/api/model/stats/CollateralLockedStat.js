@@ -7,7 +7,7 @@ export default class CollateralLockedStat extends Stat {
     constructor () {
         super({
             name: "Collateral Locked",
-            color: "#448AFF",
+            color: "#89A74D",
             type: StatTypes.VALUE,
             format: StatFormats.NUMBER,
             targets: StatTargets.COLLATERAL | StatTargets.VAULT,
