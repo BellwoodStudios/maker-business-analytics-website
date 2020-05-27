@@ -34,14 +34,21 @@ export default class StatData {
         // Want to inclusively add the last period
         const end = query.end.clone().startOf(granularity).add(1, granularity);
         this.packedData = [];
+        let lastUsedIndex = -1;
         while (curr.isBefore(end)) {
             const endOfPeriod = curr.clone().add(1, granularity);
             let value = null;
             switch (this.stat.type) {
                 case StatTypes.VALUE:
-                    // Find the most recent value
-                    const beforeEntries = this.data.filter(d => d.block.timestamp.isSameOrBefore(curr, granularity));
-                    if (beforeEntries.length > 0) value = beforeEntries[beforeEntries.length - 1].value;
+                    // Find the most recent value that is still before the end period
+                    for (let i = lastUsedIndex + 1; i < this.data.length; i++) {
+                        if (this.data[i].block.timestamp.isSameOrBefore(curr, granularity)) {
+                            lastUsedIndex = i;
+                        } else {
+                            break;
+                        }
+                    }
+                    if (lastUsedIndex >= 0) value = this.data[lastUsedIndex].value;
 
                     break;
                 case StatTypes.EVENT:

@@ -23,9 +23,16 @@ const _stats = [
     new SystemDebtStat()
 ];
 
+// Query cache
+const cache = {};
+
 export async function fetchGraphQL (graphql) {
+    if (cache[graphql] != null) {
+        return await cache[graphql];
+    }
+
     // TODO this should be configurable
-    return (await fetch("https://vulcanize.mkranalytics.com/graphql", {
+    const promise = fetch("https://vulcanize.mkranalytics.com/graphql", {
         method: "POST",
         headers: new Headers({
             "Content-Type": "application/json"
@@ -33,7 +40,11 @@ export async function fetchGraphQL (graphql) {
         body: JSON.stringify({
             query: graphql
         })
-    })).json();
+    }).then(res => res.json())
+
+    cache[graphql] = promise;
+
+    return await promise;
 }
 
 /**
