@@ -1,6 +1,19 @@
 /** Run these queries to set up vulcanize for custom queries **/
 
+/** Add an index because we will use timestamp for time queries **/
 create index if not exists headers_block_timestamp_idx ON public.headers (block_timestamp);
+
+/** spot_poke time series **/
+drop function if exists api.latest_block;
+drop type if exists api.latest_block_result cascade;
+create type api.latest_block_result AS (
+    block_number int8,
+    block_timestamp numeric
+);
+create function api.latest_block()
+    returns setof api.latest_block_result as $$
+        SELECT block_number, block_timestamp FROM public.storage_diff LEFT JOIN public.headers ON (block_height = block_number) WHERE checked = TRUE ORDER BY block_height DESC LIMIT 1
+    $$ language sql stable;
 
 /** spot_poke time series **/
 drop function if exists api.spot_poke_time;

@@ -1,4 +1,4 @@
-import { Vault, Collateral } from 'api/model';
+import { Vault, Collateral, Block } from 'api/model';
 import StabilityFeeStat from 'api/model/stats/StabilityFeeStat';
 import DaiSavingsRateStat from 'api/model/stats/DaiSavingsRateStat';
 import DaiSupplyStat from 'api/model/stats/DaiSupplyStat';
@@ -11,6 +11,7 @@ import CollateralLockedStat from 'api/model/stats/CollateralLockedStat';
 
 let _vaults = null;
 let _collateral = null;
+let _latestBlock = null;
 const _stats = [
     new DaiSupplyStat(),
     new CollateralLockedStat(),
@@ -84,6 +85,12 @@ export async function init () {
                     ilk,
                     identifier
                 }
+            },
+            latestBlock {
+                nodes {
+                    blockNumber,
+                    blockTimestamp
+                }
             }
         }
     `);
@@ -102,6 +109,9 @@ export async function init () {
             collateral.addVault(vault);
         }
     }
+
+    // Set latest block
+    _latestBlock = new Block(result.data.latestBlock.nodes[0]);
 }
 
 /**
@@ -141,4 +151,8 @@ export function getStats (query) {
 
 export function getStatByName (name) {
     return _stats.find(s => s.name === name);
+}
+
+export function getLatestBlock () {
+    return _latestBlock;
 }
