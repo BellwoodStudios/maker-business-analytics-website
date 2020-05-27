@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useParams, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import Divider from 'components/Divider';
 import StatsList from 'components/StatsList';
 import DateRangeToolbar from 'components/DateRangeToolbar';
 import { Query, QueryType } from 'model';
@@ -44,16 +43,6 @@ const Value = styled.div`
     line-height: 2.5rem;
     font-weight: bold;
     color: var(--color-foreground-50);
-`;
-
-const RightHeader = styled.h1`
-    margin: 0;
-    font-size: 0.9rem;
-    font-weight: 300;
-    text-transform: uppercase;
-    color: var(--color-foreground-30);
-    width: 100%;
-    padding: 10px;
 `;
 
 const SummaryDetails = styled.div`
@@ -128,8 +117,6 @@ function ChartDisplay () {
                 </SummaryDetails>
             </Content>
             <Right>
-                <RightHeader>{`${filterValue} Statistics`}</RightHeader>
-                <Divider style={{ backgroundColor: "var(--color-foreground-15)" }} orientation="horizontal" />
                 <StatsList />
             </Right>
         </Wrapper>

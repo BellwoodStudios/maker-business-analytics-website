@@ -96,13 +96,14 @@ export default class Stat {
      * Returns true iff the stat is available for the provided query.
      */
     isAvailableForQuery (query) {
+        // Allow global stats to be viewed in collateral / vault views
         switch (query.type) {
             case QueryType.GLOBAL:
                 return (this.targets & StatTargets.GLOBAL) !== 0;
             case QueryType.COLLATERAL:
-                return (this.targets & StatTargets.COLLATERAL) !== 0;
+                return (this.targets & StatTargets.COLLATERAL) !== 0 || (this.targets & StatTargets.GLOBAL) !== 0;
             case QueryType.VAULT:
-                return (this.targets & StatTargets.VAULT) !== 0;
+                return (this.targets & StatTargets.VAULT) !== 0 || (this.targets & StatTargets.GLOBAL) !== 0;
             default:
                 return false;
         }
