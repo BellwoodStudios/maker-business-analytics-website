@@ -60,10 +60,29 @@ export default class Query {
     }
 
     clone (data) {
-        return new Query({
+        const query = new Query({
             ...this,
             ...data
         });
+
+        if (data.granularity !== this.granularity && data.granularity != null) {
+            // Adjust the time range when we adjust granularity as well to prevent loading too many data points by default
+            switch (data.granularity) {
+                case QueryGranularity.HOUR: data.start = query.end.clone().subtract(3, 'day'); break;
+                case QueryGranularity.DAY: data.start = query.end.clone().subtract(3, 'month'); break;
+                case QueryGranularity.WEEK: data.start = query.end.clone().subtract(1, 'year'); break;
+                case QueryGranularity.MONTH: data.start = query.end.clone().subtract(5, 'year'); break;
+                case QueryGranularity.YEAR: data.start = query.end.clone().subtract(10, 'year'); break;
+                default: throw new Error('Invalid granularity');
+            }
+
+            return new Query({
+                ...this,
+                ...data
+            });
+        } else {
+            return query;
+        }
     }
 
     equals (q) {
