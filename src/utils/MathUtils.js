@@ -17,6 +17,10 @@ export function fromWad (wadAmount) {
     return new BigNumber(wadAmount).dividedBy(10e17).toNumber();
 }
 
+export function fromRay (rayAmount) {
+    return new BigNumber(rayAmount).dividedBy(10e26).toNumber();
+}
+
 export function fromRad (radAmount) {
     return new BigNumber(radAmount).dividedBy(10e44).toNumber();
 }
