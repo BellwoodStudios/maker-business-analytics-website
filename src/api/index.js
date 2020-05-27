@@ -23,6 +23,31 @@ const _stats = [
     new SystemDebtStat()
 ];
 
+function statLookup (statTypes) {
+    return statTypes.map(st => _stats.find(s => s instanceof st));
+}
+
+/**
+ * Stats to be shown by default on the global view.
+ */
+export const defaultGlobalStats = statLookup([
+    DaiSupplyStat,
+    DaiSavingsRateStat,
+    SavingsDaiStat,
+    DebtCeilingStat
+]);
+
+/**
+ * Stats to be shown by default on the collateral/vault view.
+ */
+export const defaultVaultStats = statLookup([
+    DaiSupplyStat,
+    CollateralLockedStat,
+    StabilityFeeStat,
+    CollateralPriceStat,
+    DebtCeilingStat
+]);
+
 // Query cache
 const cache = {};
 
