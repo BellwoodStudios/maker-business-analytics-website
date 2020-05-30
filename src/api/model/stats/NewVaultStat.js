@@ -1,4 +1,4 @@
-import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem } from 'api/model';
+import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem, StatGroups } from 'api/model';
 import { fetchGraphQL } from 'api';
 
 export default class NewVaultStat extends Stat {
@@ -10,7 +10,8 @@ export default class NewVaultStat extends Stat {
             type: StatTypes.EVENT,
             format: StatFormats.NUMBER,
             targets: StatTargets.ALL,
-            aggregation: StatAggregations.SUM
+            aggregation: StatAggregations.SUM,
+            group: StatGroups.COUNT
         });
     }
 

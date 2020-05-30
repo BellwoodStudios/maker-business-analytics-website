@@ -96,3 +96,24 @@ create function api.ilk_ink_time(start_time date, end_time date, granularity int
         )
         SELECT input.d AS date, ilk_id, SUM(u.ink) AS ink, MAX(h.block_number) AS block_number, MAX(h.block_timestamp) AS block_timestamp FROM latest_urns u CROSS JOIN input LEFT JOIN maker.urns urns ON (urns.id = u.urn_id) LEFT JOIN public.headers h ON (h.id = u.header_id) WHERE h.block_timestamp < extract(epoch FROM (input.d + granularity)) GROUP BY input.d, ilk_id
     $$ language sql stable;
+
+/** bites time series **/
+drop function if exists api.bites_time;
+drop type if exists api.bites_time_result cascade;
+create type api.bites_time_result AS (
+    date timestamptz,
+    ilk_id int4,
+    num int8,
+    ink numeric,
+    art numeric,
+    tab numeric,
+    block_number int8,
+    block_timestamp numeric
+);
+create function api.bites_time(start_time date, end_time date, granularity interval)
+    returns setof api.bites_time_result as $$
+        WITH input AS (
+            SELECT generate_series(start_time, end_time, granularity) AS d
+        )
+        SELECT input.d AS date, u.ilk_id AS ilk_id, COUNT(b.id) AS num, SUM(b.ink) AS ink, SUM(b.art) AS art, SUM(b.tab) AS tab, MIN(h.block_number) AS block_number, MIN(h.block_timestamp) AS block_timestamp FROM maker.bite b CROSS JOIN input LEFT JOIN public.headers h ON (h.id = b.header_id) LEFT JOIN maker.urns u ON (u.id = b.urn_id) WHERE h.block_timestamp >= extract(epoch FROM input.d) AND h.block_timestamp < extract(epoch FROM input.d + granularity) GROUP BY input.d, u.ilk_id ORDER BY date, ilk_id
+    $$ language sql stable;

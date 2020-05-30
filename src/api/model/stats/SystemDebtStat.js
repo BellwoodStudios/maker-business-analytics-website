@@ -1,4 +1,4 @@
-import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem } from 'api/model';
+import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem, StatGroups } from 'api/model';
 import { fetchGraphQL } from 'api';
 import { fromRad } from 'utils/MathUtils';
 
@@ -12,7 +12,7 @@ export default class SystemDebtStat extends Stat {
             format: StatFormats.NUMBER,
             targets: StatTargets.GLOBAL,
             aggregation: StatAggregations.SUM,
-            group: "sysdai"
+            group: StatGroups.SYSTEM_DAI
         });
     }
 

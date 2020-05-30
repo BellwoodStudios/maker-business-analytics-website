@@ -1,4 +1,4 @@
-import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem } from 'api/model';
+import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem, StatGroups } from 'api/model';
 import { fetchGraphQL } from 'api';
 import { fromRad } from 'utils/MathUtils';
 
@@ -12,7 +12,7 @@ export default class DebtCeilingStat extends Stat {
             format: StatFormats.NUMBER,
             targets: StatTargets.ALL,
             aggregation: StatAggregations.SUM,
-            group: "dai"
+            group: StatGroups.SUPPLY_DAI
         });
     }
 

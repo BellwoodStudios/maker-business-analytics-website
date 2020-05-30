@@ -1,4 +1,4 @@
-import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem } from 'api/model';
+import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem, StatGroups } from 'api/model';
 import { fetchGraphQL } from 'api';
 import { fromWad, fromRay } from 'utils/MathUtils';
 
@@ -12,7 +12,7 @@ export default class SavingsDaiStat extends Stat {
             format: StatFormats.NUMBER,
             targets: StatTargets.GLOBAL,
             aggregation: StatAggregations.SUM,
-            group: "dai",
+            group: StatGroups.SUPPLY_DAI,
             stats: [
                 new PotPieStat(),
                 new PotChiStat()

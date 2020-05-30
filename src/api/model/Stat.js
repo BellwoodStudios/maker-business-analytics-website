@@ -41,6 +41,29 @@ export const StatAggregations = {
 };
 
 /**
+ * Group numbers that have similar ranges of values for a better chart display.
+ */
+export const StatGroups = {
+    // Dai that contributes to the total outstanding Dai supply
+    SUPPLY_DAI: 'SUPPLY_DAI',
+    // Dai that contributes to the system accounting
+    // This should be on the order of 1/100 of the total supply
+    SYSTEM_DAI: 'SYSTEM_DAI',
+    // Dai at the level of individual auctions
+    AUCTION_DAI: 'AUCTION_DAI',
+    // Collateral that contributes to the total supply
+    SUPPLY_COLLATERAL: 'SUPPLY_COLLATERAL',
+    // Collateral that contributes to the total supply (in USD)
+    SUPPLY_COLLATERAL_USD: 'SUPPLY_COLLATERAL_USD',
+    // Collateral at the level of individual auctions
+    AUCTION_COLLATERAL: 'AUCTION_COLLATERAL',
+    // Price for a single unit
+    PRICE: 'PRICE',
+    // An arbitrary event count such as Vaults Created
+    COUNT: 'COUNT'
+};
+
+/**
     Use these colors for stats and mark them off when they are used:
 
     #1AAB9B - Stability Fee
@@ -55,9 +78,9 @@ export const StatAggregations = {
     #FF4081 - System Debt
     #5C6BC0 - Savings Dai
     #89A74D - Collateral Locked
-    #FF5252
-    #B584FF
-    #83D17E
+    #FF5252 - Collateral Liquidations
+    #B584FF - Auctioned Collateral
+    #83D17E - Collateral Debt Owed
     #3FDFC9
     #FFA143
     #4AC9F1

@@ -1,29 +1,34 @@
 import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem, StatGroups } from 'api/model';
 import { fetchGraphQL } from 'api';
-import { fromWad } from 'utils/MathUtils';
 
-export default class CollateralLockedStat extends Stat {
+/**
+ * The number of liquidations that have occurred. Note: This stores a bunch of extra data to be used in other auction stats.
+ */
+export default class CollateralLiquidationsStat extends Stat {
 
     constructor () {
         super({
-            name: "Collateral Locked",
-            color: "#89A74D",
-            type: StatTypes.VALUE,
+            name: "Collateral Liquidations",
+            color: "#FF5252",
+            type: StatTypes.EVENT,
             format: StatFormats.NUMBER,
-            targets: StatTargets.COLLATERAL | StatTargets.VAULT,
+            targets: StatTargets.ALL,
             aggregation: StatAggregations.SUM,
-            group: StatGroups.SUPPLY_COLLATERAL,
+            group: StatGroups.COUNT
         });
     }
 
     async fetch (query) {
         const result = await fetchGraphQL(`
             {
-                ilkInkTime(${query.toGraphQLFilter()}) {
+                bitesTime(${query.toGraphQLFilter()}) {
                     nodes {
                         date,
                         ilkId,
+                        num,
                         ink,
+                        art,
+                        tab,
                         blockNumber,
                         blockTimestamp
                     }
@@ -32,13 +37,15 @@ export default class CollateralLockedStat extends Stat {
         `);
 
         // TODO - shouldn't be filtering on client for performance reasons
-        const data = result.data.ilkInkTime.nodes.filter(n => query.filterByIlk(n)).map(n => {
+        const data = result.data.bitesTime.nodes.filter(n => query.filterByIlk(n)).map(n => {
             return new StatDataItem({
                 block: new Block(n),
-                value: fromWad(n.ink),
+                value: parseInt(n.num),
                 extraData: {
                     group: n.ilkId,
-                    ink: n.ink
+                    ink: n.ink,
+                    art: n.art,
+                    tab: n.tab
                 }
             });
         });

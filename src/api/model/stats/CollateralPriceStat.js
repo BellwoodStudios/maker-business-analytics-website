@@ -1,4 +1,4 @@
-import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem } from 'api/model';
+import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem, StatGroups } from 'api/model';
 import { fetchGraphQL } from 'api';
 import { fromWad } from 'utils/MathUtils';
 
@@ -11,7 +11,8 @@ export default class CollateralPriceStat extends Stat {
             type: StatTypes.VALUE,
             format: StatFormats.DOLLARS,
             targets: StatTargets.COLLATERAL | StatTargets.VAULT,
-            aggregation: StatAggregations.AVERAGE
+            aggregation: StatAggregations.AVERAGE,
+            group: StatGroups.PRICE
         });
     }
 
