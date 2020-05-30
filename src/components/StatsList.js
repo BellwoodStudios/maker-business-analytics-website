@@ -4,8 +4,7 @@ import ColoredCheckbox from 'components/ColoredCheckbox';
 import { useSelector, useDispatch } from 'react-redux';
 import { setActiveQuery } from 'reducers/query';
 import { getStats } from 'api';
-import { QueryType } from 'model';
-import { StatTargets } from 'api/model';
+import { StatCategories } from 'api/model';
 import Divider from 'components/Divider';
 
 const Wrapper = styled.div`
@@ -58,56 +57,33 @@ function StatsList () {
     const { activeQuery } = useSelector(state => state.query);
     let stats = getStats(activeQuery);
     const activeStats = activeQuery.filterActiveStats(stats);
-
-    let primaryCategory;
-    switch (activeQuery.type) {
-        case QueryType.VAULT: primaryCategory = "Vault"; break;
-        case QueryType.COLLATERAL: primaryCategory = "Collateral"; break;
-        case QueryType.GLOBAL: primaryCategory = "Global"; break;
-        default: throw new Error('Unknown query type');
-    }
-
-    // Pull out any global stats for vault/collateral views and put them at the bottom
-    let globalStats = [];
-    if (activeQuery.type === QueryType.COLLATERAL || activeQuery.type === QueryType.VAULT) {
-        globalStats = stats.filter(s => s.targets === StatTargets.GLOBAL);
-        stats = stats.filter(s => s.targets !== StatTargets.GLOBAL);
-    }
+    const categories = Object.values(StatCategories).sort((a, b) => a.priority < b.priority ? -1 : 1).map(c => {
+        return {
+            label: c.label,
+            stats: stats.filter(s => s.category === c)
+        };
+    });
 
     return (
         <Wrapper>
-            <SectionWrapper>
-                <Header>{`${primaryCategory} Statistics`}</Header>
-                <Divider style={{ backgroundColor: "var(--color-foreground-15)" }} orientation="horizontal" />
-                <List>
-                    {stats.map((s, i) => {
-                        const active = activeStats.includes(s);
-
-                        return (<ListItem key={i} onClick={() => dispatch(setActiveQuery(activeQuery.setStatActive(s, !active)))}>
-                            <ColoredCheckbox color={s.color} checked={active} />
-                            <Label style={{ color: !active ? "var(--color-foreground-secondary)" : null }}>{s.name}</Label>
-                        </ListItem>)
-                    })}
-                </List>
-            </SectionWrapper>
-            {
-                globalStats.length > 0 ?
-                <SectionWrapper>
-                    <Header>{`Global Statistics`}</Header>
-                    <Divider style={{ backgroundColor: "var(--color-foreground-15)" }} orientation="horizontal" />
-                    <List>
-                        {globalStats.map((s, i) => {
-                            const active = activeStats.includes(s);
+            { categories.filter(c => c.stats.length > 0).map((c, i) => {
+                return (
+                    <SectionWrapper key={i}>
+                        <Header>{`${c.label} Stats`}</Header>
+                        <Divider style={{ backgroundColor: "var(--color-foreground-15)" }} orientation="horizontal" />
+                        <List>
+                            {c.stats.map((s, i) => {
+                                const active = activeStats.includes(s);
         
-                            return (<ListItem key={i} onClick={() => dispatch(setActiveQuery(activeQuery.setStatActive(s, !active)))}>
-                                <ColoredCheckbox color={s.color} checked={active} />
-                                <Label style={{ color: !active ? "var(--color-foreground-secondary)" : null }}>{s.name}</Label>
-                            </ListItem>)
-                        })}
-                    </List>
-                </SectionWrapper>
-                : null
-            }
+                                return (<ListItem key={i} onClick={() => dispatch(setActiveQuery(activeQuery.setStatActive(s, !active)))}>
+                                    <ColoredCheckbox color={s.color} checked={active} />
+                                    <Label style={{ color: !active ? "var(--color-foreground-secondary)" : null }}>{s.name}</Label>
+                                </ListItem>)
+                            })}
+                        </List>
+                    </SectionWrapper>
+                );
+            }) }
         </Wrapper>
     );
 }

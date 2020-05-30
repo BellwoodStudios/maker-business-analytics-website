@@ -1,4 +1,4 @@
-import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem } from 'api/model';
+import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem, StatCategories } from 'api/model';
 import { fetchGraphQL } from 'api';
 import { feeToAPY } from 'utils/MathUtils';
 
@@ -8,6 +8,7 @@ export default class DaiSavingsRateStat extends Stat {
         super({
             name: "Dai Savings Rate",
             color: "#26C6DA",
+            category: StatCategories.FEES,
             type: StatTypes.VALUE,
             format: StatFormats.PERCENT,
             targets: StatTargets.GLOBAL,

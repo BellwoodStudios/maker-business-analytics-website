@@ -1,4 +1,4 @@
-import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem, StatGroups } from 'api/model';
+import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem, StatGroups, StatCategories } from 'api/model';
 import { fetchGraphQL } from 'api';
 import { fromRad } from 'utils/MathUtils';
 
@@ -10,6 +10,7 @@ export default class SystemSurplusStat extends Stat {
         super({
             name: "System Surplus",
             color: "#ABEB63",
+            category: StatCategories.SYSTEM,
             type: StatTypes.VALUE,
             format: StatFormats.NUMBER,
             targets: StatTargets.GLOBAL,

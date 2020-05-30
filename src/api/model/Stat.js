@@ -3,6 +3,36 @@ import { QueryType } from 'model';
 import { StatData } from 'api/model';
 
 /**
+ * The category of the stat. Lower priority will sort to closer to the top.
+ */
+export const StatCategories = {
+    FEES: {
+        label: "Fee",
+        priority: 0
+    },
+    SUPPLY: {
+        label: "Supply",
+        priority: 1
+    },
+    COLLATERAL: {
+        label: "Collateral",
+        priority: 2
+    },
+    SYSTEM: {
+        label: "System",
+        priority: 3
+    },
+    COLLATERAL_AUCTION: {
+        label: "Collateral Auction",
+        priority: 4
+    },
+    MISC: {
+        label: "Misc",
+        priority: 100
+    }
+};
+
+/**
  * Value types are single values where the next time series value replaces the previous one. Ex) Stability Fee
  * Events are independant values that do not relate to the previous value. Ex) Vault Created
  */
@@ -104,6 +134,7 @@ export default class Stat {
     constructor (data) {
         this.name = data.name;
         this.color = data.color;
+        this.category = data.category ?? StatCategories.MISC;
         this.type = data.type ?? StatTypes.VALUE;
         this.format = data.format ?? StatFormats.NUMBER;
         this.targets = data.targets ?? StatTargets.ALL;
@@ -111,8 +142,13 @@ export default class Stat {
         this.stats = data.stats ?? [];
         this.group = data.group ?? this.format;
 
+        enumValidValue(StatCategories, 'category', this.category);
         enumValidValue(StatTypes, 'type', this.type);
         enumValidValue(StatAggregations, 'aggregation', this.aggregation);
+    }
+
+    getLongName () {
+        return `${this.category.label} - ${this.name}`;
     }
 
     /**

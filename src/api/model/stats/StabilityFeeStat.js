@@ -1,4 +1,4 @@
-import { Stat, StatTypes, StatTargets, StatFormats, Block, StatData, StatDataItem } from 'api/model';
+import { Stat, StatTypes, StatTargets, StatFormats, Block, StatData, StatDataItem, StatCategories } from 'api/model';
 import { fetchGraphQL } from 'api';
 import { feeToAPY, sumFees } from 'utils/MathUtils';
 import BigNumber from 'bignumber.js';
@@ -9,6 +9,7 @@ export default class StabilityFeeStat extends Stat {
         super({
             name: "Stability Fee",
             color: "#1AAB9B",
+            category: StatCategories.FEES,
             type: StatTypes.VALUE,
             format: StatFormats.PERCENT,
             targets: StatTargets.VAULT,

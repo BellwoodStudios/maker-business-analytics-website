@@ -1,4 +1,4 @@
-import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem, StatGroups } from 'api/model';
+import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem, StatGroups, StatCategories } from 'api/model';
 import { fetchGraphQL } from 'api';
 import { fromWad } from 'utils/MathUtils';
 
@@ -8,6 +8,7 @@ export default class CollateralPriceStat extends Stat {
         super({
             name: "Collateral Price",
             color: "#7E57C2",
+            category: StatCategories.COLLATERAL,
             type: StatTypes.VALUE,
             format: StatFormats.DOLLARS,
             targets: StatTargets.COLLATERAL | StatTargets.VAULT,

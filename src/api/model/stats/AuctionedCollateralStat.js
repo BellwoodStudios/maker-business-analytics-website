@@ -1,4 +1,4 @@
-import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, StatGroups } from 'api/model';
+import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, StatGroups, StatCategories } from 'api/model';
 import CollateralLiquidationsStat from './CollateralLiquidationsStat';
 import { fromWad } from 'utils/MathUtils';
 
@@ -8,6 +8,7 @@ export default class AuctionedCollateralStat extends Stat {
         super({
             name: "Auctioned Collateral",
             color: "#B584FF",
+            category: StatCategories.COLLATERAL_AUCTION,
             type: StatTypes.EVENT,
             format: StatFormats.NUMBER,
             targets: StatTargets.COLLATERAL | StatTargets.VAULT,

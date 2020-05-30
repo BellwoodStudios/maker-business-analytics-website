@@ -1,4 +1,4 @@
-import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem, StatGroups } from 'api/model';
+import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem, StatGroups, StatCategories } from 'api/model';
 import { fetchGraphQL } from 'api';
 import { fromWad } from 'utils/MathUtils';
 
@@ -8,6 +8,7 @@ export default class CollateralLockedStat extends Stat {
         super({
             name: "Collateral Locked",
             color: "#89A74D",
+            category: StatCategories.COLLATERAL,
             type: StatTypes.VALUE,
             format: StatFormats.NUMBER,
             targets: StatTargets.COLLATERAL | StatTargets.VAULT,

@@ -1,4 +1,4 @@
-import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem, StatGroups } from 'api/model';
+import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem, StatGroups, StatCategories } from 'api/model';
 import { fetchGraphQL } from 'api';
 
 /**
@@ -8,8 +8,9 @@ export default class CollateralLiquidationsStat extends Stat {
 
     constructor () {
         super({
-            name: "Collateral Liquidations",
+            name: "Liquidations",
             color: "#FF5252",
+            category: StatCategories.COLLATERAL_AUCTION,
             type: StatTypes.EVENT,
             format: StatFormats.NUMBER,
             targets: StatTargets.ALL,

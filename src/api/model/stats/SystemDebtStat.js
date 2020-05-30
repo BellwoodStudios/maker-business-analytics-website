@@ -1,4 +1,4 @@
-import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem, StatGroups } from 'api/model';
+import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem, StatGroups, StatCategories } from 'api/model';
 import { fetchGraphQL } from 'api';
 import { fromRad } from 'utils/MathUtils';
 
@@ -8,6 +8,7 @@ export default class SystemDebtStat extends Stat {
         super({
             name: "System Debt",
             color: "#FF4081",
+            category: StatCategories.SYSTEM,
             type: StatTypes.VALUE,
             format: StatFormats.NUMBER,
             targets: StatTargets.GLOBAL,

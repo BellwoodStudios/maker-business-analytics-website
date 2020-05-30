@@ -7,7 +7,7 @@ import SummaryPill from 'components/SummaryPill';
  * Display a summary pill from a stat.
  */
 function StatDataSummaryPill ({ stat, data }) {
-    return <SummaryPill label={stat.name} sublabel={dateLong()} color={stat.color} value={data != null ? statData(stat, data) : "-"} />;
+    return <SummaryPill label={stat.getLongName()} sublabel={dateLong()} color={stat.color} value={data != null ? statData(stat, data) : "-"} />;
 }
 
 StatDataSummaryPill.propTypes = {

@@ -1,4 +1,4 @@
-import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem, StatGroups } from 'api/model';
+import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem, StatGroups, StatCategories } from 'api/model';
 import { fetchGraphQL } from 'api';
 
 export default class NewVaultStat extends Stat {
@@ -7,6 +7,7 @@ export default class NewVaultStat extends Stat {
         super({
             name: "Vaults Created",
             color: "#FF7043",
+            category: StatCategories.MISC,
             type: StatTypes.EVENT,
             format: StatFormats.NUMBER,
             targets: StatTargets.ALL,

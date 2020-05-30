@@ -40,7 +40,7 @@ function buildChartData (activeStats, data) {
     }
 
     return [
-        ["Date", ...activeStats.map(s => s.name)],
+        ["Date", ...activeStats.map(s => s.getLongName())],
         ...merged
     ];
 }
