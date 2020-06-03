@@ -37,7 +37,8 @@ class VatIlkArtStat extends Stat {
 
     constructor () {
         super({
-            type: StatTypes.VALUE
+            type: StatTypes.VALUE,
+            aggregation: StatAggregations.SUM
         });
     }
 
