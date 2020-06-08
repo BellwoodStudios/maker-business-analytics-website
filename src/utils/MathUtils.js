@@ -26,10 +26,19 @@ export function fromRad (radAmount) {
 }
 
 /**
- * Convert the ilk spot price 
+ * Convert the ilk spot price to the actual collateral value in USD.
  */
 export function ilkSpotToPrice (_spot, _mat) {
     const spot = new BigNumber(fromRay(_spot));
     const mat = new BigNumber(fromRay(_mat));
     return spot.multipliedBy(mat).toNumber();
+}
+
+/**
+ * Convert the ilk spot price 
+ */
+export function parseDaiSupply (_art, _rate) {
+    const art = new BigNumber(fromWad(_art));
+    const rate = new BigNumber(_rate != null ? fromRay(_rate) : 1);
+    return art.multipliedBy(rate).toNumber();
 }

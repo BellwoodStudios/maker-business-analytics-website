@@ -1,6 +1,6 @@
-import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem, StatGroups, StatCategories } from 'api/model';
-import { fetchGraphQL } from 'api';
+import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, StatGroups, StatCategories } from 'api/model';
 import { fromRad } from 'utils/MathUtils';
+import IlkSnapshotStat from './IlkSnapshotStat';
 
 export default class DebtCeilingStat extends Stat {
 
@@ -13,42 +13,15 @@ export default class DebtCeilingStat extends Stat {
             format: StatFormats.NUMBER,
             targets: StatTargets.ALL,
             aggregation: StatAggregations.SUM,
-            group: StatGroups.SUPPLY_DAI
+            group: StatGroups.SUPPLY_DAI,
+            stats: [
+                new IlkSnapshotStat()
+            ]
         });
     }
 
-    async fetch (query) {
-        const result = await fetchGraphQL(`
-            {
-                allVatIlkLines {
-                    nodes {
-                        ilkId,
-                        line
-                        headerByHeaderId {
-                            blockNumber,
-                            blockTimestamp
-                        }
-                    }
-                }
-            }
-        `);
-
-        // TODO - shouldn't be filtering on client for performance reasons
-        const data = result.data.allVatIlkLines.nodes.filter(n => query.filterByIlk(n)).map(n => {
-            return new StatDataItem({
-                block: new Block(n.headerByHeaderId),
-                value: fromRad(n.line),
-                extraData: {
-                    group: n.ilkId,
-                    line: n.line
-                }
-            });
-        });
-
-        return new StatData({
-            stat: this,
-            data: data
-        }).mergeByGroup();
+    combine ([snapshot]) {
+        return snapshot.extraData.line != null ? fromRad(snapshot.extraData.line) : null;
     }
 
 }
