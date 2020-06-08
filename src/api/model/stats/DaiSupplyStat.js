@@ -1,5 +1,4 @@
 import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, StatGroups, StatCategories } from 'api/model';
-import { parseDaiSupply } from 'utils/MathUtils';
 import IlkSnapshotStat from './IlkSnapshotStat';
 
 export default class DaiSupplyStat extends Stat {
@@ -21,7 +20,7 @@ export default class DaiSupplyStat extends Stat {
     }
 
     combine ([snapshot]) {
-        return snapshot.extraData.art != null ? parseDaiSupply(snapshot.extraData.art, snapshot.extraData.rate) : null;
+        return snapshot.extraData.dai;
     }
 
 }

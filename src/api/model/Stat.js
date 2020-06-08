@@ -176,7 +176,7 @@ export default class Stat {
     }
 
     /**
-     * Combine two values together. By default will just use the aggregation method.
+     * Combine two or more values together. By default will just use the aggregation method.
      */
     combine (values) {
         let total = 0;

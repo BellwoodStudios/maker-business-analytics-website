@@ -21,7 +21,7 @@ export default class DebtCeilingStat extends Stat {
     }
 
     combine ([snapshot]) {
-        return snapshot.extraData.line != null ? fromRad(snapshot.extraData.line) : null;
+        return snapshot.extraData.debtCeiling;
     }
 
 }

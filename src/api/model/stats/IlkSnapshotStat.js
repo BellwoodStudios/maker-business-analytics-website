@@ -1,8 +1,10 @@
 import { Stat, StatTypes, StatTargets, Block, StatData, StatDataItem } from 'api/model';
+import { parseDaiSupply, ilkSpotToPrice, fromRad } from 'utils/MathUtils';
 import { fetchGraphQL, getVaults } from 'api';
+import { arraySum, arrayAvg } from 'utils';
 
 /**
- * Fetch time series on all the high-level ilk stats.
+ * Fetch time series on all the high-level ilk stats. Not to be used directly, but instead as a common stat dependency.
  */
 export default class IlkSnapshotStat extends Stat {
 
@@ -11,6 +13,26 @@ export default class IlkSnapshotStat extends Stat {
             type: StatTypes.VALUE,
             targets: StatTargets.ALL
         });
+    }
+
+    combine (values) {
+        // Remove any empty blocks
+        values = values.filter(v => v != null);
+
+        if (values.length === 0) return null;
+        if (values.length === 1) return values[0];
+
+        const largestBlock = values.reduce((value, curr) => value == null || curr.block.number > value.number ? curr.block : value, null);
+
+        return {
+            block: largestBlock,
+            value: 1,
+            extraData: {
+                dai: arraySum(values.map(v => v.extraData.dai)),
+                price: arrayAvg(values.map(v => v.extraData.price)),
+                debtCeiling: arraySum(values.map(v => v.extraData.debtCeiling))
+            }
+        };
     }
 
     async fetch (query) {
@@ -41,7 +63,11 @@ export default class IlkSnapshotStat extends Stat {
                 value: 1,
                 extraData: {
                     ...n,
-                    group: n.ilkIdentifier
+                    group: n.ilkIdentifier,
+                    // Add in computed fields
+                    dai: n.art != null ? parseDaiSupply(n.art, n.rate) : null,
+                    price: n.spot != null && n.mat != null ? ilkSpotToPrice(n.spot, n.mat) : null,
+                    debtCeiling: n.line != null ? fromRad(n.line) : null
                 }
             });
         })).flat();

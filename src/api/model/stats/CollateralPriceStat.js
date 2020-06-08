@@ -21,7 +21,7 @@ export default class CollateralPriceStat extends Stat {
     }
 
     combine ([snapshot]) {
-        return snapshot.extraData.spot != null && snapshot.extraData.mat != null ? ilkSpotToPrice(snapshot.extraData.spot, snapshot.extraData.mat) : null;
+        return snapshot.extraData.price;
     }
 
 }

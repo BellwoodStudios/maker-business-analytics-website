@@ -96,7 +96,12 @@ export default class StatData {
         for (const d of combined.data) {
             values[d.extraData._sourceIndex] = d.clone();
 
-            d.value = stat.combine(values);
+            const combinedValue = stat.combine(values);
+            if (typeof combinedValue === 'object') {
+                Object.assign(d, combinedValue);
+            } else {
+                d.value = combinedValue;
+            }
         }
 
         return combined;
