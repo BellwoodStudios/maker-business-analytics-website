@@ -24,3 +24,12 @@ export function fromRay (rayAmount) {
 export function fromRad (radAmount) {
     return new BigNumber(radAmount).dividedBy(10e44).toNumber();
 }
+
+/**
+ * Convert the ilk spot price 
+ */
+export function ilkSpotToPrice (_spot, _mat) {
+    const spot = new BigNumber(fromRay(_spot));
+    const mat = new BigNumber(fromRay(_mat));
+    return spot.multipliedBy(mat).toNumber();
+}

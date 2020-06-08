@@ -97,8 +97,8 @@ export const StatGroups = {
     Use these colors for stats and mark them off when they are used:
 
     #1AAB9B - Stability Fee
-    #F4B731 - Base Fee
-    #00E676 - Vault Fee
+    #F4B731
+    #00E676
     #FF7043 - New Vaults
     #26C6DA - Dai Savings Rate
     #448AFF - Dai Supply

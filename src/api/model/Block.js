@@ -4,7 +4,7 @@ export default class Block {
 
     constructor (data) {
         this.number = parseInt(data.blockNumber);
-        this.timestamp = moment.unix(data.blockTimestamp);
+        this.timestamp = data.blockTimestamp != null ? moment.unix(data.blockTimestamp) : moment(data.updated);
     }
 
 }

@@ -135,6 +135,13 @@ export function getCollateralByName (collateralName) {
 }
 
 /**
+ * Get a list of all available vault types.
+ */
+export function getVaults () {
+    return _vaults;
+}
+
+/**
  * Get a list of all vaults with optional collateral filter.
  */
 export function getVaultById (vaultId) {

@@ -1,9 +1,6 @@
 /** Run these queries to set up vulcanize for custom queries **/
 
-/** Add an index because we will use timestamp for time queries **/
-create index if not exists headers_block_timestamp_idx ON public.headers (block_timestamp);
-
-/** spot_poke time series **/
+/** latest blocks **/
 drop function if exists api.latest_block;
 drop type if exists api.latest_block_result cascade;
 create type api.latest_block_result AS (
@@ -13,27 +10,6 @@ create type api.latest_block_result AS (
 create function api.latest_block()
     returns setof api.latest_block_result as $$
         SELECT block_number, block_timestamp FROM public.storage_diff LEFT JOIN public.headers ON (block_height = block_number) WHERE checked = TRUE ORDER BY block_height DESC LIMIT 1
-    $$ language sql stable;
-
-/** spot_poke time series **/
-drop function if exists api.spot_poke_time;
-drop type if exists api.spot_poke_time_result cascade;
-create type api.spot_poke_time_result AS (
-    date timestamptz,
-    ilk_id int4,
-    value numeric,
-    block_number int8,
-    block_timestamp numeric
-);
-create function api.spot_poke_time(start_time date, end_time date, granularity interval)
-    returns setof api.spot_poke_time_result as $$
-        WITH input AS (
-            SELECT generate_series(start_time, end_time, granularity) AS d
-        ),
-        ilk_values AS (
-            SELECT input.d AS date, ilk_id, MAX(s.header_id) AS header_id FROM maker.spot_poke s CROSS JOIN input LEFT JOIN public.headers h ON (h.id = s.header_id) WHERE h.block_timestamp < extract(epoch FROM (input.d + granularity)) GROUP BY input.d, ilk_id
-        )
-        SELECT i.date, i.ilk_id, s.value, h.block_number, h.block_timestamp FROM ilk_values i LEFT JOIN maker.spot_poke s ON (s.header_id = i.header_id AND s.ilk_id = i.ilk_id) LEFT JOIN public.headers h ON (h.id = s.header_id)
     $$ language sql stable;
 
 /** pot_pie time series **/
