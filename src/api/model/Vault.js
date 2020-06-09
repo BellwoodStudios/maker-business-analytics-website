@@ -5,9 +5,9 @@ export default class Vault {
 
     constructor (data) {
         this.id = data.id;
-        this.ilk = data.ilk;
-        this.identifier = data.identifier;
-        this.name = data.identifier;
+        this.ilk = data.id;
+        this.identifier = data.id;
+        this.name = data.id;
     }
 
 }

@@ -1,5 +1,4 @@
 import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, StatGroups, StatCategories } from 'api/model';
-import { fromRad } from 'utils/MathUtils';
 import IlkSnapshotStat from './IlkSnapshotStat';
 
 export default class DebtCeilingStat extends Stat {

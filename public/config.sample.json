@@ -1,0 +1,5 @@
+{
+    "api": {
+        "endpoint": "https://vulcanize.mkranalytics.com/graphql"
+    }
+}

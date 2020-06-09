@@ -1,5 +1,4 @@
 import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, StatGroups, StatCategories } from 'api/model';
-import { ilkSpotToPrice } from 'utils/MathUtils';
 import IlkSnapshotStat from './IlkSnapshotStat';
 
 export default class CollateralPriceStat extends Stat {

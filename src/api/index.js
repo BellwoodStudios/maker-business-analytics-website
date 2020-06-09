@@ -12,15 +12,16 @@ import CollateralLiquidationsStat from 'api/model/stats/CollateralLiquidationsSt
 import AuctionedCollateralStat from 'api/model/stats/AuctionedCollateralStat';
 import CollateralDebtOwedStat from 'api/model/stats/CollateralDebtOwedStat';
 
+let _config = null;
 let _vaults = null;
 let _collateral = null;
 let _latestBlock = null;
 const _stats = [
     new DaiSupplyStat(),
-    new CollateralLockedStat(),
+    //new CollateralLockedStat(),
     new StabilityFeeStat(),
     new DaiSavingsRateStat(),
-    new SavingsDaiStat(),
+    //new SavingsDaiStat(),
     new CollateralPriceStat(),
     new DebtCeilingStat(),
     new SystemSurplusStat(),
@@ -62,12 +63,14 @@ export async function fetchGraphQL (graphql) {
     if (cache[graphql] != null) {
         return await cache[graphql];
     }
-
-    // TODO this should be configurable
-    const promise = fetch("https://vulcanize.mkranalytics.com/graphql", {
+    
+    const promise = fetch(_config.api.endpoint, {
         method: "POST",
         headers: new Headers({
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            ...(_config.api.user != null ? {
+                "Authorization": 'Basic ' + btoa(_config.api.user + ":" + _config.api.pass)
+            } : {})
         }),
         body: JSON.stringify({
             query: graphql
@@ -83,16 +86,25 @@ export async function fetchGraphQL (graphql) {
  * Initialize the collateral types. This must be called before using the api.
  */
 export async function init () {
+    _config = await (await fetch("/config.json")).json();
+
     const result = await fetchGraphQL(`
         {
             allIlks {
                 nodes {
-                    id,
-                    ilk,
-                    identifier
+                    id
                 }
             },
-            latestBlock {
+            allStorageDiffs(last:1, condition:{ checked:true }) {
+                nodes {
+                    blockHeight
+                }
+            }
+        }
+    `);
+    const latestBlockResult = await fetchGraphQL(`
+        {
+            allHeaders(condition:{ blockNumber:"${result.data.allStorageDiffs.nodes[0].blockHeight}" }) {
                 nodes {
                     blockNumber,
                     blockTimestamp
@@ -117,7 +129,7 @@ export async function init () {
     }
 
     // Set latest block
-    _latestBlock = new Block(result.data.latestBlock.nodes[0]);
+    _latestBlock = new Block(latestBlockResult.data.allHeaders.nodes[0]);
 }
 
 /**
