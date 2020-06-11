@@ -108,7 +108,7 @@ function ChartDisplay () {
                     <Value>{filterValue}</Value>
                 </ContentTop>
                 <DateRangeToolbar />
-                <Chart query={activeQuery} activeStats={activeStats} data={activeQueryResult?.payload} />
+                <Chart query={activeQuery} activeStats={activeStats} data={activeQueryResult?.payload} error={activeQueryResult?.error} />
                 <SummaryDetails>
                     { activeStats.map((stat, i) => {
                         const data = activeQueryResult?.payload?.find(sd => sd.stat.name === stat.name)?.packedData;

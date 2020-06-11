@@ -19,14 +19,19 @@ const NavLinkWrapper = styled(NavLink)`
     position: relative;
 
     & > .divider {
-        display: none;
-    }
-
-    &.active > .divider {
-        display: block;
+        transform: scaleY(0);
+        transition: transform 0.2s;
         position: absolute;
         right: 0;
         height: calc(100% - 30px);
+    }
+
+    &:hover, &.active {
+        background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2))
+    }
+
+    &.active > .divider {
+        transform: scaleY(1);
     }
 
     .color-faded {
@@ -60,13 +65,24 @@ const Value = styled.div`
     font-weight: bold;
 `;
 
-function VaultMenuItem ({ vault }) {
+function VaultMenuItem ({ vault, collateral }) {
+    let label;
+    let link;
+
+    if (vault != null) {
+        label = vault.identifier;
+        link = `/vaults/${vault.collateral.name}/${vault.name}`;
+    } else {
+        label = "All";
+        link = `/vaults/${collateral.name}`;
+    }
+
     return (
         <Wrapper>
-            <NavLinkWrapper to={`/vaults/${vault.collateral.name}/${vault.name}`}>
+            <NavLinkWrapper to={link} exact={true}>
                 <Left>
                     <Label className="color-faded">Vault</Label>
-                    <Value className="color-regular">{vault.identifier}</Value>
+                    <Value className="color-regular">{label}</Value>
                 </Left>
                 <Divider className="divider" display="color" />
             </NavLinkWrapper>
@@ -76,7 +92,8 @@ function VaultMenuItem ({ vault }) {
 }
 
 VaultMenuItem.propTypes = {
-    vault: PropTypes.object.isRequired
+    vault: PropTypes.object,
+    collateral: PropTypes.object
 };
 
 export default VaultMenuItem;

@@ -13,6 +13,7 @@ function VaultMenu () {
 
     return (
         <Wrapper>
+            {activeQuery.collateral?.vaults.length >= 2 ? <VaultMenuItem collateral={activeQuery.collateral} /> : null}
             {activeQuery.collateral?.vaults.map((v, i) => <VaultMenuItem key={i} vault={v} />)}
         </Wrapper>
     );
