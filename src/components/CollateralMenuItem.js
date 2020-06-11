@@ -5,35 +5,37 @@ import { NavLink } from 'react-router-dom';
 import Divider from 'components/Divider';
 
 const Wrapper = styled.li`
+    width: 100%;
+    display: flex;
+    justify-content: center;
 `;
 
 const NavLinkIcon = styled(NavLink)`
     display: flex;
     position: relative;
-    width: 60px;
+    margin: 0 10px;
+    width: 100%;
     height: 60px;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
+    transition: border-radius 0.2s, margin 0.2s;
 
     .divider {
-        display: none;
+        position: absolute;
+        right: 0;
+        transform: scaleY(0);
+        transition: transform 0.2s;
     }
 
-    &.active {
+    &:hover, &.active {
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
-        width: 70px;
-        margin-left: 10px;
-
-        & > * {
-            margin-left: -10px;
-        }
-
+        margin-right: 0;
+    }
+    &.active {
         .divider {
-            display: block;
-            position: absolute;
-            right: 0;
+            transform: scaleY(1);
         }
     }
 `;

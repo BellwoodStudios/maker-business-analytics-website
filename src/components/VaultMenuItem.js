@@ -19,14 +19,19 @@ const NavLinkWrapper = styled(NavLink)`
     position: relative;
 
     & > .divider {
-        display: none;
-    }
-
-    &.active > .divider {
-        display: block;
+        transform: scaleY(0);
+        transition: transform 0.2s;
         position: absolute;
         right: 0;
         height: calc(100% - 30px);
+    }
+
+    &:hover, &.active {
+        background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2))
+    }
+
+    &.active > .divider {
+        transform: scaleY(1);
     }
 
     .color-faded {

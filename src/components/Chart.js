@@ -94,10 +94,10 @@ function Chart ({ query, activeStats, data, error }) {
                 color: "#7c8a98"
             },
             gridlines: {
-                color: "#303d4d"
+                color: "transparent"
             },
             minorGridlines: {
-                color: "#303d4d"
+                color: "transparent"
             },
             format: 'percent'
         },
