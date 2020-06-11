@@ -18,6 +18,26 @@ const Divider = styled.div`
     ${props => props.display === 'color' && props.orientation === 'horizontal' && css`
         background: linear-gradient(to left, #00FF88, #009191);
     `}
+
+    ${props => props.length != null && props.orientation !== 'horizontal' && css`
+        height: ${props.length};
+    `}
+
+    ${props => props.length != null && props.orientation === 'horizontal' && css`
+        width: ${props.length};
+    `}
+
+    ${props => props.thickness != null && props.orientation !== 'horizontal' && css`
+        width: ${props.thickness};
+    `}
+
+    ${props => props.thickness != null && props.orientation === 'horizontal' && css`
+        height: ${props.thickness};
+    `}
+
+    ${props => props.background != null && css`
+        background: ${props.background};
+    `}
 `;
 
 export default Divider;
