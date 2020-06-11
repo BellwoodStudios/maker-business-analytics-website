@@ -60,13 +60,24 @@ const Value = styled.div`
     font-weight: bold;
 `;
 
-function VaultMenuItem ({ vault }) {
+function VaultMenuItem ({ vault, collateral }) {
+    let label;
+    let link;
+
+    if (vault != null) {
+        label = vault.identifier;
+        link = `/vaults/${vault.collateral.name}/${vault.name}`;
+    } else {
+        label = "All";
+        link = `/vaults/${collateral.name}`;
+    }
+
     return (
         <Wrapper>
-            <NavLinkWrapper to={`/vaults/${vault.collateral.name}/${vault.name}`}>
+            <NavLinkWrapper to={link} exact={true}>
                 <Left>
                     <Label className="color-faded">Vault</Label>
-                    <Value className="color-regular">{vault.identifier}</Value>
+                    <Value className="color-regular">{label}</Value>
                 </Left>
                 <Divider className="divider" display="color" />
             </NavLinkWrapper>
@@ -76,7 +87,8 @@ function VaultMenuItem ({ vault }) {
 }
 
 VaultMenuItem.propTypes = {
-    vault: PropTypes.object.isRequired
+    vault: PropTypes.object,
+    collateral: PropTypes.object
 };
 
 export default VaultMenuItem;
