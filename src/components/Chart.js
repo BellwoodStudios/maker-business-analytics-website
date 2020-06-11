@@ -10,11 +10,16 @@ const Wrapper = styled.div`
     height: 400px;
     display: flex;
     align-items: center;
+    justify-content: center;
     margin: 20px 0;
 `;
 
 const NoData = styled.div`
 
+`;
+
+const Error = styled.div`
+    color: #F44336;
 `;
 
 function toChartFormat (format) {
@@ -45,7 +50,7 @@ function buildChartData (activeStats, data) {
     ];
 }
 
-function Chart ({ query, activeStats, data }) {
+function Chart ({ query, activeStats, data, error }) {
     // Trim off any stats that have no data
     if (data != null) {
         for (let i = 0; i < data.length; i++) {
@@ -104,7 +109,7 @@ function Chart ({ query, activeStats, data }) {
 
     return (
         <Wrapper>
-            <Loader loading={data == null}>
+            <Loader loading={data == null && error == null}>
                 { (data != null && data.length > 0) ? <GChart
                     // Force a redraw on window resize to fix a sizing issue
                     key={windowWidth}
@@ -113,7 +118,7 @@ function Chart ({ query, activeStats, data }) {
                     width="100%"
                     height="400px"
                     options={options}
-                /> : <NoData>No Data</NoData> }
+                /> : (error != null ? <Error>{error.toString()}</Error> : <NoData>No Data</NoData>) }
             </Loader>
         </Wrapper>
     );
