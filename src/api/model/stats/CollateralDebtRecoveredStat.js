@@ -1,12 +1,12 @@
 import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, StatGroups, StatCategories } from 'api/model';
-import { BiteTotalsStat } from './AuctionTotalsStats';
+import { FlipBidTotalsStat } from './AuctionTotalsStats';
 import { fromRad } from 'utils/MathUtils';
 
 export default class CollateralDebtOwedStat extends Stat {
 
     constructor () {
         super({
-            name: "Debt Owed",
+            name: "Debt Recovered",
             color: "#83D17E",
             category: StatCategories.COLLATERAL_AUCTION,
             type: StatTypes.VALUE,
@@ -15,13 +15,13 @@ export default class CollateralDebtOwedStat extends Stat {
             aggregation: StatAggregations.SUM,
             group: StatGroups.AUCTION_DAI,
             stats: [
-                new BiteTotalsStat()
+                new FlipBidTotalsStat()
             ]
         });
     }
 
     combine ([totals]) {
-        return fromRad(totals.extraData.tab);
+        return fromRad(totals.extraData.bidAmount);
     }
 
 }

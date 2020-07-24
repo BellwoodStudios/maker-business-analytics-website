@@ -1,5 +1,5 @@
 import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, StatGroups, StatCategories } from 'api/model';
-import CollateralLiquidationsStat from './CollateralLiquidationsStat';
+import { BiteTotalsStat } from './AuctionTotalsStats';
 import { fromWad } from 'utils/MathUtils';
 
 export default class AuctionedCollateralStat extends Stat {
@@ -9,19 +9,19 @@ export default class AuctionedCollateralStat extends Stat {
             name: "Auctioned Collateral",
             color: "#B584FF",
             category: StatCategories.COLLATERAL_AUCTION,
-            type: StatTypes.EVENT,
+            type: StatTypes.VALUE,
             format: StatFormats.NUMBER,
             targets: StatTargets.COLLATERAL | StatTargets.VAULT,
             aggregation: StatAggregations.SUM,
             group: StatGroups.AUCTION_COLLATERAL,
             stats: [
-                new CollateralLiquidationsStat()
+                new BiteTotalsStat()
             ]
         });
     }
 
-    combine ([liquidation]) {
-        return fromWad(liquidation.extraData.ink);
+    combine ([totals]) {
+        return fromWad(totals.extraData.ink);
     }
 
 }
