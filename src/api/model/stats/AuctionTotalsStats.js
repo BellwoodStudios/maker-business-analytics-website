@@ -1,5 +1,4 @@
 import { Stat, StatTypes, StatTargets, Block, StatData, StatDataItem } from 'api/model';
-import { parseDaiSupply, ilkSpotToPrice, fromRad } from 'utils/MathUtils';
 import { fetchGraphQL, getVaults } from 'api';
 import { arraySum, arrayAvg } from 'utils';
 

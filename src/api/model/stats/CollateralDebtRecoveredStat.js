@@ -2,12 +2,12 @@ import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, StatGroups
 import { FlipBidTotalsStat } from './AuctionTotalsStats';
 import { fromRad } from 'utils/MathUtils';
 
-export default class CollateralDebtOwedStat extends Stat {
+export default class CollateralDebtRecoveredStat extends Stat {
 
     constructor () {
         super({
             name: "Debt Recovered",
-            color: "#83D17E",
+            color: "#3FDFC9",
             category: StatCategories.COLLATERAL_AUCTION,
             type: StatTypes.VALUE,
             format: StatFormats.NUMBER,

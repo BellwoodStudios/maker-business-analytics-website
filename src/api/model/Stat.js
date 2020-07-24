@@ -111,7 +111,7 @@ export const StatGroups = {
     #FF5252 - Collateral Liquidations
     #B584FF - Auctioned Collateral
     #83D17E - Collateral Debt Owed
-    #3FDFC9
+    #3FDFC9 - Collateral Debt Recovered
     #FFA143
     #4AC9F1
     #567FEE
