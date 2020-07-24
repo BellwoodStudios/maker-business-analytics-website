@@ -21,7 +21,7 @@ export default class CollateralDebtRecoveredStat extends Stat {
     }
 
     combine ([totals]) {
-        return fromRad(totals.extraData.bidAmount);
+        return fromRad(totals.extraData.bidAmountEnd);
     }
 
 }

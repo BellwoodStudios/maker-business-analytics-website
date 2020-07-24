@@ -93,7 +93,7 @@ export async function init () {
         {
             allIlks {
                 nodes {
-                    id
+                    ilkIdentifier
                 }
             },
             allStorageDiffs(last:1, condition:{ checked:true }) {

@@ -109,8 +109,10 @@ export class FlipBidTotalsStat extends Stat {
                 i${v.id}: timeFlipBidTotals(ilkIdentifier:"${v.identifier}", ${args}) {
                     nodes {
                         bucketStart,
-                        lot,
-                        bidAmount
+                        lotStart,
+                        lotEnd,
+                        bidAmountStart,
+                        bidAmountEnd
                     }
                 }
             `;
