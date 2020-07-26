@@ -87,7 +87,15 @@ export async function fetchGraphQL (graphql) {
  * Initialize the collateral types. This must be called before using the api.
  */
 export async function init () {
-    _config = await (await fetch("/config.json")).json();
+    try {
+        _config = await (await fetch("/config.json")).json();
+    } catch {
+        _config = {
+            "api": {
+                "endpoint": "https://vulcanize.mkranalytics.com/graphql"
+            }
+        };
+    }
 
     const result = await fetchGraphQL(`
         {
