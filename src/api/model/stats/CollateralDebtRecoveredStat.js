@@ -1,6 +1,5 @@
 import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, StatGroups, StatCategories } from 'api/model';
 import { FlipBidTotalsStat } from './AuctionTotalsStats';
-import { fromRad } from 'utils/MathUtils';
 
 export default class CollateralDebtRecoveredStat extends Stat {
 
@@ -21,7 +20,7 @@ export default class CollateralDebtRecoveredStat extends Stat {
     }
 
     combine ([totals]) {
-        return fromRad(totals.extraData.bidAmountEnd);
+        return totals.extraData.bidAmountEnd;
     }
 
 }

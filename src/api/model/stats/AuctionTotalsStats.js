@@ -1,6 +1,7 @@
 import { Stat, StatTypes, StatTargets, Block, StatData, StatDataItem } from 'api/model';
 import { fetchGraphQL, getVaults } from 'api';
-import { arraySum, arrayAvg } from 'utils';
+import { arraySum } from 'utils';
+import { fromRad, fromWad } from 'utils/MathUtils';
 
 /**
  * Fetch time series on all the high-level bite stats. Not to be used directly, but instead as a common stat dependency.
@@ -9,7 +10,7 @@ export class BiteTotalsStat extends Stat {
 
     constructor () {
         super({
-            type: StatTypes.VALUE,
+            type: StatTypes.EVENT,
             targets: StatTargets.ALL
         });
     }
@@ -27,9 +28,9 @@ export class BiteTotalsStat extends Stat {
             block: largestBlock,
             value: 1,
             extraData: {
-                dai: arraySum(values.map(v => v.extraData.dai)),
-                price: arrayAvg(values.map(v => v.extraData.price)),
-                debtCeiling: arraySum(values.map(v => v.extraData.debtCeiling))
+                ink: arraySum(values.map(v => v.extraData.ink)),
+                art: arraySum(values.map(v => v.extraData.tab)),
+                tab: arraySum(values.map(v => v.extraData.tab))
             }
         };
     }
@@ -63,8 +64,10 @@ export class BiteTotalsStat extends Stat {
                 block: new Block(n),
                 value: 1,
                 extraData: {
-                    ...n,
-                    group: n.ilkIdentifier
+                    group: n.ilkIdentifier,
+                    ink: fromWad(n.ink),
+                    art: fromRad(n.art),
+                    tab: fromRad(n.tab)
                 }
             });
         })).flat();
@@ -84,7 +87,7 @@ export class FlipBidTotalsStat extends Stat {
 
     constructor () {
         super({
-            type: StatTypes.VALUE,
+            type: StatTypes.EVENT,
             targets: StatTargets.ALL
         });
     }
@@ -102,9 +105,10 @@ export class FlipBidTotalsStat extends Stat {
             block: largestBlock,
             value: 1,
             extraData: {
-                dai: arraySum(values.map(v => v.extraData.dai)),
-                price: arrayAvg(values.map(v => v.extraData.price)),
-                debtCeiling: arraySum(values.map(v => v.extraData.debtCeiling))
+                lotStart: arraySum(values.map(v => v.extraData.lotStart)),
+                lotEnd: arraySum(values.map(v => v.extraData.lotEnd)),
+                bidAmountStart: arraySum(values.map(v => v.extraData.bidAmountStart)),
+                bidAmountEnd: arraySum(values.map(v => v.extraData.bidAmountEnd))
             }
         };
     }
@@ -139,8 +143,11 @@ export class FlipBidTotalsStat extends Stat {
                 block: new Block(n),
                 value: 1,
                 extraData: {
-                    ...n,
-                    group: n.ilkIdentifier
+                    group: n.ilkIdentifier,
+                    lotStart: fromWad(n.lotStart),
+                    lotEnd: fromWad(n.lotEnd),
+                    bidAmountStart: fromRad(n.bidAmountStart),
+                    bidAmountEnd: fromRad(n.bidAmountEnd),
                 }
             });
         })).flat();

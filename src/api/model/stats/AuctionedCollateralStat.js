@@ -1,6 +1,5 @@
 import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, StatGroups, StatCategories } from 'api/model';
 import { BiteTotalsStat } from './AuctionTotalsStats';
-import { fromWad } from 'utils/MathUtils';
 
 export default class AuctionedCollateralStat extends Stat {
 
@@ -21,7 +20,7 @@ export default class AuctionedCollateralStat extends Stat {
     }
 
     combine ([totals]) {
-        return fromWad(totals.extraData.ink);
+        return totals.extraData.ink;
     }
 
 }

@@ -1,6 +1,5 @@
 import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, StatGroups, StatCategories } from 'api/model';
 import { BiteTotalsStat } from './AuctionTotalsStats';
-import { fromRad } from 'utils/MathUtils';
 
 export default class CollateralDebtOwedStat extends Stat {
 
@@ -21,7 +20,7 @@ export default class CollateralDebtOwedStat extends Stat {
     }
 
     combine ([totals]) {
-        return fromRad(totals.extraData.tab);
+        return totals.extraData.tab;
     }
 
 }

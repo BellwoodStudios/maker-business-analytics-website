@@ -1,6 +1,5 @@
 import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, StatGroups, StatCategories } from 'api/model';
 import { FlipBidTotalsStat, BiteTotalsStat } from './AuctionTotalsStats';
-import { fromRad } from 'utils/MathUtils';
 
 export default class CollateralSurplusStat extends Stat {
 
@@ -22,7 +21,7 @@ export default class CollateralSurplusStat extends Stat {
     }
 
     combine ([bites, flips]) {
-        return (flips != null ? fromRad(flips.extraData.bidAmountEnd) : 0) - (bites != null ? fromRad(bites.extraData.tab) : 0);
+        return (flips != null ? flips.extraData.bidAmountEnd : 0) - (bites != null ? bites.extraData.tab : 0);
     }
 
 }
