@@ -50,6 +50,14 @@ export class BiteTotalsStat extends Stat {
             `;
         }).join(",") + "}");
 
+        // Attach ilk id to all nodes
+        for (const idstr of Object.keys(result.data)) {
+            const id = parseInt(idstr.substr(1));
+            for (const node of result.data[idstr].nodes) {
+                node.ilkId = id;
+            }
+        }
+
         const data = Object.values(result.data).map(d => d.nodes.filter(n => n != null && query.filterByIlk(n)).map(n => {
             return new StatDataItem({
                 block: new Block(n),
@@ -117,6 +125,14 @@ export class FlipBidTotalsStat extends Stat {
                 }
             `;
         }).join(",") + "}");
+
+        // Attach ilk id to all nodes
+        for (const idstr of Object.keys(result.data)) {
+            const id = parseInt(idstr.substr(1));
+            for (const node of result.data[idstr].nodes) {
+                node.ilkId = id;
+            }
+        }
 
         const data = Object.values(result.data).map(d => d.nodes.filter(n => n != null && query.filterByIlk(n)).map(n => {
             return new StatDataItem({
