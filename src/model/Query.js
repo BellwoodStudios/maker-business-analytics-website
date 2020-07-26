@@ -116,7 +116,7 @@ export default class Query {
     filterByIlk (node) {
         switch (this.type) {
             case QueryType.GLOBAL: return true;
-            case QueryType.COLLATERAL: return this.collateral.vaults.some(v => node.ilkId != null ? v.id === node.ilkId : v.identifier === node.identifier);
+            case QueryType.COLLATERAL: return this.collateral.vaults.some(v => node.ilkId != null ? v.id === node.ilkId : v.identifier === node.ilkIdentifier);
             case QueryType.VAULT: return node.ilkId != null ? this.vault.id === node.ilkId : this.vault.identifier === node.ilkIdentifier;
             default: return false;
         }
@@ -140,9 +140,11 @@ export default class Query {
         const granularity = this.granularity === QueryGranularity.WEEK ? `{ days:7 }` : `{ ${this.getMomentGranularity()}s:1 }`;
 
         // Filter takes the form 's:"2020-01-01", e:"2020-03-01", g:{ days:1 }'
+        const endGraphQL = this.end.clone();
+        endGraphQL.add(1, 'second').startOf(this.getMomentGranularity());
         return `
             rangeStart: "${this.start.toISOString()}",
-            rangeEnd: "${this.end.toISOString()}",
+            rangeEnd: "${endGraphQL.toISOString()}",
             bucketInterval: ${granularity}
         `;
     }

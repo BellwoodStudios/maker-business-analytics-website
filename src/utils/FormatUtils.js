@@ -1,9 +1,12 @@
 import moment from 'moment';
 import { QueryGranularity } from 'model';
-import { StatFormats } from 'api/model';
+import { StatFormats, StatTypes } from 'api/model';
 
 export function numberShort (num) {
     if (num == null) return "-";
+
+    const negative = num < 0;
+    if (negative) num = -num;
 
     const digits = 1;
     var si = [
@@ -20,7 +23,7 @@ export function numberShort (num) {
             break;
         }
     }
-    return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
+    return (negative ? "-" : "") + (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
 }
 
 export function percent (num) {
@@ -37,6 +40,10 @@ export function dollars (num) {
     } else {
         return "$" + num.toFixed(3);
     }
+}
+
+export function dateShort (date = moment()) {
+    return date.format('DD MMM. YYYY');
 }
 
 export function dateLong (date = moment()) {
@@ -69,10 +76,12 @@ export function toGoogleChartsDateFormat (format) {
  * Nicely print out the data value for this stat.
  */
 export function statData (stat, data) {
+    const value = stat.type === StatTypes.EVENT ? data.map(d => d.value).reduce((a, b) => a + b, 0) : data[data.length - 1].value;
+
     switch (stat.format) {
-        case StatFormats.NUMBER: return numberShort(data.value);
-        case StatFormats.PERCENT: return percent(data.value);
-        case StatFormats.DOLLARS: return dollars(data.value);
+        case StatFormats.NUMBER: return numberShort(value);
+        case StatFormats.PERCENT: return percent(value);
+        case StatFormats.DOLLARS: return dollars(value);
         default: throw new Error(`Unknown stat type '${stat.type}'.`);
     }
 }

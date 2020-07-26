@@ -10,7 +10,7 @@ export default class Block {
         } else {
             // Block format
             this.number = parseInt(data.blockNumber);
-            this.timestamp = data.blockTimestamp != null ? moment.unix(data.blockTimestamp) : moment(data.updated);
+            this.timestamp = data.blockTimestamp != null ? moment.unix(data.blockTimestamp) : moment.utc(data.updated).local();
         }
     }
 

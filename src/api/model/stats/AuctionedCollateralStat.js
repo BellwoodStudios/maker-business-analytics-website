@@ -9,7 +9,7 @@ export default class AuctionedCollateralStat extends Stat {
             name: "Auctioned Collateral",
             color: "#B584FF",
             category: StatCategories.COLLATERAL_AUCTION,
-            type: StatTypes.VALUE,
+            type: StatTypes.EVENT,
             format: StatFormats.NUMBER,
             targets: StatTargets.COLLATERAL | StatTargets.VAULT,
             aggregation: StatAggregations.SUM,

@@ -1,6 +1,4 @@
 import { QueryGranularity } from 'model';
-import { StatAggregations, StatTypes } from 'api/model';
-import { arraySum, arrayAvg } from 'utils';
 
 /**
  * Time series data for a particular stat.
@@ -36,29 +34,17 @@ export default class StatData {
         this.packedData = [];
         let lastUsedIndex = -1;
         while (curr.isBefore(end)) {
-            const endOfPeriod = curr.clone().add(1, granularity);
             let value = null;
-            switch (this.stat.type) {
-                case StatTypes.VALUE:
-                    // Find the most recent value that is still before the end period
-                    for (let i = lastUsedIndex + 1; i < this.data.length; i++) {
-                        if (this.data[i].block.timestamp.isSameOrBefore(curr, granularity)) {
-                            lastUsedIndex = i;
-                        } else {
-                            break;
-                        }
-                    }
-                    if (lastUsedIndex >= 0) value = this.data[lastUsedIndex].value;
 
+            // Find the most recent value that is still before the end period
+            for (let i = lastUsedIndex + 1; i < this.data.length; i++) {
+                if (this.data[i].block.timestamp.isSameOrBefore(curr, granularity)) {
+                    lastUsedIndex = i;
+                } else {
                     break;
-                case StatTypes.EVENT:
-                    // Apply the aggregation function on all the values that occur in this period
-                    const aggf = this.stat.aggregation === StatAggregations.SUM ? arraySum : arrayAvg;
-                    value = aggf(this.data.filter(d => d.block.timestamp.isBetween(curr, endOfPeriod, granularity, "[)")).map(d => d.value));
-
-                    break;
-                default: throw new Error(`Unknown aggregation method: '${this.stat.aggregation}'`);
+                }
             }
+            if (lastUsedIndex >= 0) value = this.data[lastUsedIndex].value;
 
             this.packedData.push({
                 timestamp: curr.clone(),

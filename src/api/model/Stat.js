@@ -104,14 +104,14 @@ export const StatGroups = {
     #448AFF - Dai Supply
     #7E57C2 - Collateral Price
     #E040FB - Debt Ceiling
-    #ABEB63 - System Surplus
-    #FF4081 - System Debt
+    #ABEB63 - System Surplus / Collateral Debt Recovered
+    #FF4081 - System Debt / Collateral Debt Owed
     #5C6BC0 - Savings Dai
     #89A74D - Collateral Locked
     #FF5252 - Collateral Liquidations
     #B584FF - Auctioned Collateral
-    #83D17E - Collateral Debt Owed
-    #3FDFC9 - Collateral Debt Recovered
+    #83D17E - Collateral Surplus
+    #3FDFC9
     #FFA143
     #4AC9F1
     #567FEE

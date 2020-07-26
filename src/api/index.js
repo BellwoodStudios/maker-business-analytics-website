@@ -11,6 +11,7 @@ import CollateralLockedStat from 'api/model/stats/CollateralLockedStat';
 import AuctionedCollateralStat from 'api/model/stats/AuctionedCollateralStat';
 import CollateralDebtOwedStat from 'api/model/stats/CollateralDebtOwedStat';
 import CollateralDebtRecoveredStat from 'api/model/stats/CollateralDebtRecoveredStat';
+import CollateralSurplusStat from 'api/model/stats/CollateralSurplusStat';
 
 let _config = null;
 let _vaults = null;
@@ -29,7 +30,8 @@ const _stats = [
     //new CollateralLiquidationsStat(),
     new AuctionedCollateralStat(),
     new CollateralDebtOwedStat(),
-    new CollateralDebtRecoveredStat()
+    new CollateralDebtRecoveredStat(),
+    new CollateralSurplusStat()
 ];
 
 function statLookup (statTypes) {

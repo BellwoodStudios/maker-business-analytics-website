@@ -7,11 +7,11 @@ export default class CollateralDebtRecoveredStat extends Stat {
     constructor () {
         super({
             name: "Debt Recovered",
-            color: "#3FDFC9",
+            color: "#ABEB63",
             category: StatCategories.COLLATERAL_AUCTION,
-            type: StatTypes.VALUE,
+            type: StatTypes.EVENT,
             format: StatFormats.NUMBER,
-            targets: StatTargets.COLLATERAL | StatTargets.VAULT,
+            targets: StatTargets.ALL,
             aggregation: StatAggregations.SUM,
             group: StatGroups.AUCTION_DAI,
             stats: [
