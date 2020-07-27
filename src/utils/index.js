@@ -35,3 +35,41 @@ export function arrayAvg (arr) {
     for (const v of arr) value += v;
     return value / arr.length;
 }
+
+/**
+ * Convert the nicely formatted data to a 2D array.
+ */
+export function toDataArray (activeStats, data) {
+    if (data.length === 0) return null;
+
+    // Merge packed stats together
+    const packedData = data.map(sd => sd.packedData);
+    const merged = [];
+    for (let i = 0; i < packedData[0].length; i++) {
+        merged.push([
+            packedData[0][i].timestamp.toDate(),
+            ...packedData.map(d => d[i].value)
+        ]);
+    }
+
+    return [
+        ["Date", ...activeStats.map(s => s.getLongName())],
+        ...merged
+    ];
+}
+
+/**
+ * Trigger a client-side text file download.
+ */
+export function download (filename, text) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+  
+    element.style.display = 'none';
+    document.body.appendChild(element);
+  
+    element.click();
+  
+    document.body.removeChild(element);
+}

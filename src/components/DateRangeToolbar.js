@@ -7,6 +7,8 @@ import Icon from 'components/Icon';
 import moment from 'moment';
 import { dateWithGranularity } from 'utils/FormatUtils';
 import { QueryGranularity } from 'model';
+import { getStats } from 'api';
+import { toDataArray, download } from 'utils';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 
@@ -42,6 +44,11 @@ const RangeEndText = styled.div`
 
 `;
 
+const DateRangeWrapper = styled.div`
+    position: relative;
+    padding-right: 8px;
+`;
+
 const RangeIcon = styled.a`
     display: flex;
     align-items: center;
@@ -60,10 +67,37 @@ const DateRangePickerWrapper = styled.div`
     z-index: 10;
 `;
 
+const MoreMenuWrapper = styled.div`
+    position: relative;
+`;
+
+const MoreMenu = styled.ul`
+    position: absolute;
+    right: 0;
+    top: 100%;
+    margin: 8px;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.15);
+    width: 200px;
+`;
+
+const MoreMenuItem = styled.li`
+    position: relative;
+`;
+
+const MoreMenuItemAnchor = styled.a`
+    display: block;
+    padding: 10px 20px;
+`;
+
 function DateRangeToolbar () {
-    const { activeQuery } = useSelector(state => state.query);
+    const { activeQuery, results } = useSelector(state => state.query);
+    const stats = getStats(activeQuery);
+    const activeStats = activeQuery.filterActiveStats(stats);
+    const activeQueryResult = results[activeQuery.toUrl()];
     const dispatch = useDispatch();
     const [showDatePicker, setShowDatePicker] = useState(false);
+    const [showMenu, setShowMenu] = useState(false);
 
     return (
         <Wrapper>
@@ -75,15 +109,35 @@ function DateRangeToolbar () {
                 <RangeStartText>{dateWithGranularity(activeQuery.start, activeQuery.granularity)}</RangeStartText>
                 <RangeEndText>{dateWithGranularity(activeQuery.end, activeQuery.granularity)}</RangeEndText>
             </RangeText>
-            <RangeIcon href="#" onClick={() => setShowDatePicker(!showDatePicker)}>
-                <Icon name="date_range" />
-            </RangeIcon>
-            <DateRangePickerWrapper style={{ display: showDatePicker ? "block" : "none" }}>
-                <DateRangePicker
-                    onChange={({ main }) => dispatch(setActiveQuery(activeQuery.clone({ start:moment(main.startDate), end:moment(main.endDate) })))}
-                    ranges={[{ startDate:activeQuery.start.toDate(), endDate:activeQuery.end.toDate(), key:"main" }]}
-                />
-            </DateRangePickerWrapper>
+            <DateRangeWrapper>
+                <RangeIcon href="#" onClick={() => setShowDatePicker(!showDatePicker)}>
+                    <Icon name="date_range" />
+                </RangeIcon>
+                <DateRangePickerWrapper style={{ display: showDatePicker ? "block" : "none" }}>
+                    <DateRangePicker
+                        onChange={({ main }) => dispatch(setActiveQuery(activeQuery.clone({ start:moment(main.startDate), end:moment(main.endDate) })))}
+                        ranges={[{ startDate:activeQuery.start.toDate(), endDate:activeQuery.end.toDate(), key:"main" }]}
+                    />
+                </DateRangePickerWrapper>
+            </DateRangeWrapper>
+            <MoreMenuWrapper>
+                <RangeIcon href="#" onClick={() => setShowMenu(!showMenu)}>
+                    <Icon name="more_vert" />
+                </RangeIcon>
+                <MoreMenu style={{ display: showMenu ? "block" : "none" }}>
+                    <MoreMenuItem>
+                        <MoreMenuItemAnchor href="#" onClick={(e) => {
+                            const data = toDataArray(activeStats, activeQueryResult.payload);
+                            const text = data.map(row => {
+                                return row.join(",");
+                            }).join("\n");
+                            download("mkranalytics-export.csv", text);
+                        }}>
+                            Export CSV...
+                        </MoreMenuItemAnchor>
+                    </MoreMenuItem>
+                </MoreMenu>
+            </MoreMenuWrapper>
         </Wrapper>
     );
 }

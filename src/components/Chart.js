@@ -5,6 +5,7 @@ import { Chart as GChart } from "react-google-charts";
 import { getFormatFromGranularity, toGoogleChartsDateFormat } from 'utils/FormatUtils';
 import { StatFormats } from 'api/model';
 import { useWindowWidth } from '@react-hook/window-size';
+import { toDataArray } from 'utils';
 
 const Wrapper = styled.div`
     height: 400px;
@@ -29,25 +30,6 @@ function toChartFormat (format) {
         case StatFormats.DOLLARS: return 'short';
         default: return format;
     }
-}
-
-function buildChartData (activeStats, data) {
-    if (data.length === 0) return null;
-
-    // Merge packed stats together
-    const packedData = data.map(sd => sd.packedData);
-    const merged = [];
-    for (let i = 0; i < packedData[0].length; i++) {
-        merged.push([
-            packedData[0][i].timestamp.toDate(),
-            ...packedData.map(d => d[i].value)
-        ]);
-    }
-
-    return [
-        ["Date", ...activeStats.map(s => s.getLongName())],
-        ...merged
-    ];
 }
 
 function Chart ({ query, activeStats, data, error }) {
@@ -105,7 +87,7 @@ function Chart ({ query, activeStats, data, error }) {
         colors: activeStats.map(s => s.color)
     };
 
-    const chartData = data != null ? buildChartData(activeStats, data) : null;
+    const chartData = data != null ? toDataArray(activeStats, data) : null;
 
     return (
         <Wrapper>
