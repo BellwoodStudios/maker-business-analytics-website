@@ -79,6 +79,9 @@ select {
 select:focus {
     outline: none;
 }
+select option {
+    background: var(--color-background-light);
+}
 
 *::-webkit-scrollbar-track { border-radius: 10px; background-color: rgba(0, 0, 0, 0.2); }
 *::-webkit-scrollbar { width: 8px; height: 8px; background: none; }
