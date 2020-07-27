@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 import { setActiveQuery } from 'reducers/query';
@@ -46,7 +46,7 @@ const RangeEndText = styled.div`
 
 const DateRangeWrapper = styled.div`
     position: relative;
-    padding-right: 8px;
+    margin-right: 8px;
 `;
 
 const RangeIcon = styled.a`
@@ -63,7 +63,7 @@ const DateRangePickerWrapper = styled.div`
     position: absolute;
     right: 0;
     top: 100%;
-    margin: 8px;
+    margin: 8px 0;
     z-index: 10;
 `;
 
@@ -75,10 +75,11 @@ const MoreMenu = styled.ul`
     position: absolute;
     right: 0;
     top: 100%;
-    margin: 8px;
+    margin: 8px 0;
     z-index: 10;
-    background: rgba(0, 0, 0, 0.15);
+    background: rgba(0, 0, 0, 0.3);
     width: 200px;
+    border-radius: 10px;
 `;
 
 const MoreMenuItem = styled.li`
@@ -88,6 +89,7 @@ const MoreMenuItem = styled.li`
 const MoreMenuItemAnchor = styled.a`
     display: block;
     padding: 10px 20px;
+    font-weight: bold;
 `;
 
 function DateRangeToolbar () {
@@ -98,6 +100,25 @@ function DateRangeToolbar () {
     const dispatch = useDispatch();
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
+
+    useEffect(() => {
+        function onDocumentClick (e) {
+            if (showDatePicker) {
+                // Don't hide when clicking the date picker
+                if (e.target.closest('.menu-root')) return;
+
+                setShowDatePicker(false);
+            }
+            if (showMenu) {
+                setShowMenu(false);
+            }
+        }
+
+        document.addEventListener("click", onDocumentClick);
+        return function cleanup () {
+            document.removeEventListener("click", onDocumentClick);
+        };
+    }, [showDatePicker, showMenu])
 
     return (
         <Wrapper>
@@ -113,7 +134,7 @@ function DateRangeToolbar () {
                 <RangeIcon href="#" onClick={() => setShowDatePicker(!showDatePicker)}>
                     <Icon name="date_range" />
                 </RangeIcon>
-                <DateRangePickerWrapper style={{ display: showDatePicker ? "block" : "none" }}>
+                <DateRangePickerWrapper className="menu-root" style={{ display: showDatePicker ? "block" : "none" }}>
                     <DateRangePicker
                         onChange={({ main }) => dispatch(setActiveQuery(activeQuery.clone({ start:moment(main.startDate), end:moment(main.endDate) })))}
                         ranges={[{ startDate:activeQuery.start.toDate(), endDate:activeQuery.end.toDate(), key:"main" }]}

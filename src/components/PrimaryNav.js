@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Divider from 'components/Divider';
 import { NavLink } from 'react-router-dom';
 import { getLatestBlock } from 'api';
+import moment from 'moment';
 
 const Wrapper = styled.nav`
     display: flex;
@@ -44,7 +45,7 @@ function PrimaryNav () {
             <Divider />
             <NavLeft>Maker Business Analytics</NavLeft>
             <NavRight>
-                <LatestBlock>Last sync <span title={latestBlock.timestamp.toString()}>{latestBlock.timestamp.fromNow()}</span> (Block {latestBlock.number})</LatestBlock>
+                <LatestBlock style={{ color: latestBlock.timestamp.clone().add(1, 'day').isBefore(moment()) ? "#F44336" : null }}>Last sync <span title={latestBlock.timestamp.toString()}>{latestBlock.timestamp.fromNow()}</span> (Block {latestBlock.number})</LatestBlock>
                 <NavList>
                     <NavListItem><NavLink to="/developer">Developer</NavLink></NavListItem>
                     <NavListItem><NavLink to="/about">About</NavLink></NavListItem>
