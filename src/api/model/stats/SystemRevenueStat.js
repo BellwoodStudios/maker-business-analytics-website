@@ -2,13 +2,13 @@ import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, Sta
 import { fetchGraphQL } from 'api';
 import { fromRad } from 'utils/MathUtils';
 
-export default class SystemSurplusStat extends Stat {
+export default class SystemRevenueStat extends Stat {
 
     static VOW_ADDRESS = '0xA950524441892A31ebddF91d3cEEFa04Bf454466';
 
     constructor () {
         super({
-            name: "System Surplus",
+            name: "System Revenue",
             color: "#ABEB63",
             category: StatCategories.SYSTEM,
             type: StatTypes.VALUE,

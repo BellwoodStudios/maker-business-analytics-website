@@ -4,14 +4,19 @@ import DaiSavingsRateStat from 'api/model/stats/DaiSavingsRateStat';
 import DaiSupplyStat from 'api/model/stats/DaiSupplyStat';
 import CollateralPriceStat from 'api/model/stats/CollateralPriceStat';
 import DebtCeilingStat from 'api/model/stats/DebtCeilingStat';
-//import SystemSurplusStat from 'api/model/stats/SystemSurplusStat';
-//import SystemDebtStat from 'api/model/stats/SystemDebtStat';
+//import SystemRevenueStat from 'api/model/stats/SystemRevenueStat';
+//import SystemCostStat from 'api/model/stats/SystemCostStat';
 import SavingsDaiStat from 'api/model/stats/SavingsDaiStat';
 import CollateralLockedStat from 'api/model/stats/CollateralLockedStat';
 import AuctionedCollateralStat from 'api/model/stats/AuctionedCollateralStat';
+import AuctionedCollateralUSDStat from 'api/model/stats/AuctionedCollateralUSDStat';
 import CollateralDebtOwedStat from 'api/model/stats/CollateralDebtOwedStat';
 import CollateralDebtRecoveredStat from 'api/model/stats/CollateralDebtRecoveredStat';
 import CollateralSurplusStat from 'api/model/stats/CollateralSurplusStat';
+import MakerBurnedStat from 'api/model/stats/MakerBurnedStat';
+import DaiAuctionedStat from 'api/model/stats/DaiAuctionedStat';
+import MakerGeneratedStat from 'api/model/stats/MakerGeneratedStat';
+import DaiRecoveredStat from 'api/model/stats/DaiRecoveredStat';
 
 let _config = null;
 let _vaults = null;
@@ -25,13 +30,18 @@ const _stats = [
     //new SavingsDaiStat(),
     new CollateralPriceStat(),
     new DebtCeilingStat(),
-    //new SystemSurplusStat(),
-    //new SystemDebtStat(),
+    //new SystemRevenueStat(),
+    //new SystemCostStat(),
     //new CollateralLiquidationsStat(),
-    new AuctionedCollateralStat(),
     new CollateralDebtOwedStat(),
     new CollateralDebtRecoveredStat(),
-    new CollateralSurplusStat()
+    new CollateralSurplusStat(),
+    new AuctionedCollateralStat(),
+    new AuctionedCollateralUSDStat(),
+    new MakerBurnedStat(),
+    new DaiAuctionedStat(),
+    new DaiRecoveredStat(),
+    new MakerGeneratedStat(),
 ];
 
 function statLookup (statTypes) {

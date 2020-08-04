@@ -159,3 +159,103 @@ export class FlipBidTotalsStat extends Stat {
     }
 
 }
+
+/**
+ * Fetch time series on all the high-level flop stats. Not to be used directly, but instead as a common stat dependency.
+ */
+export class FlopBidTotalsStat extends Stat {
+
+    constructor () {
+        super({
+            type: StatTypes.EVENT,
+            targets: StatTargets.ALL
+        });
+    }
+
+    async fetch (query) {
+        const args = query.toGraphQLFilter();
+
+        const result = await fetchGraphQL(`
+            {
+                timeFlopBidTotals(${args}) {
+                    nodes {
+                        bucketStart,
+                        lotStart,
+                        lotEnd,
+                        bidAmountStart,
+                        bidAmountEnd
+                    }
+                }
+            }
+        `);
+
+        const data = result.data.timeFlopBidTotals.nodes.map(n => {
+            return new StatDataItem({
+                block: new Block(n),
+                value: 1,
+                extraData: {
+                    lotStart: fromWad(n.lotStart),
+                    lotEnd: fromWad(n.lotEnd),
+                    bidAmountStart: fromRad(n.bidAmountStart),
+                    bidAmountEnd: fromRad(n.bidAmountEnd),
+                }
+            });
+        });
+
+        return new StatData({
+            stat: this,
+            data: data
+        });
+    }
+
+}
+
+/**
+ * Fetch time series on all the high-level flap stats. Not to be used directly, but instead as a common stat dependency.
+ */
+export class FlapBidTotalsStat extends Stat {
+
+    constructor () {
+        super({
+            type: StatTypes.EVENT,
+            targets: StatTargets.ALL
+        });
+    }
+
+    async fetch (query) {
+        const args = query.toGraphQLFilter();
+
+        const result = await fetchGraphQL(`
+            {
+                timeFlapBidTotals(${args}) {
+                    nodes {
+                        bucketStart,
+                        lotStart,
+                        lotEnd,
+                        bidAmountStart,
+                        bidAmountEnd
+                    }
+                }
+            }
+        `);
+
+        const data = result.data.timeFlapBidTotals.nodes.map(n => {
+            return new StatDataItem({
+                block: new Block(n),
+                value: 1,
+                extraData: {
+                    lotStart: fromRad(n.lotStart),
+                    lotEnd: fromRad(n.lotEnd),
+                    bidAmountStart: fromWad(n.bidAmountStart),
+                    bidAmountEnd: fromWad(n.bidAmountEnd),
+                }
+            });
+        });
+
+        return new StatData({
+            stat: this,
+            data: data
+        });
+    }
+
+}

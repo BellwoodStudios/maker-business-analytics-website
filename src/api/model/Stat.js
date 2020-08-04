@@ -26,6 +26,14 @@ export const StatCategories = {
         label: "Collateral Auction",
         priority: 4
     },
+    SURPLUS_AUCTION: {
+        label: "Surplus Auction",
+        priority: 5
+    },
+    DEBT_AUCTION: {
+        label: "Debt Auction",
+        priority: 6
+    },
     MISC: {
         label: "Misc",
         priority: 100
@@ -97,20 +105,20 @@ export const StatGroups = {
     Use these colors for stats and mark them off when they are used:
 
     #1AAB9B - Stability Fee
-    #F4B731
-    #00E676
     #FF7043 - New Vaults
     #26C6DA - Dai Savings Rate
     #448AFF - Dai Supply
     #7E57C2 - Collateral Price
     #E040FB - Debt Ceiling
-    #ABEB63 - System Surplus / Collateral Debt Recovered
-    #FF4081 - System Debt / Collateral Debt Owed
+    #ABEB63 - System Revenue / Collateral Debt Recovered / MKR Burned / Dai Recovered
+    #FF4081 - System Cost / Collateral Debt Owed / Dai Auctioned / MKR Generated
+    #83D17E - System Surplus / Collateral Surplus
     #5C6BC0 - Savings Dai
     #89A74D - Collateral Locked
     #FF5252 - Collateral Liquidations
     #B584FF - Auctioned Collateral
-    #83D17E - Collateral Surplus
+    #F4B731 - Auctioned Collateral USD
+    #00E676
     #3FDFC9
     #FFA143
     #4AC9F1

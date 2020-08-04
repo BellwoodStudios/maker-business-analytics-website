@@ -6,7 +6,7 @@ export default class SystemDebtStat extends Stat {
 
     constructor () {
         super({
-            name: "System Debt",
+            name: "System Cost",
             color: "#FF4081",
             category: StatCategories.SYSTEM,
             type: StatTypes.VALUE,
