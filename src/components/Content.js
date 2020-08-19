@@ -16,7 +16,7 @@ const ContentInner = styled.div`
 
 function Content () {
     return (
-        <Wrapper>
+        <Wrapper id="content">
             <Route path="/vaults/:collateralName"><VaultMenu /></Route>
             <ContentInner>
                 <Switch>

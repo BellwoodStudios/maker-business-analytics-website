@@ -45,7 +45,11 @@ function Chart ({ query, activeStats, data, error }) {
         }
     }
 
-    const windowWidth = useWindowWidth();
+    // Want to refresh the chart both when the window width changes or the width of the content changes
+    // The content change is important for when the vault sub-menu appears
+    // It's a bit hacky, but it works
+    const content = document.querySelector("#content");
+    const windowWidth = useWindowWidth() + (content != null ? content.clientWidth : 0);
 
     const axisGroups = Array.from(new Set(activeStats.map(s => ({ format:s.format, group:s.group }))));
     const vAxes = axisGroups.map((g, i) => ({ format:toChartFormat(g.format), textPosition: i >= 2 ? 'none' : 'out' }));
