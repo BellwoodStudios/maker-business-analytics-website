@@ -11,7 +11,7 @@ export const StatCategories = {
         priority: 0
     },
     SUPPLY: {
-        label: "Supply",
+        label: "Dai Supply",
         priority: 1
     },
     COLLATERAL: {

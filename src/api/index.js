@@ -1,47 +1,51 @@
 import { Vault, Collateral, Block } from 'api/model';
-import StabilityFeeStat from 'api/model/stats/StabilityFeeStat';
-import DaiSavingsRateStat from 'api/model/stats/DaiSavingsRateStat';
-import DaiSupplyStat from 'api/model/stats/DaiSupplyStat';
-import CollateralPriceStat from 'api/model/stats/CollateralPriceStat';
-import DebtCeilingStat from 'api/model/stats/DebtCeilingStat';
-//import SystemRevenueStat from 'api/model/stats/SystemRevenueStat';
-//import SystemCostStat from 'api/model/stats/SystemCostStat';
-import SavingsDaiStat from 'api/model/stats/SavingsDaiStat';
-import CollateralLockedStat from 'api/model/stats/CollateralLockedStat';
-import AuctionedCollateralStat from 'api/model/stats/AuctionedCollateralStat';
-import AuctionedCollateralUSDStat from 'api/model/stats/AuctionedCollateralUSDStat';
-import CollateralDebtOwedStat from 'api/model/stats/CollateralDebtOwedStat';
-import CollateralDebtRecoveredStat from 'api/model/stats/CollateralDebtRecoveredStat';
-import CollateralSurplusStat from 'api/model/stats/CollateralSurplusStat';
-import MakerBurnedStat from 'api/model/stats/MakerBurnedStat';
-import DaiAuctionedStat from 'api/model/stats/DaiAuctionedStat';
-import MakerGeneratedStat from 'api/model/stats/MakerGeneratedStat';
-import DaiRecoveredStat from 'api/model/stats/DaiRecoveredStat';
+import { StabilityFeeStat, DaiSavingsRateStat } from 'api/model/stats/FeeStats';
+import { DaiSupplyStat, DebtCeilingStat } from 'api/model/stats/DaiSupplyStats';
+import { CollateralPriceStat } from 'api/model/stats/CollateralStats';
+import {
+    AuctionedCollateralStat,
+    AuctionedCollateralUSDStat,
+    CollateralDebtOwedStat,
+    CollateralDebtRecoveredStat,
+    CollateralSurplusStat
+} from 'api/model/stats/CollateralAuctionStats';
+import { MakerBurnedStat, DaiAuctionedStat } from 'api/model/stats/SurplusAuctionStats';
+import { MakerMintedStat, DaiRecoveredStat } from 'api/model/stats/DebtAuctionStats';
 
 let _config = null;
 let _vaults = null;
 let _collateral = null;
 let _latestBlock = null;
 const _stats = [
-    new DaiSupplyStat(),
-    //new CollateralLockedStat(),
+    // Fees
     new StabilityFeeStat(),
     new DaiSavingsRateStat(),
-    //new SavingsDaiStat(),
-    new CollateralPriceStat(),
+
+    // Dai Supply
+    new DaiSupplyStat(),
     new DebtCeilingStat(),
-    //new SystemRevenueStat(),
-    //new SystemCostStat(),
-    //new CollateralLiquidationsStat(),
+
+    // Collateral
+    new CollateralPriceStat(),
+
+    // Collateral Auctions
     new CollateralDebtOwedStat(),
     new CollateralDebtRecoveredStat(),
     new CollateralSurplusStat(),
     new AuctionedCollateralStat(),
     new AuctionedCollateralUSDStat(),
+
+    // Surplus Auctions
     new MakerBurnedStat(),
     new DaiAuctionedStat(),
+
+    // Debt Auctions
     new DaiRecoveredStat(),
-    new MakerGeneratedStat(),
+    new MakerMintedStat(),
+    //new CollateralLockedStat(),
+    //new SavingsDaiStat(),
+    //new SystemRevenueStat(),
+    //new SystemCostStat(),
 ];
 
 function statLookup (statTypes) {
@@ -54,7 +58,7 @@ function statLookup (statTypes) {
 export const defaultGlobalStats = statLookup([
     DaiSupplyStat,
     DaiSavingsRateStat,
-    SavingsDaiStat,
+    //SavingsDaiStat,
     DebtCeilingStat
 ]);
 
@@ -63,7 +67,7 @@ export const defaultGlobalStats = statLookup([
  */
 export const defaultVaultStats = statLookup([
     DaiSupplyStat,
-    CollateralLockedStat,
+    //CollateralLockedStat,
     StabilityFeeStat,
     CollateralPriceStat,
     DebtCeilingStat

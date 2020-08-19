@@ -1,8 +1,31 @@
 import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem, StatCategories } from 'api/model';
 import { fetchGraphQL } from 'api';
 import { feeToAPY } from 'utils/MathUtils';
+import IlkSnapshotStat from './IlkSnapshotStat';
 
-export default class DaiSavingsRateStat extends Stat {
+export class StabilityFeeStat extends Stat {
+
+    constructor () {
+        super({
+            name: "Stability Fee",
+            color: "#1AAB9B",
+            category: StatCategories.FEES,
+            type: StatTypes.VALUE,
+            format: StatFormats.PERCENT,
+            targets: StatTargets.VAULT,
+            stats: [
+                new IlkSnapshotStat()
+            ]
+        });
+    }
+
+    combine ([snapshot]) {
+        return snapshot.extraData.duty != null ? feeToAPY(snapshot.extraData.duty) : null;
+    }
+
+}
+
+export class DaiSavingsRateStat extends Stat {
 
     constructor () {
         super({
