@@ -43,6 +43,7 @@ export class BiteTotalsStat extends Stat {
                 i${v.id}: timeBiteTotals(ilkIdentifier:"${v.identifier}", ${args}) {
                     nodes {
                         bucketStart,
+                        count,
                         ink,
                         art,
                         tab
@@ -65,6 +66,7 @@ export class BiteTotalsStat extends Stat {
                 value: 1,
                 extraData: {
                     group: n.ilkIdentifier,
+                    count: parseInt(n.count),
                     ink: fromWad(n.ink),
                     art: fromRad(n.art),
                     tab: fromRad(n.tab)
@@ -121,6 +123,7 @@ export class FlipBidTotalsStat extends Stat {
                 i${v.id}: timeFlipBidTotals(ilkIdentifier:"${v.identifier}", ${args}) {
                     nodes {
                         bucketStart,
+                        count,
                         lotStart,
                         lotEnd,
                         bidAmountStart,
@@ -144,6 +147,7 @@ export class FlipBidTotalsStat extends Stat {
                 value: 1,
                 extraData: {
                     group: n.ilkIdentifier,
+                    count: parseInt(n.count),
                     lotStart: fromWad(n.lotStart),
                     lotEnd: fromWad(n.lotEnd),
                     bidAmountStart: fromRad(n.bidAmountStart),
@@ -180,6 +184,7 @@ export class FlopBidTotalsStat extends Stat {
                 timeFlopBidTotals(${args}) {
                     nodes {
                         bucketStart,
+                        count,
                         lotStart,
                         lotEnd,
                         bidAmountStart,
@@ -194,6 +199,7 @@ export class FlopBidTotalsStat extends Stat {
                 block: new Block(n),
                 value: 1,
                 extraData: {
+                    count: parseInt(n.count),
                     lotStart: fromWad(n.lotStart),
                     lotEnd: fromWad(n.lotEnd),
                     bidAmountStart: fromRad(n.bidAmountStart),
@@ -230,6 +236,7 @@ export class FlapBidTotalsStat extends Stat {
                 timeFlapBidTotals(${args}) {
                     nodes {
                         bucketStart,
+                        count,
                         lotStart,
                         lotEnd,
                         bidAmountStart,
@@ -244,6 +251,7 @@ export class FlapBidTotalsStat extends Stat {
                 block: new Block(n),
                 value: 1,
                 extraData: {
+                    count: parseInt(n.count),
                     lotStart: fromRad(n.lotStart),
                     lotEnd: fromRad(n.lotEnd),
                     bidAmountStart: fromWad(n.bidAmountStart),

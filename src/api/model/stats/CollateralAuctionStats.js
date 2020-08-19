@@ -1,6 +1,6 @@
 import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, StatGroups, StatCategories } from 'api/model';
-import { FlipBidTotalsStat, BiteTotalsStat } from './AuctionTotalsStats';
-import IlkSnapshotStat from './IlkSnapshotStat';
+import { FlipBidTotalsStat, BiteTotalsStat } from './base/AuctionTotalsStats';
+import IlkSnapshotStat from './base/IlkSnapshotStat';
 
 export class CollateralDebtOwedStat extends Stat {
 
@@ -54,7 +54,7 @@ export class CollateralSurplusStat extends Stat {
 
     constructor () {
         super({
-            name: "Surplus",
+            name: "Profit",
             color: "#83D17E",
             category: StatCategories.COLLATERAL_AUCTION,
             type: StatTypes.EVENT,
@@ -120,6 +120,30 @@ export class AuctionedCollateralUSDStat extends Stat {
 
     combine ([bites, ilkSnapshot]) {
         return bites.extraData.ink * ilkSnapshot.extraData.price;
+    }
+
+}
+
+export class LiquidationsCountStat extends Stat {
+
+    constructor () {
+        super({
+            name: "Liquidations Count",
+            color: "#3FDFC9",
+            category: StatCategories.COLLATERAL_AUCTION,
+            type: StatTypes.EVENT,
+            format: StatFormats.NUMBER,
+            targets: StatTargets.COLLATERAL | StatTargets.VAULT,
+            aggregation: StatAggregations.SUM,
+            group: StatGroups.COUNT,
+            stats: [
+                new FlipBidTotalsStat()
+            ]
+        });
+    }
+
+    combine ([totals]) {
+        return totals.extraData.count;
     }
 
 }

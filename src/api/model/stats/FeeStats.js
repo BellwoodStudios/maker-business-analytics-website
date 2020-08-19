@@ -1,7 +1,7 @@
 import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem, StatCategories } from 'api/model';
 import { fetchGraphQL } from 'api';
 import { feeToAPY } from 'utils/MathUtils';
-import IlkSnapshotStat from './IlkSnapshotStat';
+import IlkSnapshotStat from './base/IlkSnapshotStat';
 
 export class StabilityFeeStat extends Stat {
 

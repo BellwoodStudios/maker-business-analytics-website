@@ -7,10 +7,11 @@ import {
     AuctionedCollateralUSDStat,
     CollateralDebtOwedStat,
     CollateralDebtRecoveredStat,
-    CollateralSurplusStat
+    CollateralSurplusStat,
+    LiquidationsCountStat
 } from 'api/model/stats/CollateralAuctionStats';
-import { MakerBurnedStat, DaiAuctionedStat } from 'api/model/stats/SurplusAuctionStats';
-import { MakerMintedStat, DaiRecoveredStat } from 'api/model/stats/DebtAuctionStats';
+import { MakerBurnedStat, DaiAuctionedStat, SurplusAuctionsCountStat } from 'api/model/stats/SurplusAuctionStats';
+import { MakerMintedStat, DaiRecoveredStat, DebtAuctionsCountStat } from 'api/model/stats/DebtAuctionStats';
 
 let _config = null;
 let _vaults = null;
@@ -34,14 +35,18 @@ const _stats = [
     new CollateralSurplusStat(),
     new AuctionedCollateralStat(),
     new AuctionedCollateralUSDStat(),
+    new LiquidationsCountStat(),
 
     // Surplus Auctions
     new MakerBurnedStat(),
     new DaiAuctionedStat(),
+    new SurplusAuctionsCountStat(),
 
     // Debt Auctions
     new DaiRecoveredStat(),
     new MakerMintedStat(),
+    new DebtAuctionsCountStat(),
+
     //new CollateralLockedStat(),
     //new SavingsDaiStat(),
     //new SystemRevenueStat(),
@@ -200,7 +205,7 @@ export function getStats (query) {
 }
 
 export function getStatByName (name) {
-    return _stats.find(s => s.name === name);
+    return _stats.find(s => s.getLongName() === name);
 }
 
 export function getLatestBlock () {

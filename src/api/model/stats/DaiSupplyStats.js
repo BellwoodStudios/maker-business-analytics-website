@@ -1,5 +1,5 @@
 import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, StatGroups, StatCategories } from 'api/model';
-import IlkSnapshotStat from './IlkSnapshotStat';
+import IlkSnapshotStat from './base/IlkSnapshotStat';
 
 export class DaiSupplyStat extends Stat {
 

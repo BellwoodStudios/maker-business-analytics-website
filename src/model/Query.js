@@ -178,7 +178,7 @@ export default class Query {
             default: url += '/'; break;
         }
         const params = {
-            stats: this.stats.map(s => s.name),
+            stats: this.stats.map(s => s.getLongName()),
             start: this.start.unix(),
             end: this.end.unix(),
             granularity: this.granularity

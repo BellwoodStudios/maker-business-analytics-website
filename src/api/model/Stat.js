@@ -110,16 +110,16 @@ export const StatGroups = {
     #448AFF - Dai Supply
     #7E57C2 - Collateral Price
     #E040FB - Debt Ceiling
-    #ABEB63 - System Revenue / Collateral Debt Recovered / MKR Burned / Dai Recovered
-    #FF4081 - System Cost / Collateral Debt Owed / Dai Auctioned / MKR Generated
-    #83D17E - System Surplus / Collateral Surplus
+    #ABEB63 - System Revenue / Collateral Debt Recovered / Stability Fee Revenue / MKR Burned / Dai Recovered
+    #FF4081 - System Cost / Collateral Debt Owed / Savings Dai Cost / Dai Auctioned / MKR Minted
+    #83D17E - System Profit / Collateral Auction Profit / Fee Profit
     #5C6BC0 - Savings Dai
     #89A74D - Collateral Locked
     #FF5252 - Collateral Liquidations
     #B584FF - Auctioned Collateral
     #F4B731 - Auctioned Collateral USD
     #00E676
-    #3FDFC9
+    #3FDFC9 - Liquidations Count / Surplus Auctions Count / Debt Auctions Count
     #FFA143
     #4AC9F1
     #567FEE

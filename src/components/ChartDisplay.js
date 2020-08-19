@@ -111,7 +111,7 @@ function ChartDisplay () {
                 <Chart query={activeQuery} activeStats={activeStats} data={activeQueryResult?.payload} error={activeQueryResult?.error} />
                 <SummaryDetails>
                     { activeStats.map((stat, i) => {
-                        const data = activeQueryResult?.payload?.find(sd => sd.stat.name === stat.name)?.packedData;
+                        const data = activeQueryResult?.payload?.find(sd => sd.stat.getLongName() === stat.getLongName())?.packedData;
                         return data != null ? <StatDataSummaryPill key={i} stat={stat} data={data} /> : null;
                     }) }
                 </SummaryDetails>
