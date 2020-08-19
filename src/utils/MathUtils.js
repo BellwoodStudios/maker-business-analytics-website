@@ -35,10 +35,24 @@ export function ilkSpotToPrice (_spot, _mat) {
 }
 
 /**
- * Convert the ilk spot price 
+ * Convert normalized Dai (art) into the actual amount.
  */
 export function parseDaiSupply (_art, _rate) {
     const art = new BigNumber(fromWad(_art));
     const rate = new BigNumber(_rate != null ? fromRay(_rate) : 1);
     return art.multipliedBy(rate).toNumber();
+}
+
+/**
+ * Deteremine the fees that were collected over some time period.
+ */
+export function parseFeesCollected (_art1, _art2, _rate1, _rate2) {
+    if (_art1 == null) _art1 = _art2;
+    if (_rate1 == null) _rate1 = _rate2;
+
+    const art1 = new BigNumber(fromWad(_art1));
+    const art2 = new BigNumber(fromWad(_art2));
+    const rate1 = new BigNumber(_rate1 != null ? fromRay(_rate1) : 1);
+    const rate2 = new BigNumber(_rate2 != null ? fromRay(_rate2) : 1);
+    return (art1.plus(art2).dividedBy(2)).multipliedBy(rate2.minus(rate1)).toNumber();
 }

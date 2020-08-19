@@ -76,7 +76,7 @@ export function toGoogleChartsDateFormat (format) {
  * Nicely print out the data value for this stat.
  */
 export function statData (stat, data) {
-    const value = stat.type === StatTypes.EVENT ? data.map(d => d.value).reduce((a, b) => a + b, 0) : data[data.length - 1].value;
+    const value = (stat.type === StatTypes.EVENT || stat.type === StatTypes.VALUE_OF_EVENT) ? data.map(d => d.value).reduce((a, b) => a + b, 0) : data[data.length - 1].value;
 
     switch (stat.format) {
         case StatFormats.NUMBER: return numberShort(value);

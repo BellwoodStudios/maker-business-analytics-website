@@ -20,7 +20,30 @@ export class StabilityFeeStat extends Stat {
     }
 
     combine ([snapshot]) {
-        return snapshot.extraData.duty != null ? feeToAPY(snapshot.extraData.duty) : null;
+        return feeToAPY(snapshot.extraData.duty);
+    }
+
+}
+
+export class StabilityFeeRevenueStat extends Stat {
+
+    constructor () {
+        super({
+            name: "Stability Fee Revenue",
+            color: "#ABEB63",
+            category: StatCategories.FEES,
+            type: StatTypes.VALUE_OF_EVENT,
+            format: StatFormats.NUMBER,
+            targets: StatTargets.ALL,
+            aggregation: StatAggregations.SUM,
+            stats: [
+                new IlkSnapshotStat()
+            ]
+        });
+    }
+
+    combine ([snapshot]) {
+        return snapshot.extraData.feesCollected;
     }
 
 }

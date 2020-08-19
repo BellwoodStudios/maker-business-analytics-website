@@ -40,6 +40,7 @@ export default class StatData {
             let value = null;
             switch (this.stat.type) {
                 case StatTypes.VALUE:
+                case StatTypes.VALUE_OF_EVENT:
                     // Find the most recent value that is still before the end period
                     for (let i = lastUsedIndex + 1; i < this.data.length; i++) {
                         if (this.data[i].block.timestamp.isSameOrBefore(endOfPeriod, granularity)) {

@@ -1,5 +1,5 @@
 import { Vault, Collateral, Block } from 'api/model';
-import { StabilityFeeStat, DaiSavingsRateStat } from 'api/model/stats/FeeStats';
+import { StabilityFeeStat, StabilityFeeRevenueStat, DaiSavingsRateStat } from 'api/model/stats/FeeStats';
 import { DaiSupplyStat, DebtCeilingStat } from 'api/model/stats/DaiSupplyStats';
 import { CollateralPriceStat } from 'api/model/stats/CollateralStats';
 import {
@@ -20,6 +20,7 @@ let _latestBlock = null;
 const _stats = [
     // Fees
     new StabilityFeeStat(),
+    new StabilityFeeRevenueStat(),
     new DaiSavingsRateStat(),
 
     // Dai Supply

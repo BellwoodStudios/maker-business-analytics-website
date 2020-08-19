@@ -43,10 +43,12 @@ export const StatCategories = {
 /**
  * Value types are single values where the next time series value replaces the previous one. Ex) Stability Fee
  * Events are independant values that do not relate to the previous value. Ex) Vault Created
+ * Value of event are when you want to use the latest value, but the underlying type is an event.
  */
 export const StatTypes = {
     VALUE: 'value',
-    EVENT: 'event'
+    EVENT: 'event',
+    VALUE_OF_EVENT: 'value_of_event'
 };
 
 export const StatFormats = {

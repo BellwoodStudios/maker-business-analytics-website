@@ -1,5 +1,5 @@
 import { Stat, StatTypes, StatTargets, Block, StatData, StatDataItem } from 'api/model';
-import { parseDaiSupply, ilkSpotToPrice, fromRad } from 'utils/MathUtils';
+import { parseDaiSupply, ilkSpotToPrice, fromRad, parseFeesCollected } from 'utils/MathUtils';
 import { fetchGraphQL, getVaults } from 'api';
 import { arraySum, arrayAvg } from 'utils';
 
@@ -23,12 +23,13 @@ export default class IlkSnapshotStat extends Stat {
         if (values.length === 1) return values[0];
 
         const largestBlock = values.reduce((value, curr) => value == null || curr.block.number > value.number ? curr.block : value, null);
-
+        
         return {
             block: largestBlock,
             value: 1,
             extraData: {
                 dai: arraySum(values.map(v => v.extraData.dai)),
+                feesCollected: arraySum(values.map(v => v.extraData.feesCollected)),
                 price: arrayAvg(values.map(v => v.extraData.price)),
                 debtCeiling: arraySum(values.map(v => v.extraData.debtCeiling))
             }
@@ -57,20 +58,31 @@ export default class IlkSnapshotStat extends Stat {
             `;
         }).join(",") + "}");
 
-        const data = Object.values(result.data).map(d => d.nodes.filter(n => n != null && query.filterByIlk(n)).map(n => {
-            return new StatDataItem({
-                block: new Block(n),
-                value: 1,
-                extraData: {
-                    ...n,
-                    group: n.ilkIdentifier,
-                    // Add in computed fields
-                    dai: n.art != null ? parseDaiSupply(n.art, n.rate) : null,
-                    price: n.spot != null && n.mat != null ? ilkSpotToPrice(n.spot, n.mat) : null,
-                    debtCeiling: n.line != null ? fromRad(n.line) : null
-                }
+        const data = Object.values(result.data).map(d => {
+            let lastRate = null;
+            let lastArt = null;
+
+            return d.nodes.filter(n => n != null && query.filterByIlk(n)).map(n => {
+                const row = new StatDataItem({
+                    block: new Block(n),
+                    value: 1,
+                    extraData: {
+                        ...n,
+                        group: n.ilkIdentifier,
+                        // Add in computed fields
+                        dai: n.art != null ? parseDaiSupply(n.art, n.rate) : null,
+                        feesCollected: (n.art != null && n.rate != null) ? parseFeesCollected(lastArt, n.art, lastRate, n.rate) : 0,
+                        price: n.spot != null && n.mat != null ? ilkSpotToPrice(n.spot, n.mat) : null,
+                        debtCeiling: n.line != null ? fromRad(n.line) : null
+                    }
+                });
+
+                lastRate = n.rate;
+                lastArt = n.art;
+
+                return row;
             });
-        })).flat();
+        }).flat();
 
         return new StatData({
             stat: this,
