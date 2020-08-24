@@ -1,7 +1,8 @@
-import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem, StatCategories } from 'api/model';
+import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem, StatCategories, StatGroups } from 'api/model';
 import { fetchGraphQL } from 'api';
-import { feeToAPY } from 'utils/MathUtils';
+import { feeToAPY, parseFeesCollected } from 'utils/MathUtils';
 import IlkSnapshotStat from './base/IlkSnapshotStat';
+import { PotPieStat, PotChiStat } from './base/PotStats';
 
 export class StabilityFeeStat extends Stat {
 
@@ -36,6 +37,7 @@ export class StabilityFeeRevenueStat extends Stat {
             format: StatFormats.NUMBER,
             targets: StatTargets.ALL,
             aggregation: StatAggregations.SUM,
+            group: StatGroups.SYSTEM_DAI,
             stats: [
                 new IlkSnapshotStat()
             ]
@@ -96,6 +98,35 @@ export class DaiSavingsRateStat extends Stat {
             stat: this,
             data: data
         });
+    }
+
+}
+
+export class SavingsDaiCostStat extends Stat {
+
+    constructor () {
+        super({
+            name: "Savings Dai Cost",
+            color: "#FF4081",
+            category: StatCategories.FEES,
+            type: StatTypes.VALUE_OF_EVENT,
+            format: StatFormats.NUMBER,
+            targets: StatTargets.GLOBAL,
+            aggregation: StatAggregations.SUM,
+            group: StatGroups.SYSTEM_DAI,
+            stats: [
+                new PotPieStat(),
+                new PotChiStat()
+            ]
+        });
+    }
+
+    combine ([pie, chi]) {
+        if (pie != null && chi != null) {
+            return parseFeesCollected(pie.extraData.lastValue, pie.extraData.raw, chi.extraData.lastValue, chi.extraData.raw);
+        } else {
+            return 0;
+        }
     }
 
 }

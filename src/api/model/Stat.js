@@ -120,7 +120,7 @@ export const StatGroups = {
     #FF5252 - Collateral Liquidations
     #B584FF - Auctioned Collateral
     #F4B731 - Auctioned Collateral USD
-    #00E676
+    #00E676 - 
     #3FDFC9 - Liquidations Count / Surplus Auctions Count / Debt Auctions Count
     #FFA143
     #4AC9F1
