@@ -1,4 +1,3 @@
-import { QueryGranularity } from 'model';
 import { StatAggregations, StatTypes } from 'api/model';
 import { arraySum, arrayAvg } from 'utils';
 
@@ -21,15 +20,7 @@ export default class StatData {
      */
     pack (query) {
         // Iterate along the granularity of the query
-        let granularity;
-        switch (query.granularity) {
-            case QueryGranularity.HOUR: granularity = 'hour'; break;
-            case QueryGranularity.DAY: granularity = 'day'; break;
-            case QueryGranularity.WEEK: granularity = 'week'; break;
-            case QueryGranularity.MONTH: granularity = 'month'; break;
-            case QueryGranularity.YEAR: granularity = 'year'; break;
-            default: throw new Error(`Unknown granularity: '${query.granularity}'`);
-        }
+        const granularity = query.getMomentGranularity();
         let curr = query.start.clone().startOf(granularity);
         // Want to inclusively add the last period
         const end = query.end.clone().startOf(granularity).add(1, granularity);

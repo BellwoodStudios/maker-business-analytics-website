@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { enumValidValue, arrayEquals } from 'utils';
-import { getVaultByName, getCollateralByName, getStats, getStatByName, defaultGlobalStats, defaultVaultStats } from 'api';
-import { StatData } from 'api/model';
+import { getVaultByName, getCollateralByName, getStats, getStatByName, defaultGlobalStats, defaultVaultStats, fetchGraphQL } from 'api';
+import { StatData, Block } from 'api/model';
 
 export const QueryType = {
     GLOBAL: 'Global',
@@ -147,6 +147,42 @@ export default class Query {
             rangeEnd: "${endGraphQL.toISOString()}",
             bucketInterval: ${granularity}
         `;
+    }
+
+    /**
+     * Fetch an array of headers that mark the time bucket intervals.
+     */
+    async getBucketedBlockHeaders () {
+        const buckets = [];
+        const granularity = this.getMomentGranularity();
+        let curr = this.start.clone();
+        while (curr.isBefore(this.end)) {
+            curr.add(1, granularity);
+
+            buckets.push(curr.unix());
+        }
+        
+        const query = buckets.map((t, i) => {
+            // There is extremely likely at least 1 block every 10 minutes
+            // This is just some reasonable lower bound to limit the filter
+            const lowerBound = t - 600;
+
+            return `i${i}: allHeaders(filter:{ blockTimestamp:{ greaterThanOrEqualTo:"${lowerBound}", lessThan:"${t}" } }, orderBy:BLOCK_NUMBER_DESC, first:1) {
+                nodes {
+                    id,
+                    blockNumber,
+                    blockTimestamp
+                }
+            }`;
+        }).join(",");
+
+        const result = await fetchGraphQL(`{
+            ${query}
+        }`);
+
+        const blocks = Object.values(result.data).filter(v => v.nodes.length > 0).map(v => new Block(v.nodes[0]));
+        blocks.sort((a, b) => a.number < b.number ? -1 : 1);
+        return blocks;
     }
 
     /**

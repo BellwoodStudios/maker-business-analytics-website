@@ -3,6 +3,7 @@ import moment from 'moment';
 export default class Block {
 
     constructor (data) {
+        this.id = data.id;
         if (data.bucketStart != null) {
             // Bucket time format
             this.timestamp = moment(data.bucketStart);
