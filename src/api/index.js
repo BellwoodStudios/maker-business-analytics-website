@@ -12,6 +12,7 @@ import {
 } from 'api/model/stats/CollateralAuctionStats';
 import { MakerBurnedStat, DaiAuctionedStat, SurplusAuctionsCountStat } from 'api/model/stats/SurplusAuctionStats';
 import { MakerMintedStat, DaiRecoveredStat, DebtAuctionsCountStat } from 'api/model/stats/DebtAuctionStats';
+import { SurplusBufferStat } from 'api/model/stats/SystemStats';
 
 let _config = null;
 let _vaults = null;
@@ -28,6 +29,10 @@ const _stats = [
     new DaiSupplyStat(),
     new DebtCeilingStat(),
     new SavingsDaiStat(),
+
+    // System
+    new SurplusBufferStat(),
+    //new DebtBufferStat(),
 
     // Collateral
     //new CollateralLockedStat(),
@@ -50,9 +55,6 @@ const _stats = [
     new DaiRecoveredStat(),
     new MakerMintedStat(),
     new DebtAuctionsCountStat(),
-
-    //new SystemRevenueStat(),
-    //new SystemCostStat(),
 ];
 
 function statLookup (statTypes) {

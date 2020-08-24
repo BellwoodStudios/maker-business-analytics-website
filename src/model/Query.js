@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { enumValidValue, arrayEquals } from 'utils';
 import { getVaultByName, getCollateralByName, getStats, getStatByName, defaultGlobalStats, defaultVaultStats, fetchGraphQL } from 'api';
-import { StatData, Block } from 'api/model';
+import { StatData } from 'api/model';
 
 export const QueryType = {
     GLOBAL: 'Global',
@@ -157,32 +157,30 @@ export default class Query {
         const granularity = this.getMomentGranularity();
         let curr = this.start.clone();
         while (curr.isBefore(this.end)) {
-            curr.add(1, granularity);
+            buckets.push({ bucketStart: curr.unix(), bucketEnd:curr.clone().add(1, granularity).unix(), block:null });
 
-            buckets.push(curr.unix());
+            curr.add(1, granularity);
         }
         
-        const query = buckets.map((t, i) => {
+        const results = await Query.multiQuery(buckets.map(b => {
             // There is extremely likely at least 1 block every 10 minutes
             // This is just some reasonable lower bound to limit the filter
-            const lowerBound = t - 600;
+            const lowerBound = b.bucketEnd - 600;
 
-            return `i${i}: allHeaders(filter:{ blockTimestamp:{ greaterThanOrEqualTo:"${lowerBound}", lessThan:"${t}" } }, orderBy:BLOCK_NUMBER_DESC, first:1) {
+            return `allHeaders(filter:{ blockTimestamp:{ greaterThanOrEqualTo:"${lowerBound}", lessThan:"${b.bucketEnd}" } }, orderBy:BLOCK_NUMBER_DESC, first:1) {
                 nodes {
                     id,
                     blockNumber,
                     blockTimestamp
                 }
             }`;
-        }).join(",");
+        }));
 
-        const result = await fetchGraphQL(`{
-            ${query}
-        }`);
+        for (let i = 0; i < buckets.length; i++) {
+            buckets[i].block = results[i].nodes.length > 0 ? results[i].nodes[0] : null;
+        }
 
-        const blocks = Object.values(result.data).filter(v => v.nodes.length > 0).map(v => new Block(v.nodes[0]));
-        blocks.sort((a, b) => a.number < b.number ? -1 : 1);
-        return blocks;
+        return buckets.filter(b => b.block != null);
     }
 
     /**
@@ -233,6 +231,18 @@ export default class Query {
             end: params.end,
             granularity: params.granularity
         });
+    }
+
+    /**
+     * Fire off a bunch of queries at once and get them back in the same order.
+     */
+    static async multiQuery (queries) {
+        const query = queries.map((q, i) => `i${i}: ${q}`).join(",");
+        const result = await fetchGraphQL(`{
+            ${query}
+        }`);
+
+        return queries.map((q, i) => result.data[`i${i}`]);
     }
 
 }

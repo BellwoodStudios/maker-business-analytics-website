@@ -1,6 +1,7 @@
 import { enumValidValue } from 'utils';
-import { QueryType } from 'model';
-import { StatData } from 'api/model';
+import { Query, QueryType } from 'model';
+import { StatData, StatDataItem, Block } from 'api/model';
+import moment from 'moment';
 
 /**
  * The category of the stat. Lower priority will sort to closer to the top.
@@ -205,6 +206,48 @@ export default class Stat {
         } else {
             throw new Error('Not implemented');
         }
+    }
+
+    /**
+     * It's common to read a storage table for time series values of a single value. Use this if your data query
+     * fits this paradigm.
+     * 
+     * @param {Query} query The base query.
+     * @param {string} tableName The name of the storage table.
+     * @param {string} tableValue The name of the parameter being read.
+     * @param {string} valueParser Parse the return values
+     */
+    async getStorageTableValues (query, tableName, tableValue, valueParser, options) {
+        if (options == null) options = {};
+
+        const buckets = await query.getBucketedBlockHeaders();
+        const results = await Query.multiQuery(buckets.map(bucket => {
+            const queryExtra = options.queryExtra != null ? ", " + options.queryExtra : "";
+            return `${tableName}(filter:{ headerId:{ lessThanOrEqualTo:${bucket.block.id} } }, orderBy:HEADER_ID_DESC, first:1${queryExtra}) {
+                nodes {
+                  ${tableValue},
+                  headerByHeaderId {
+                    blockNumber,
+                    blockTimestamp
+                  }
+                }
+              }`;
+        }));
+
+        const data = results.flatMap((d, i) => d.nodes.map(n => {
+            return new StatDataItem({
+                block: new Block({ bucketStart:moment.unix(buckets[i].bucketEnd) }),
+                value: valueParser(n[tableValue]),
+                extraData: {
+                    raw: n[tableValue]
+                }
+            });
+        }));
+        
+        return new StatData({
+            stat: this,
+            data: data
+        });
     }
 
 }
