@@ -28,6 +28,7 @@ function toChartFormat (format) {
         case StatFormats.NUMBER: return 'short';
         case StatFormats.PERCENT: return 'percent';
         case StatFormats.DOLLARS: return 'short';
+        case StatFormats.DAI: return 'short';
         default: return format;
     }
 }

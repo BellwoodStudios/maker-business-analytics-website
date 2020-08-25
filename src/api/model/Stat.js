@@ -55,7 +55,8 @@ export const StatTypes = {
 export const StatFormats = {
     NUMBER: 'number',
     PERCENT: 'percent',
-    DOLLARS: 'dollars'
+    DOLLARS: 'dollars',
+    DAI: 'dai'
 };
 
 /**

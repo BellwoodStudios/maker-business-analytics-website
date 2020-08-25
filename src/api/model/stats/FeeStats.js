@@ -34,7 +34,7 @@ export class StabilityFeeRevenueStat extends Stat {
             color: "#ABEB63",
             category: StatCategories.FEES,
             type: StatTypes.VALUE_OF_EVENT,
-            format: StatFormats.NUMBER,
+            format: StatFormats.DAI,
             targets: StatTargets.ALL,
             aggregation: StatAggregations.SUM,
             group: StatGroups.SYSTEM_DAI,
@@ -110,7 +110,7 @@ export class SavingsDaiCostStat extends Stat {
             color: "#FF4081",
             category: StatCategories.FEES,
             type: StatTypes.VALUE_OF_EVENT,
-            format: StatFormats.NUMBER,
+            format: StatFormats.DAI,
             targets: StatTargets.GLOBAL,
             aggregation: StatAggregations.SUM,
             group: StatGroups.SYSTEM_DAI,
@@ -127,6 +127,34 @@ export class SavingsDaiCostStat extends Stat {
         } else {
             return 0;
         }
+    }
+
+}
+
+export class FeeProfitStat extends Stat {
+
+    constructor () {
+        super({
+            name: "Fee Profit",
+            color: "#83D17E",
+            category: StatCategories.FEES,
+            type: StatTypes.VALUE_OF_EVENT,
+            format: StatFormats.DAI,
+            targets: StatTargets.ALL,
+            aggregation: StatAggregations.SUM,
+            group: StatGroups.SYSTEM_DAI,
+            stats: [
+                new StabilityFeeRevenueStat(),
+                new SavingsDaiCostStat()
+            ]
+        });
+    }
+
+    combine ([stabilityFees, dsrCost]) {
+        let value = 0;
+        if (stabilityFees != null) value += stabilityFees.value;
+        if (dsrCost != null) value -= dsrCost.value;
+        return value;
     }
 
 }

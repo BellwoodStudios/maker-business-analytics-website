@@ -13,7 +13,7 @@ function StatDataSummaryPill ({ stat, data }) {
     const lastTimestamp = hasData ? dateShort(data[data.length - 1].timestamp) : null;
     const lastTimestampLong = hasData ? dateLong(data[data.length - 1].timestamp) : null;
 
-    return <SummaryPill label={stat.getLongName()} sublabel={stat.type === StatTypes.EVENT ? `${firstTimestamp} - ${lastTimestamp}` : lastTimestampLong} color={stat.color} value={hasData ? statData(stat, data) : "-"} />;
+    return <SummaryPill label={stat.getLongName()} sublabel={(stat.type === StatTypes.EVENT || stat.type === StatTypes.VALUE_OF_EVENT) ? `${firstTimestamp} - ${lastTimestamp}` : lastTimestampLong} color={stat.color} value={hasData ? statData(stat, data) : "-"} />;
 }
 
 StatDataSummaryPill.propTypes = {

@@ -1,5 +1,5 @@
 import { Vault, Collateral, Block } from 'api/model';
-import { StabilityFeeStat, StabilityFeeRevenueStat, DaiSavingsRateStat, SavingsDaiCostStat } from 'api/model/stats/FeeStats';
+import { StabilityFeeStat, StabilityFeeRevenueStat, DaiSavingsRateStat, SavingsDaiCostStat, FeeProfitStat } from 'api/model/stats/FeeStats';
 import { DaiSupplyStat, DebtCeilingStat, SavingsDaiStat } from 'api/model/stats/DaiSupplyStats';
 import { CollateralPriceStat } from 'api/model/stats/CollateralStats';
 import {
@@ -12,7 +12,7 @@ import {
 } from 'api/model/stats/CollateralAuctionStats';
 import { MakerBurnedStat, DaiAuctionedStat, SurplusAuctionsCountStat } from 'api/model/stats/SurplusAuctionStats';
 import { MakerMintedStat, DaiRecoveredStat, DebtAuctionsCountStat } from 'api/model/stats/DebtAuctionStats';
-import { SurplusBufferStat } from 'api/model/stats/SystemStats';
+import { SurplusBufferStat, SystemRevenueStat, SystemCostStat, SystemProfitStat } from 'api/model/stats/SystemStats';
 
 let _config = null;
 let _vaults = null;
@@ -24,6 +24,7 @@ const _stats = [
     new StabilityFeeRevenueStat(),
     new DaiSavingsRateStat(),
     new SavingsDaiCostStat(),
+    new FeeProfitStat(),
 
     // Dai Supply
     new DaiSupplyStat(),
@@ -33,6 +34,9 @@ const _stats = [
     // System
     new SurplusBufferStat(),
     //new DebtBufferStat(),
+    new SystemRevenueStat(),
+    new SystemCostStat(),
+    new SystemProfitStat(),
 
     // Collateral
     //new CollateralLockedStat(),

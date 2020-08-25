@@ -1,5 +1,7 @@
 import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, StatGroups, StatCategories } from 'api/model';
 import { fromRad } from 'utils/MathUtils';
+import { StabilityFeeRevenueStat, SavingsDaiCostStat, FeeProfitStat } from './FeeStats';
+import { CollateralDebtRecoveredStat, CollateralDebtOwedStat, CollateralSurplusStat } from './CollateralAuctionStats';
 
 export class SurplusBufferStat extends Stat {
 
@@ -11,7 +13,7 @@ export class SurplusBufferStat extends Stat {
             color: "#ABEB63",
             category: StatCategories.SYSTEM,
             type: StatTypes.VALUE,
-            format: StatFormats.NUMBER,
+            format: StatFormats.DAI,
             targets: StatTargets.GLOBAL,
             aggregation: StatAggregations.SUM,
             group: StatGroups.SYSTEM_DAI,
@@ -60,6 +62,90 @@ class VatVicesStat extends Stat {
 
     async fetch (query) {
         return await this.getStorageTableValues(query, "allVatVices", "vice", v => fromRad(v));
+    }
+
+}
+
+export class SystemRevenueStat extends Stat {
+
+    constructor () {
+        super({
+            name: "Total Revenue",
+            color: "#ABEB63",
+            category: StatCategories.SYSTEM,
+            type: StatTypes.VALUE_OF_EVENT,
+            format: StatFormats.DAI,
+            targets: StatTargets.GLOBAL,
+            aggregation: StatAggregations.SUM,
+            group: StatGroups.SYSTEM_DAI,
+            stats: [
+                new StabilityFeeRevenueStat(),
+                new CollateralDebtRecoveredStat()
+            ]
+        });
+    }
+
+    combine ([fees, flips]) {
+        let value = 0;
+        if (fees != null) value += fees.value;
+        if (flips != null) value += flips.value;
+        return value;
+    }
+
+}
+
+export class SystemCostStat extends Stat {
+
+    constructor () {
+        super({
+            name: "Total Cost",
+            color: "#FF4081",
+            category: StatCategories.SYSTEM,
+            type: StatTypes.VALUE_OF_EVENT,
+            format: StatFormats.DAI,
+            targets: StatTargets.GLOBAL,
+            aggregation: StatAggregations.SUM,
+            group: StatGroups.SYSTEM_DAI,
+            stats: [
+                new SavingsDaiCostStat(),
+                new CollateralDebtOwedStat()
+            ]
+        });
+    }
+
+    combine ([fees, flips]) {
+        let value = 0;
+        if (fees != null) value += fees.value;
+        if (flips != null) value += flips.value;
+        return value;
+    }
+
+}
+
+export class SystemProfitStat extends Stat {
+
+    constructor () {
+        super({
+            name: "Total Profit",
+            color: "#83D17E",
+            category: StatCategories.SYSTEM,
+            type: StatTypes.VALUE_OF_EVENT,
+            format: StatFormats.DAI,
+            targets: StatTargets.GLOBAL,
+            aggregation: StatAggregations.SUM,
+            group: StatGroups.SYSTEM_DAI,
+            stats: [
+                new FeeProfitStat(),
+                new CollateralSurplusStat()
+            ]
+        });
+    }
+
+    combine ([fees, flips]) {
+        let value = 0;
+        if (fees != null) value += fees.value;
+        if (flips != null) value += flips.value;
+        return value;
     }
 
 }

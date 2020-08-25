@@ -33,7 +33,7 @@ export class DaiAuctionedStat extends Stat {
             color: "#FF4081",
             category: StatCategories.SURPLUS_AUCTION,
             type: StatTypes.EVENT,
-            format: StatFormats.NUMBER,
+            format: StatFormats.DAI,
             targets: StatTargets.ALL,
             aggregation: StatAggregations.SUM,
             group: StatGroups.AUCTION_DAI,

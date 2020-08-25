@@ -42,6 +42,12 @@ export function dollars (num) {
     }
 }
 
+export function dai (num) {
+    if (num == null) return "-";
+    
+    return numberShort(num) + " Đ";
+}
+
 export function dateShort (date = moment()) {
     return date.format('DD MMM. YYYY');
 }
@@ -82,6 +88,7 @@ export function statData (stat, data) {
         case StatFormats.NUMBER: return numberShort(value);
         case StatFormats.PERCENT: return percent(value);
         case StatFormats.DOLLARS: return dollars(value);
+        case StatFormats.DAI: return dai(value);
         default: throw new Error(`Unknown stat type '${stat.type}'.`);
     }
 }

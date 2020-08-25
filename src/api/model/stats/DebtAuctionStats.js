@@ -33,7 +33,7 @@ export class DaiRecoveredStat extends Stat {
             color: "#ABEB63",
             category: StatCategories.DEBT_AUCTION,
             type: StatTypes.EVENT,
-            format: StatFormats.NUMBER,
+            format: StatFormats.DAI,
             targets: StatTargets.ALL,
             aggregation: StatAggregations.SUM,
             group: StatGroups.AUCTION_DAI,
