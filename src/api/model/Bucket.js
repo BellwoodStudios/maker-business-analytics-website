@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 /**
  * A bucket is a time period with optional blocks associated with those end points.
  * 
@@ -9,8 +11,8 @@
 export default class Bucket {
 
     constructor (data) {
-        this.bucketStart = data.bucketStart;
-        this.bucketEnd = data.bucketEnd;
+        this.bucketStart = moment(data.bucketStart);
+        this.bucketEnd = moment(data.bucketEnd);
         this.blockStart = data.blockStart;
         this.blockEnd = data.blockEnd;
     }

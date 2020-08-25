@@ -188,13 +188,13 @@ export default class Stat {
     }
 
     /**
-     * Combine a single stat over time into a single bucket.
+     * Combine a single stat over time into a single bucket. Default to using the latest value.
      * 
      * @param {Bucket} bucket The time interval bucket.
      * @param {Array<StatDataItem>} values All the in-order values that occurred over this time period.
      */
     combineTime (bucket, values) {
-        throw new Error('combineTime not implemented.');
+        return values[values.length - 1];
     }
 
     /**
@@ -247,7 +247,7 @@ export default class Stat {
 
         const data = results.flatMap((d, i) => d.nodes.map(n => {
             return new StatDataItem({
-                block: new Block({ bucketStart:moment.unix(buckets[i].bucketEnd) }),
+                bucket: buckets[i],
                 value: valueParser(n[tableValue]),
                 extraData: {
                     raw: n[tableValue]

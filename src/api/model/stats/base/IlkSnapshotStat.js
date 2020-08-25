@@ -2,7 +2,7 @@ import { Stat, StatTypes, StatTargets, Block, StatData, StatDataItem } from 'api
 import { parseDaiSupply, ilkSpotToPrice, fromRad, parseFeesCollected } from 'utils/MathUtils';
 import { getVaults } from 'api';
 import { transpose } from 'utils';
-import { Query } from '../../../../model';
+import { Query } from 'model';
 
 /**
  * Fetch time series on all the high-level ilk stats. Not to be used directly, but instead as a common stat dependency.
@@ -16,6 +16,13 @@ export default class IlkSnapshotStat extends Stat {
         });
     }
 
+    combineTime (bucket, values) {
+        // Use the latest value and sum up the feesCollected
+        const value = values[values.length - 1];
+        value.extraData.feesCollected = values.reduce((sum, curr) => sum + curr.extraData.feesCollected, 0);
+        return value;
+    }
+
     async fetch (query) {
         // Fetch all ilks in advance
         const args = query.toGraphQLFilter();
@@ -23,6 +30,8 @@ export default class IlkSnapshotStat extends Stat {
             return `
                 timeIlkSnapshots(ilkIdentifier:"${v.identifier}", ${args}) {
                     nodes {
+                        bucketStart,
+                        bucketEnd,
                         ilkIdentifier,
                         blockNumber,
                         updated,
@@ -45,7 +54,10 @@ export default class IlkSnapshotStat extends Stat {
 
             return d.nodes.filter(n => n != null && query.filterByIlk(n)).map(n => {
                 const row = new StatDataItem({
-                    block: new Block(n),
+                    bucket: new Bucket({
+                        bucketStart: n.bucketStart,
+                        bucketEnd: n.bucketEnd
+                    }),
                     value: 1,
                     extraData: {
                         ...n,

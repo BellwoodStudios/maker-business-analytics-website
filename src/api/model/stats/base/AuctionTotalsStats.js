@@ -36,13 +36,14 @@ export class BiteTotalsStat extends Stat {
     }
 
     async fetch (query) {
+        // Fetch all ilks in advance
         const args = query.toGraphQLFilter();
-
-        const result = await fetchGraphQL("{" + getVaults().map(v => {
+        const results = await Query.multiQuery(getVaults().map(v => {
             return `
-                i${v.id}: timeBiteTotals(ilkIdentifier:"${v.identifier}", ${args}) {
+                timeBiteTotals(ilkIdentifier:"${v.identifier}", ${args}) {
                     nodes {
                         bucketStart,
+                        bucketEnd,
                         count,
                         ink,
                         art,
@@ -50,7 +51,23 @@ export class BiteTotalsStat extends Stat {
                     }
                 }
             `;
-        }).join(",") + "}");
+        }));
+
+        // Parse each ilk that fits the filter
+        const data = results.map(d => {
+            return d.nodes.filter(n => n != null && query.filterByIlk(n)).map(n => {
+                return new StatDataItem({
+                    block: new Block(n),
+                    value: 1,
+                    extraData: {
+                        count: parseInt(n.count),
+                        ink: fromWad(n.ink),
+                        art: fromRad(n.art),
+                        tab: fromRad(n.tab)
+                    }
+                });
+            });
+        }).filter(d => d.length > 0);
 
         // Attach ilk id to all nodes
         for (const idstr of Object.keys(result.data)) {
@@ -65,7 +82,6 @@ export class BiteTotalsStat extends Stat {
                 block: new Block(n),
                 value: 1,
                 extraData: {
-                    group: n.ilkIdentifier,
                     count: parseInt(n.count),
                     ink: fromWad(n.ink),
                     art: fromRad(n.art),
@@ -77,7 +93,7 @@ export class BiteTotalsStat extends Stat {
         return new StatData({
             stat: this,
             data: data
-        }).mergeByGroup();
+        });
     }
 
 }

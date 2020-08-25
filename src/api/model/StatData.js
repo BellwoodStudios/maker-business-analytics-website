@@ -129,7 +129,7 @@ export default class StatData {
 export class StatDataItem {
 
     constructor (data) {
-        this.block = data.block;
+        this.bucket = data.bucket;
         this.value = data.value;
         this.extraData = data.extraData ?? {};
     }
