@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { enumValidValue, arrayEquals } from 'utils';
 import { getVaultByName, getCollateralByName, getStats, getStatByName, defaultGlobalStats, defaultVaultStats, fetchGraphQL } from 'api';
-import { StatData } from 'api/model';
+import { StatData, Bucket } from 'api/model';
 
 export const QueryType = {
     GLOBAL: 'Global',
@@ -152,22 +152,22 @@ export default class Query {
     /**
      * Fetch an array of headers that mark the time bucket intervals.
      */
-    async getBucketedBlockHeaders () {
+    async getBuckets () {
         const buckets = [];
         const granularity = this.getMomentGranularity();
         let curr = this.start.clone();
         while (curr.isBefore(this.end)) {
-            buckets.push({ bucketStart: curr.unix(), bucketEnd:curr.clone().add(1, granularity).unix(), block:null });
+            buckets.push(new Bucket({ bucketStart: curr, bucketEnd:curr.clone().add(1, granularity) }));
 
             curr.add(1, granularity);
         }
         
         const results = await Query.multiQuery(buckets.map(b => {
             // There is extremely likely at least 1 block every 10 minutes
-            // This is just some reasonable lower bound to limit the filter
-            const lowerBound = b.bucketEnd - 600;
+            // This is just some reasonable upper bound to limit the filter
+            const upperBound = b.bucketEnd.unix() + 600;
 
-            return `allHeaders(filter:{ blockTimestamp:{ greaterThanOrEqualTo:"${lowerBound}", lessThan:"${b.bucketEnd}" } }, orderBy:BLOCK_NUMBER_DESC, first:1) {
+            return `allHeaders(filter:{ blockTimestamp:{ greaterThanOrEqualTo:"${b.bucketEnd.unix()}", lessThan:"${upperBound}" } }, orderBy:BLOCK_NUMBER_DESC, first:1) {
                 nodes {
                     id,
                     blockNumber,
@@ -177,10 +177,10 @@ export default class Query {
         }));
 
         for (let i = 0; i < buckets.length; i++) {
-            buckets[i].block = results[i].nodes.length > 0 ? results[i].nodes[0] : null;
+            buckets[i].blockEnd = results[i].nodes.length > 0 ? results[i].nodes[0] : null;
         }
 
-        return buckets.filter(b => b.block != null);
+        return buckets.filter(b => b.blockEnd != null);
     }
 
     /**

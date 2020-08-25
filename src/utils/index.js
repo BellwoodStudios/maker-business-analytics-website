@@ -37,6 +37,15 @@ export function arrayAvg (arr) {
 }
 
 /**
+ * Flip an array of arrays so the vertical values become horizontal. Think of it like a matrix transpose.
+ */
+export function transpose (arrays) {
+    return arrays[0].map(function(_,i){
+        return arrays.map(function(array){return array[i]})
+    });
+}
+
+/**
  * Convert the nicely formatted data to a 2D array.
  */
 export function toDataArray (activeStats, data) {

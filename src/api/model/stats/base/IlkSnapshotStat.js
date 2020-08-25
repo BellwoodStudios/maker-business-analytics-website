@@ -1,7 +1,8 @@
 import { Stat, StatTypes, StatTargets, Block, StatData, StatDataItem } from 'api/model';
 import { parseDaiSupply, ilkSpotToPrice, fromRad, parseFeesCollected } from 'utils/MathUtils';
-import { fetchGraphQL, getVaults } from 'api';
-import { arraySum, arrayAvg } from 'utils';
+import { getVaults } from 'api';
+import { transpose } from 'utils';
+import { Query } from '../../../../model';
 
 /**
  * Fetch time series on all the high-level ilk stats. Not to be used directly, but instead as a common stat dependency.
@@ -15,33 +16,12 @@ export default class IlkSnapshotStat extends Stat {
         });
     }
 
-    combine (values) {
-        // Remove any empty blocks
-        values = values.filter(v => v != null);
-
-        if (values.length === 0) return null;
-        if (values.length === 1) return values[0];
-
-        const largestBlock = values.reduce((value, curr) => value == null || curr.block.number > value.number ? curr.block : value, null);
-        
-        return {
-            block: largestBlock,
-            value: 1,
-            extraData: {
-                dai: arraySum(values.map(v => v.extraData.dai)),
-                feesCollected: arraySum(values.map(v => v.extraData.feesCollected)),
-                price: arrayAvg(values.map(v => v.extraData.price)),
-                debtCeiling: arraySum(values.map(v => v.extraData.debtCeiling))
-            }
-        };
-    }
-
     async fetch (query) {
+        // Fetch all ilks in advance
         const args = query.toGraphQLFilter();
-
-        const result = await fetchGraphQL("{" + getVaults().map(v => {
+        const results = await Query.multiQuery(getVaults().map(v => {
             return `
-                i${v.id}: timeIlkSnapshots(ilkIdentifier:"${v.identifier}", ${args}) {
+                timeIlkSnapshots(ilkIdentifier:"${v.identifier}", ${args}) {
                     nodes {
                         ilkIdentifier,
                         blockNumber,
@@ -56,9 +36,10 @@ export default class IlkSnapshotStat extends Stat {
                     }
                 }
             `;
-        }).join(",") + "}");
+        }));
 
-        const data = Object.values(result.data).map(d => {
+        // Parse each ilk that fits the filter
+        const data = results.map(d => {
             let lastRate = null;
             let lastArt = null;
 
@@ -68,12 +49,11 @@ export default class IlkSnapshotStat extends Stat {
                     value: 1,
                     extraData: {
                         ...n,
-                        group: n.ilkIdentifier,
                         // Add in computed fields
-                        dai: n.art != null ? parseDaiSupply(n.art, n.rate) : null,
+                        dai: n.art != null ? parseDaiSupply(n.art, n.rate) : 0,
                         feesCollected: (n.art != null && n.rate != null) ? parseFeesCollected(lastArt, n.art, lastRate, n.rate) : 0,
                         price: n.spot != null && n.mat != null ? ilkSpotToPrice(n.spot, n.mat) : null,
-                        debtCeiling: n.line != null ? fromRad(n.line) : null
+                        debtCeiling: n.line != null ? fromRad(n.line) : 0
                     }
                 });
 
@@ -82,12 +62,24 @@ export default class IlkSnapshotStat extends Stat {
 
                 return row;
             });
-        }).flat();
+        }).filter(d => d.length > 0);
+
+        // Combine them across ilks
+        const mergedData = transpose(data).map(row => row.reduce((val, curr) => {
+            const vd = val.extraData;
+            const cd = curr.extraData;
+
+            vd.dai += cd.dai;
+            vd.feesCollected += cd.feesCollected;
+            vd.debtCeiling += cd.debtCeiling;
+            
+            return val;
+        }));
 
         return new StatData({
             stat: this,
-            data: data
-        }).mergeByGroup();
+            data: mergedData
+        });
     }
 
 }

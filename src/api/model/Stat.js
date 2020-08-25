@@ -188,13 +188,23 @@ export default class Stat {
     }
 
     /**
-     * Combine two or more values together. By default will just use the aggregation method.
+     * Combine a single stat over time into a single bucket.
+     * 
+     * @param {Bucket} bucket The time interval bucket.
+     * @param {Array<StatDataItem>} values All the in-order values that occurred over this time period.
      */
-    combine (values) {
-        let total = 0;
-        for (const v of values) total += v != null ? v.value : 0;
-        if (this.aggregation === StatAggregations.AVERAGE) total /= values.length;
-        return total;
+    combineTime (bucket, values) {
+        throw new Error('combineTime not implemented.');
+    }
+
+    /**
+     * Combine multiple stats a single stat. This must be defined if this stat is made from sub-stats.
+     * 
+     * @param {Bucket} bucket The time interval bucket.
+     * @param {Array<StatDataItem>} values A single value for each sub-stat defined. Order matches sub-stat ordering.
+     */
+    combineStats (bucket, values) {
+        throw new Error('combineBucket not implemented.');
     }
 
     /**
@@ -221,7 +231,7 @@ export default class Stat {
     async getStorageTableValues (query, tableName, tableValue, valueParser, options) {
         if (options == null) options = {};
 
-        const buckets = await query.getBucketedBlockHeaders();
+        const buckets = await query.getBuckets();
         const results = await Query.multiQuery(buckets.map(bucket => {
             const queryExtra = options.queryExtra != null ? ", " + options.queryExtra : "";
             return `${tableName}(filter:{ headerId:{ lessThanOrEqualTo:${bucket.block.id} } }, orderBy:HEADER_ID_DESC, first:1${queryExtra}) {
