@@ -37,7 +37,7 @@ function Chart ({ query, activeStats, data, error }) {
     // Trim off any stats that have no data
     if (data != null) {
         for (let i = 0; i < data.length; i++) {
-            if (!data[i].packedData.some(d => d.value != null)) {
+            if (!data[i].data.some(d => d.value != null)) {
                 // Axe this data
                 activeStats = activeStats.filter((s, idx) => idx !== i);
                 data = data.filter((d, idx) => idx !== i);

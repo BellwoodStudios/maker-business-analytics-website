@@ -1,4 +1,4 @@
-import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, StatGroups, StatCategories } from 'api/model';
+import { Stat, StatTypes, StatTargets, StatFormats, StatGroups, StatCategories } from 'api/model';
 import { fromRad } from 'utils/MathUtils';
 import { StabilityFeeRevenueStat, SavingsDaiCostStat, FeeProfitStat } from './FeeStats';
 import { CollateralDebtRecoveredStat, CollateralDebtOwedStat, CollateralSurplusStat } from './CollateralAuctionStats';
@@ -15,7 +15,6 @@ export class SurplusBufferStat extends Stat {
             type: StatTypes.VALUE,
             format: StatFormats.DAI,
             targets: StatTargets.GLOBAL,
-            aggregation: StatAggregations.SUM,
             group: StatGroups.SYSTEM_DAI,
             stats: [
                 new VatDaiStat(),
@@ -24,7 +23,7 @@ export class SurplusBufferStat extends Stat {
         });
     }
 
-    combine ([dai, vice]) {
+    combineStats (bucket, [dai, vice]) {
         if (dai != null && vice != null) {
             return dai.value - vice.value;
         } else {
@@ -35,8 +34,6 @@ export class SurplusBufferStat extends Stat {
 }
 
 class VatDaiStat extends Stat {
-
-    static VOW_ADDRESS = '0xA950524441892A31ebddF91d3cEEFa04Bf454466';
 
     constructor () {
         super({
@@ -73,10 +70,9 @@ export class SystemRevenueStat extends Stat {
             name: "Total Revenue",
             color: "#ABEB63",
             category: StatCategories.SYSTEM,
-            type: StatTypes.VALUE_OF_EVENT,
+            type: StatTypes.EVENT,
             format: StatFormats.DAI,
             targets: StatTargets.GLOBAL,
-            aggregation: StatAggregations.SUM,
             group: StatGroups.SYSTEM_DAI,
             stats: [
                 new StabilityFeeRevenueStat(),
@@ -85,7 +81,7 @@ export class SystemRevenueStat extends Stat {
         });
     }
 
-    combine ([fees, flips]) {
+    combineStats (bucket, [fees, flips]) {
         let value = 0;
         if (fees != null) value += fees.value;
         if (flips != null) value += flips.value;
@@ -101,10 +97,9 @@ export class SystemCostStat extends Stat {
             name: "Total Cost",
             color: "#FF4081",
             category: StatCategories.SYSTEM,
-            type: StatTypes.VALUE_OF_EVENT,
+            type: StatTypes.EVENT,
             format: StatFormats.DAI,
             targets: StatTargets.GLOBAL,
-            aggregation: StatAggregations.SUM,
             group: StatGroups.SYSTEM_DAI,
             stats: [
                 new SavingsDaiCostStat(),
@@ -113,7 +108,7 @@ export class SystemCostStat extends Stat {
         });
     }
 
-    combine ([fees, flips]) {
+    combineStats (bucket, [fees, flips]) {
         let value = 0;
         if (fees != null) value += fees.value;
         if (flips != null) value += flips.value;
@@ -132,7 +127,6 @@ export class SystemProfitStat extends Stat {
             type: StatTypes.VALUE_OF_EVENT,
             format: StatFormats.DAI,
             targets: StatTargets.GLOBAL,
-            aggregation: StatAggregations.SUM,
             group: StatGroups.SYSTEM_DAI,
             stats: [
                 new FeeProfitStat(),
@@ -141,7 +135,7 @@ export class SystemProfitStat extends Stat {
         });
     }
 
-    combine ([fees, flips]) {
+    combineStats (bucket, [fees, flips]) {
         let value = 0;
         if (fees != null) value += fees.value;
         if (flips != null) value += flips.value;

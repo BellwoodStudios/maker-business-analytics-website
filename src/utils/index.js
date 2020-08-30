@@ -21,18 +21,18 @@ export function arrayEquals (a1, a2) {
 /**
  * Sum the values of an array.
  */
-export function arraySum (arr) {
+export function arraySum (arr, f) {
     let value = 0;
-    for (const v of arr) value += v;
+    for (const v of arr) value += f != null ? f(v) : v;
     return value;
 }
 
 /**
  * Average the values of an array.
  */
-export function arrayAvg (arr) {
+export function arrayAvg (arr, f) {
     let value = 0;
-    for (const v of arr) value += v;
+    for (const v of arr) value += f != null ? f(v) : v;
     return value / arr.length;
 }
 
@@ -52,7 +52,7 @@ export function toDataArray (activeStats, data) {
     if (data.length === 0) return null;
 
     // Merge packed stats together
-    const packedData = data.map(sd => sd.packedData);
+    const packedData = data.map(sd => sd.data);
     const merged = [];
     for (let i = 0; i < packedData[0].length; i++) {
         merged.push([

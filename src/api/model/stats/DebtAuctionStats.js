@@ -1,4 +1,4 @@
-import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, StatGroups, StatCategories } from 'api/model';
+import { Stat, StatTypes, StatTargets, StatFormats, StatGroups, StatCategories } from 'api/model';
 import { FlopBidTotalsStat } from './base/AuctionTotalsStats';
 
 export class MakerMintedStat extends Stat {
@@ -11,7 +11,6 @@ export class MakerMintedStat extends Stat {
             type: StatTypes.EVENT,
             format: StatFormats.NUMBER,
             targets: StatTargets.ALL,
-            aggregation: StatAggregations.SUM,
             group: StatGroups.AUCTION_COLLATERAL,
             stats: [
                 new FlopBidTotalsStat()
@@ -35,7 +34,6 @@ export class DaiRecoveredStat extends Stat {
             type: StatTypes.EVENT,
             format: StatFormats.DAI,
             targets: StatTargets.ALL,
-            aggregation: StatAggregations.SUM,
             group: StatGroups.AUCTION_DAI,
             stats: [
                 new FlopBidTotalsStat()
@@ -59,7 +57,6 @@ export class DebtAuctionsCountStat extends Stat {
             type: StatTypes.EVENT,
             format: StatFormats.NUMBER,
             targets: StatTargets.ALL,
-            aggregation: StatAggregations.SUM,
             group: StatGroups.COUNT,
             stats: [
                 new FlopBidTotalsStat()

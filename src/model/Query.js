@@ -194,7 +194,7 @@ export default class Query {
                 throw new Error("Stat is not returning type 'StatData'.");
             }
 
-            result.pack(this);
+            await result.pack(this);
         }
 
         return results;

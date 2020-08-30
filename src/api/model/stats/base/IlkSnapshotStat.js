@@ -1,4 +1,4 @@
-import { Stat, StatTypes, StatTargets, Block, StatData, StatDataItem } from 'api/model';
+import { Stat, StatTypes, StatTargets, Bucket, StatData, StatDataItem } from 'api/model';
 import { parseDaiSupply, ilkSpotToPrice, fromRad, parseFeesCollected } from 'utils/MathUtils';
 import { getVaults } from 'api';
 import { transpose } from 'utils';
@@ -54,10 +54,7 @@ export default class IlkSnapshotStat extends Stat {
 
             return d.nodes.filter(n => n != null && query.filterByIlk(n)).map(n => {
                 const row = new StatDataItem({
-                    bucket: new Bucket({
-                        bucketStart: n.bucketStart,
-                        bucketEnd: n.bucketEnd
-                    }),
+                    bucket: new Bucket(n),
                     value: 1,
                     extraData: {
                         ...n,

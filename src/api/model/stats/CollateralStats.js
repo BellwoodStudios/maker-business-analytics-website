@@ -1,4 +1,4 @@
-import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, StatGroups, StatCategories, StatDataItem, Block, StatData } from 'api/model';
+import { Stat, StatTypes, StatTargets, StatFormats, StatGroups, StatCategories, StatDataItem, Block, StatData } from 'api/model';
 import IlkSnapshotStat from './base/IlkSnapshotStat';
 import { fetchGraphQL } from 'api';
 import { fromWad } from 'utils/MathUtils';
@@ -13,7 +13,6 @@ export class CollateralPriceStat extends Stat {
             type: StatTypes.VALUE,
             format: StatFormats.DOLLARS,
             targets: StatTargets.COLLATERAL | StatTargets.VAULT,
-            aggregation: StatAggregations.AVERAGE,
             group: StatGroups.PRICE,
             stats: [
                 new IlkSnapshotStat()
@@ -37,7 +36,6 @@ export class CollateralLockedStat extends Stat {
             type: StatTypes.VALUE,
             format: StatFormats.NUMBER,
             targets: StatTargets.VAULT,
-            aggregation: StatAggregations.SUM,
             group: StatGroups.SUPPLY_COLLATERAL,
         });
     }

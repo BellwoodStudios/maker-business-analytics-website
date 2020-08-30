@@ -1,7 +1,6 @@
 import { enumValidValue } from 'utils';
 import { Query, QueryType } from 'model';
-import { StatData, StatDataItem, Block } from 'api/model';
-import moment from 'moment';
+import { StatData, StatDataItem } from 'api/model';
 
 /**
  * The category of the stat. Lower priority will sort to closer to the top.
@@ -44,12 +43,10 @@ export const StatCategories = {
 /**
  * Value types are single values where the next time series value replaces the previous one. Ex) Stability Fee
  * Events are independant values that do not relate to the previous value. Ex) Vault Created
- * Value of event are when you want to use the latest value, but the underlying type is an event.
  */
 export const StatTypes = {
     VALUE: 'value',
-    EVENT: 'event',
-    VALUE_OF_EVENT: 'value_of_event'
+    EVENT: 'event'
 };
 
 export const StatFormats = {
@@ -68,18 +65,6 @@ export const StatTargets = {
     VAULT: 4,
 
     ALL: 7
-};
-
-/**
- * How to aggregate multiple results in the same granularity period.
- */
-export const StatAggregations = {
-    // Replace the previous value
-    // Used for stats like Stability Fees where the next value replaces the previous one
-    AVERAGE: 'average',
-    // Sum all the values together
-    // Used for stats like Dai Supply where all the values contribute to say the daily total for example
-    SUM: 'sum'
 };
 
 /**
@@ -150,13 +135,11 @@ export default class Stat {
         this.type = data.type ?? StatTypes.VALUE;
         this.format = data.format ?? StatFormats.NUMBER;
         this.targets = data.targets ?? StatTargets.ALL;
-        this.aggregation = data.aggregation ?? StatAggregations.AVERAGE;
         this.stats = data.stats ?? [];
         this.group = data.group ?? this.format;
 
         enumValidValue(StatCategories, 'category', this.category);
         enumValidValue(StatTypes, 'type', this.type);
-        enumValidValue(StatAggregations, 'aggregation', this.aggregation);
     }
 
     getLongName () {
@@ -204,7 +187,7 @@ export default class Stat {
      * @param {Array<StatDataItem>} values A single value for each sub-stat defined. Order matches sub-stat ordering.
      */
     combineStats (bucket, values) {
-        throw new Error('combineBucket not implemented.');
+        throw new Error('combineStats not implemented.');
     }
 
     /**
@@ -213,7 +196,11 @@ export default class Stat {
     async fetch (query) {
         if (this.stats.length > 0) {
             // Stat is built out of one or more sub-stats
-            return StatData.merge(this, await this.fetchAllChildStats(query));
+            const results = await this.fetchAllChildStats(query);
+            for (const result of results) {
+                await result.pack(query);
+            }
+            return StatData.merge(this, results);
         } else {
             throw new Error('Not implemented');
         }

@@ -1,8 +1,9 @@
-import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, Block, StatData, StatDataItem, StatCategories, StatGroups } from 'api/model';
+import { Stat, StatTypes, StatTargets, StatFormats, Bucket, StatData, StatDataItem, StatCategories, StatGroups } from 'api/model';
 import { fetchGraphQL } from 'api';
 import { feeToAPY, parseFeesCollected } from 'utils/MathUtils';
 import IlkSnapshotStat from './base/IlkSnapshotStat';
 import { PotPieStat, PotChiStat } from './base/PotStats';
+import moment from 'moment';
 
 export class StabilityFeeStat extends Stat {
 
@@ -20,7 +21,7 @@ export class StabilityFeeStat extends Stat {
         });
     }
 
-    combine ([snapshot]) {
+    combineStats (bucket, [snapshot]) {
         return feeToAPY(snapshot.extraData.duty);
     }
 
@@ -33,10 +34,9 @@ export class StabilityFeeRevenueStat extends Stat {
             name: "Stability Fee Revenue",
             color: "#ABEB63",
             category: StatCategories.FEES,
-            type: StatTypes.VALUE_OF_EVENT,
+            type: StatTypes.EVENT,
             format: StatFormats.DAI,
             targets: StatTargets.ALL,
-            aggregation: StatAggregations.SUM,
             group: StatGroups.SYSTEM_DAI,
             stats: [
                 new IlkSnapshotStat()
@@ -44,7 +44,7 @@ export class StabilityFeeRevenueStat extends Stat {
         });
     }
 
-    combine ([snapshot]) {
+    combineStats (bucket, [snapshot]) {
         return snapshot.extraData.feesCollected;
     }
 
@@ -59,8 +59,7 @@ export class DaiSavingsRateStat extends Stat {
             category: StatCategories.FEES,
             type: StatTypes.VALUE,
             format: StatFormats.PERCENT,
-            targets: StatTargets.GLOBAL,
-            aggregation: StatAggregations.AVERAGE
+            targets: StatTargets.GLOBAL
         });
     }
 
@@ -85,7 +84,10 @@ export class DaiSavingsRateStat extends Stat {
         // TODO - shouldn't be filtering on client for performance reasons
         const data = result.data.allPotFileDsrs.nodes.filter(n => n.what === "dsr").map(n => {
             return new StatDataItem({
-                block: new Block(n.headerByHeaderId),
+                bucket: new Bucket({
+                    bucketStart: moment.unix(n.headerByHeaderId.blockTimestamp),
+                    bucketEnd: moment.unix(n.headerByHeaderId.blockTimestamp)
+                }),
                 value: feeToAPY(n.data),
                 extraData: {
                     compoundingFee: n.data,
@@ -109,10 +111,9 @@ export class SavingsDaiCostStat extends Stat {
             name: "Savings Dai Cost",
             color: "#FF4081",
             category: StatCategories.FEES,
-            type: StatTypes.VALUE_OF_EVENT,
+            type: StatTypes.EVENT,
             format: StatFormats.DAI,
             targets: StatTargets.GLOBAL,
-            aggregation: StatAggregations.SUM,
             group: StatGroups.SYSTEM_DAI,
             stats: [
                 new PotPieStat(),
@@ -121,7 +122,7 @@ export class SavingsDaiCostStat extends Stat {
         });
     }
 
-    combine ([pie, chi]) {
+    combineStats (bucket, [pie, chi]) {
         if (pie != null && chi != null) {
             return parseFeesCollected(pie.extraData.lastValue, pie.extraData.raw, chi.extraData.lastValue, chi.extraData.raw);
         } else {
@@ -138,10 +139,9 @@ export class FeeProfitStat extends Stat {
             name: "Fee Profit",
             color: "#83D17E",
             category: StatCategories.FEES,
-            type: StatTypes.VALUE_OF_EVENT,
+            type: StatTypes.EVENT,
             format: StatFormats.DAI,
             targets: StatTargets.ALL,
-            aggregation: StatAggregations.SUM,
             group: StatGroups.SYSTEM_DAI,
             stats: [
                 new StabilityFeeRevenueStat(),
@@ -150,7 +150,7 @@ export class FeeProfitStat extends Stat {
         });
     }
 
-    combine ([stabilityFees, dsrCost]) {
+    combineStats (bucket, [stabilityFees, dsrCost]) {
         let value = 0;
         if (stabilityFees != null) value += stabilityFees.value;
         if (dsrCost != null) value -= dsrCost.value;

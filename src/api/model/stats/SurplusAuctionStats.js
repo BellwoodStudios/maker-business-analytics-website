@@ -1,4 +1,4 @@
-import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, StatGroups, StatCategories } from 'api/model';
+import { Stat, StatTypes, StatTargets, StatFormats, StatGroups, StatCategories } from 'api/model';
 import { FlapBidTotalsStat } from './base/AuctionTotalsStats';
 
 export class MakerBurnedStat extends Stat {
@@ -11,7 +11,6 @@ export class MakerBurnedStat extends Stat {
             type: StatTypes.EVENT,
             format: StatFormats.NUMBER,
             targets: StatTargets.ALL,
-            aggregation: StatAggregations.SUM,
             group: StatGroups.AUCTION_COLLATERAL,
             stats: [
                 new FlapBidTotalsStat()
@@ -19,7 +18,7 @@ export class MakerBurnedStat extends Stat {
         });
     }
 
-    combine ([totals]) {
+    combineStats (bucket, [totals]) {
         return totals.extraData.bidAmountEnd;
     }
 
@@ -35,7 +34,6 @@ export class DaiAuctionedStat extends Stat {
             type: StatTypes.EVENT,
             format: StatFormats.DAI,
             targets: StatTargets.ALL,
-            aggregation: StatAggregations.SUM,
             group: StatGroups.AUCTION_DAI,
             stats: [
                 new FlapBidTotalsStat()
@@ -43,7 +41,7 @@ export class DaiAuctionedStat extends Stat {
         });
     }
 
-    combine ([totals]) {
+    combineStats (bucket, [totals]) {
         return totals.extraData.lotEnd;
     }
 
@@ -59,7 +57,6 @@ export class SurplusAuctionsCountStat extends Stat {
             type: StatTypes.EVENT,
             format: StatFormats.NUMBER,
             targets: StatTargets.ALL,
-            aggregation: StatAggregations.SUM,
             group: StatGroups.COUNT,
             stats: [
                 new FlapBidTotalsStat()
@@ -67,7 +64,7 @@ export class SurplusAuctionsCountStat extends Stat {
         });
     }
 
-    combine ([totals]) {
+    combineStats (bucket, [totals]) {
         return totals.extraData.count;
     }
 

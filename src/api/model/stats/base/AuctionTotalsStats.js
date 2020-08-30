@@ -1,7 +1,8 @@
-import { Stat, StatTypes, StatTargets, Block, StatData, StatDataItem } from 'api/model';
+import { Stat, StatTypes, StatTargets, Bucket, StatData, StatDataItem } from 'api/model';
 import { fetchGraphQL, getVaults } from 'api';
-import { arraySum } from 'utils';
+import { arraySum, transpose } from 'utils';
 import { fromRad, fromWad } from 'utils/MathUtils';
+import { Query } from 'model';
 
 /**
  * Fetch time series on all the high-level bite stats. Not to be used directly, but instead as a common stat dependency.
@@ -15,24 +16,15 @@ export class BiteTotalsStat extends Stat {
         });
     }
 
-    combine (values) {
-        // Remove any empty blocks
-        values = values.filter(v => v != null);
-
-        if (values.length === 0) return null;
-        if (values.length === 1) return values[0];
-
-        const largestBlock = values.reduce((value, curr) => value == null || curr.block.number > value.number ? curr.block : value, null);
-
-        return {
-            block: largestBlock,
-            value: 1,
-            extraData: {
-                ink: arraySum(values.map(v => v.extraData.ink)),
-                art: arraySum(values.map(v => v.extraData.tab)),
-                tab: arraySum(values.map(v => v.extraData.tab))
-            }
-        };
+    combineTime (bucket, values) {
+        // Sum up all the values because they are total amounts per time period
+        const value = values[values.length - 1];
+        const vd = value.extraData;
+        vd.count = arraySum(values, v => v.extraData.count);
+        vd.ink = arraySum(values, v => v.extraData.ink);
+        vd.art = arraySum(values, v => v.extraData.art);
+        vd.tab = arraySum(values, v => v.extraData.tab);
+        return value;
     }
 
     async fetch (query) {
@@ -57,7 +49,7 @@ export class BiteTotalsStat extends Stat {
         const data = results.map(d => {
             return d.nodes.filter(n => n != null && query.filterByIlk(n)).map(n => {
                 return new StatDataItem({
-                    block: new Block(n),
+                    bucket: new Bucket(n),
                     value: 1,
                     extraData: {
                         count: parseInt(n.count),
@@ -69,30 +61,22 @@ export class BiteTotalsStat extends Stat {
             });
         }).filter(d => d.length > 0);
 
-        // Attach ilk id to all nodes
-        for (const idstr of Object.keys(result.data)) {
-            const id = parseInt(idstr.substr(1));
-            for (const node of result.data[idstr].nodes) {
-                node.ilkId = id;
-            }
-        }
+        // Combine them across ilks
+        const mergedData = transpose(data).map(row => row.reduce((val, curr) => {
+            const vd = val.extraData;
+            const cd = curr.extraData;
 
-        const data = Object.values(result.data).map(d => d.nodes.filter(n => n != null && query.filterByIlk(n)).map(n => {
-            return new StatDataItem({
-                block: new Block(n),
-                value: 1,
-                extraData: {
-                    count: parseInt(n.count),
-                    ink: fromWad(n.ink),
-                    art: fromRad(n.art),
-                    tab: fromRad(n.tab)
-                }
-            });
-        })).flat();
+            vd.count += cd.count;
+            vd.ink += cd.ink;
+            vd.art += cd.art;
+            vd.tab += cd.tab;
+            
+            return val;
+        }));
 
         return new StatData({
             stat: this,
-            data: data
+            data: mergedData
         });
     }
 
@@ -110,35 +94,27 @@ export class FlipBidTotalsStat extends Stat {
         });
     }
 
-    combine (values) {
-        // Remove any empty blocks
-        values = values.filter(v => v != null);
-
-        if (values.length === 0) return null;
-        if (values.length === 1) return values[0];
-
-        const largestBlock = values.reduce((value, curr) => value == null || curr.block.number > value.number ? curr.block : value, null);
-
-        return {
-            block: largestBlock,
-            value: 1,
-            extraData: {
-                lotStart: arraySum(values.map(v => v.extraData.lotStart)),
-                lotEnd: arraySum(values.map(v => v.extraData.lotEnd)),
-                bidAmountStart: arraySum(values.map(v => v.extraData.bidAmountStart)),
-                bidAmountEnd: arraySum(values.map(v => v.extraData.bidAmountEnd))
-            }
-        };
+    combineTime (bucket, values) {
+        // Sum up all the values because they are total amounts per time period
+        const value = values[values.length - 1];
+        const vd = value.extraData;
+        vd.count = arraySum(values, v => v.extraData.count);
+        vd.lotStart = arraySum(values, v => v.extraData.lotStart);
+        vd.lotEnd = arraySum(values, v => v.extraData.lotEnd);
+        vd.bidAmountStart = arraySum(values, v => v.extraData.bidAmountStart);
+        vd.bidAmountEnd = arraySum(values, v => v.extraData.bidAmountEnd);
+        return value;
     }
 
     async fetch (query) {
+        // Fetch all ilks in advance
         const args = query.toGraphQLFilter();
-
-        const result = await fetchGraphQL("{" + getVaults().map(v => {
+        const results = await Query.multiQuery(getVaults().map(v => {
             return `
-                i${v.id}: timeFlipBidTotals(ilkIdentifier:"${v.identifier}", ${args}) {
+                timeFlipBidTotals(ilkIdentifier:"${v.identifier}", ${args}) {
                     nodes {
                         bucketStart,
+                        bucketEnd,
                         count,
                         lotStart,
                         lotEnd,
@@ -147,35 +123,43 @@ export class FlipBidTotalsStat extends Stat {
                     }
                 }
             `;
-        }).join(",") + "}");
+        }));
 
-        // Attach ilk id to all nodes
-        for (const idstr of Object.keys(result.data)) {
-            const id = parseInt(idstr.substr(1));
-            for (const node of result.data[idstr].nodes) {
-                node.ilkId = id;
-            }
-        }
-
-        const data = Object.values(result.data).map(d => d.nodes.filter(n => n != null && query.filterByIlk(n)).map(n => {
-            return new StatDataItem({
-                block: new Block(n),
-                value: 1,
-                extraData: {
-                    group: n.ilkIdentifier,
-                    count: parseInt(n.count),
-                    lotStart: fromWad(n.lotStart),
-                    lotEnd: fromWad(n.lotEnd),
-                    bidAmountStart: fromRad(n.bidAmountStart),
-                    bidAmountEnd: fromRad(n.bidAmountEnd),
-                }
+        // Parse each ilk that fits the filter
+        const data = results.map(d => {
+            return d.nodes.filter(n => n != null && query.filterByIlk(n)).map(n => {
+                return new StatDataItem({
+                    bucket: new Bucket(n),
+                    value: 1,
+                    extraData: {
+                        count: parseInt(n.count),
+                        lotStart: fromWad(n.lotStart),
+                        lotEnd: fromWad(n.lotEnd),
+                        bidAmountStart: fromRad(n.bidAmountStart),
+                        bidAmountEnd: fromRad(n.bidAmountEnd),
+                    }
+                });
             });
-        })).flat();
+        }).filter(d => d.length > 0);
+
+        // Combine them across ilks
+        const mergedData = transpose(data).map(row => row.reduce((val, curr) => {
+            const vd = val.extraData;
+            const cd = curr.extraData;
+
+            vd.count += cd.count;
+            vd.lotStart += cd.lotStart;
+            vd.lotEnd += cd.lotEnd;
+            vd.bidAmountStart += cd.bidAmountStart;
+            vd.bidAmountEnd += cd.bidAmountEnd;
+            
+            return val;
+        }));
 
         return new StatData({
             stat: this,
-            data: data
-        }).mergeByGroup();
+            data: mergedData
+        });
     }
 
 }
@@ -192,14 +176,27 @@ export class FlopBidTotalsStat extends Stat {
         });
     }
 
-    async fetch (query) {
-        const args = query.toGraphQLFilter();
+    combineTime (bucket, values) {
+        // Sum up all the values because they are total amounts per time period
+        const value = values[values.length - 1];
+        const vd = value.extraData;
+        vd.count = arraySum(values, v => v.extraData.count);
+        vd.lotStart = arraySum(values, v => v.extraData.lotStart);
+        vd.lotEnd = arraySum(values, v => v.extraData.lotEnd);
+        vd.bidAmountStart = arraySum(values, v => v.extraData.bidAmountStart);
+        vd.bidAmountEnd = arraySum(values, v => v.extraData.bidAmountEnd);
+        return value;
+    }
 
+    async fetch (query) {
+        // Fetch all ilks in advance
+        const args = query.toGraphQLFilter();
         const result = await fetchGraphQL(`
             {
                 timeFlopBidTotals(${args}) {
                     nodes {
                         bucketStart,
+                        bucketEnd,
                         count,
                         lotStart,
                         lotEnd,
@@ -212,7 +209,7 @@ export class FlopBidTotalsStat extends Stat {
 
         const data = result.data.timeFlopBidTotals.nodes.map(n => {
             return new StatDataItem({
-                block: new Block(n),
+                bucket: new Bucket(n),
                 value: 1,
                 extraData: {
                     count: parseInt(n.count),
@@ -244,6 +241,18 @@ export class FlapBidTotalsStat extends Stat {
         });
     }
 
+    combineTime (bucket, values) {
+        // Sum up all the values because they are total amounts per time period
+        const value = values[values.length - 1];
+        const vd = value.extraData;
+        vd.count = arraySum(values, v => v.extraData.count);
+        vd.lotStart = arraySum(values, v => v.extraData.lotStart);
+        vd.lotEnd = arraySum(values, v => v.extraData.lotEnd);
+        vd.bidAmountStart = arraySum(values, v => v.extraData.bidAmountStart);
+        vd.bidAmountEnd = arraySum(values, v => v.extraData.bidAmountEnd);
+        return value;
+    }
+
     async fetch (query) {
         const args = query.toGraphQLFilter();
 
@@ -252,6 +261,7 @@ export class FlapBidTotalsStat extends Stat {
                 timeFlapBidTotals(${args}) {
                     nodes {
                         bucketStart,
+                        bucketEnd,
                         count,
                         lotStart,
                         lotEnd,
@@ -264,7 +274,7 @@ export class FlapBidTotalsStat extends Stat {
 
         const data = result.data.timeFlapBidTotals.nodes.map(n => {
             return new StatDataItem({
-                block: new Block(n),
+                bucket: new Bucket(n),
                 value: 1,
                 extraData: {
                     count: parseInt(n.count),

@@ -1,4 +1,4 @@
-import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, StatGroups, StatCategories } from 'api/model';
+import { Stat, StatTypes, StatTargets, StatFormats, StatGroups, StatCategories } from 'api/model';
 import { FlipBidTotalsStat, BiteTotalsStat } from './base/AuctionTotalsStats';
 import IlkSnapshotStat from './base/IlkSnapshotStat';
 
@@ -12,7 +12,6 @@ export class CollateralDebtOwedStat extends Stat {
             type: StatTypes.EVENT,
             format: StatFormats.DAI,
             targets: StatTargets.ALL,
-            aggregation: StatAggregations.SUM,
             group: StatGroups.AUCTION_DAI,
             stats: [
                 new BiteTotalsStat()
@@ -36,7 +35,6 @@ export class CollateralDebtRecoveredStat extends Stat {
             type: StatTypes.EVENT,
             format: StatFormats.DAI,
             targets: StatTargets.ALL,
-            aggregation: StatAggregations.SUM,
             group: StatGroups.AUCTION_DAI,
             stats: [
                 new FlipBidTotalsStat()
@@ -60,7 +58,6 @@ export class CollateralSurplusStat extends Stat {
             type: StatTypes.EVENT,
             format: StatFormats.DAI,
             targets: StatTargets.ALL,
-            aggregation: StatAggregations.SUM,
             group: StatGroups.AUCTION_DAI,
             stats: [
                 new BiteTotalsStat(),
@@ -85,7 +82,6 @@ export class AuctionedCollateralStat extends Stat {
             type: StatTypes.EVENT,
             format: StatFormats.NUMBER,
             targets: StatTargets.COLLATERAL | StatTargets.VAULT,
-            aggregation: StatAggregations.SUM,
             group: StatGroups.AUCTION_COLLATERAL,
             stats: [
                 new BiteTotalsStat()
@@ -109,7 +105,6 @@ export class AuctionedCollateralUSDStat extends Stat {
             type: StatTypes.EVENT,
             format: StatFormats.DOLLARS,
             targets: StatTargets.COLLATERAL | StatTargets.VAULT,
-            aggregation: StatAggregations.SUM,
             group: StatGroups.AUCTION_DAI,
             stats: [
                 new BiteTotalsStat(),
@@ -134,7 +129,6 @@ export class LiquidationsCountStat extends Stat {
             type: StatTypes.EVENT,
             format: StatFormats.NUMBER,
             targets: StatTargets.COLLATERAL | StatTargets.VAULT,
-            aggregation: StatAggregations.SUM,
             group: StatGroups.COUNT,
             stats: [
                 new FlipBidTotalsStat()

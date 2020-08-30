@@ -1,4 +1,4 @@
-import { Stat, StatTypes, StatTargets, StatFormats, StatAggregations, StatGroups, StatCategories } from 'api/model';
+import { Stat, StatTypes, StatTargets, StatFormats, StatGroups, StatCategories } from 'api/model';
 import IlkSnapshotStat from './base/IlkSnapshotStat';
 import { PotPieStat, PotChiStat } from './base/PotStats';
 
@@ -12,7 +12,6 @@ export class DaiSupplyStat extends Stat {
             type: StatTypes.VALUE,
             format: StatFormats.DAI,
             targets: StatTargets.ALL,
-            aggregation: StatAggregations.SUM,
             group: StatGroups.SUPPLY_DAI,
             stats: [
                 new IlkSnapshotStat()
@@ -20,7 +19,7 @@ export class DaiSupplyStat extends Stat {
         });
     }
 
-    combine ([snapshot]) {
+    combineStats (bucket, [snapshot]) {
         return snapshot.extraData.dai;
     }
 
@@ -36,7 +35,6 @@ export class DebtCeilingStat extends Stat {
             type: StatTypes.VALUE,
             format: StatFormats.DAI,
             targets: StatTargets.ALL,
-            aggregation: StatAggregations.SUM,
             group: StatGroups.SUPPLY_DAI,
             stats: [
                 new IlkSnapshotStat()
@@ -44,7 +42,7 @@ export class DebtCeilingStat extends Stat {
         });
     }
 
-    combine ([snapshot]) {
+    combineStats (bucket, [snapshot]) {
         return snapshot.extraData.debtCeiling;
     }
 
@@ -60,7 +58,6 @@ export class SavingsDaiStat extends Stat {
             type: StatTypes.VALUE,
             format: StatFormats.DAI,
             targets: StatTargets.GLOBAL,
-            aggregation: StatAggregations.SUM,
             group: StatGroups.SUPPLY_DAI,
             stats: [
                 new PotPieStat(),
@@ -69,7 +66,7 @@ export class SavingsDaiStat extends Stat {
         });
     }
 
-    combine ([pie, chi]) {
+    combineStats (bucket, [pie, chi]) {
         if (pie == null) {
             return null;
         } else if (chi == null) {
