@@ -11,10 +11,14 @@ import moment from 'moment';
 export default class Bucket {
 
     constructor (data) {
-        this.bucketStart = moment(data.bucketStart);
-        this.bucketEnd = moment(data.bucketEnd);
+        this.bucketStart = typeof(data.bucketStart) === 'string' ? moment.utc(data.bucketStart) : moment(data.bucketStart);
+        this.bucketEnd = typeof(data.bucketEnd) === 'string' ? moment.utc(data.bucketEnd) : moment(data.bucketEnd);
         this.blockStart = data.blockStart;
         this.blockEnd = data.blockEnd;
+    }
+
+    contains (bucket) {
+        return this.bucketStart.isSameOrBefore(bucket.bucketStart) && this.bucketEnd.isSameOrAfter(bucket.bucketEnd);
     }
 
 }

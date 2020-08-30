@@ -123,7 +123,7 @@ export class SavingsDaiCostStat extends Stat {
     }
 
     combineStats (bucket, [pie, chi]) {
-        if (pie != null && chi != null) {
+        if (pie.extraData.raw != null && chi.extraData.raw != null) {
             return parseFeesCollected(pie.extraData.lastValue, pie.extraData.raw, chi.extraData.lastValue, chi.extraData.raw);
         } else {
             return 0;

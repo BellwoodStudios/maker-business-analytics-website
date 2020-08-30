@@ -30,7 +30,8 @@ export class BiteTotalsStat extends Stat {
     async fetch (query) {
         // Fetch all ilks in advance
         const args = query.toGraphQLFilter();
-        const results = await Query.multiQuery(getVaults().map(v => {
+        const vaults = getVaults();
+        const results = await Query.multiQuery(vaults.map(v => {
             return `
                 timeBiteTotals(ilkIdentifier:"${v.identifier}", ${args}) {
                     nodes {
@@ -44,6 +45,13 @@ export class BiteTotalsStat extends Stat {
                 }
             `;
         }));
+
+        // Attach on the ilkIdentifier for filtering
+        for (let i = 0; i < results.length; i++) {
+            for (const n of results[i].nodes) {
+                n.ilkIdentifier = vaults[i].identifier;
+            }
+        }
 
         // Parse each ilk that fits the filter
         const data = results.map(d => {
@@ -109,7 +117,8 @@ export class FlipBidTotalsStat extends Stat {
     async fetch (query) {
         // Fetch all ilks in advance
         const args = query.toGraphQLFilter();
-        const results = await Query.multiQuery(getVaults().map(v => {
+        const vaults = getVaults();
+        const results = await Query.multiQuery(vaults.map(v => {
             return `
                 timeFlipBidTotals(ilkIdentifier:"${v.identifier}", ${args}) {
                     nodes {
@@ -124,6 +133,13 @@ export class FlipBidTotalsStat extends Stat {
                 }
             `;
         }));
+
+        // Attach on the ilkIdentifier for filtering
+        for (let i = 0; i < results.length; i++) {
+            for (const n of results[i].nodes) {
+                n.ilkIdentifier = vaults[i].identifier;
+            }
+        }
 
         // Parse each ilk that fits the filter
         const data = results.map(d => {

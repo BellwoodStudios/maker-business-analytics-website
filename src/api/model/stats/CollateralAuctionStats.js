@@ -19,8 +19,8 @@ export class CollateralDebtOwedStat extends Stat {
         });
     }
 
-    combine ([totals]) {
-        return totals.extraData.tab;
+    combineStats (bucket, [totals]) {
+        return totals.extraData.tab ?? 0;
     }
 
 }
@@ -42,8 +42,8 @@ export class CollateralDebtRecoveredStat extends Stat {
         });
     }
 
-    combine ([totals]) {
-        return totals.extraData.bidAmountEnd;
+    combineStats (bucket, [totals]) {
+        return totals.extraData.bidAmountEnd ?? 0;
     }
 
 }
@@ -66,8 +66,8 @@ export class CollateralSurplusStat extends Stat {
         });
     }
 
-    combine ([bites, flips]) {
-        return (flips != null ? flips.extraData.bidAmountEnd : 0) - (bites != null ? bites.extraData.tab : 0);
+    combineStats (bucket, [bites, flips]) {
+        return (flips.extraData.bidAmountEnd != null ? flips.extraData.bidAmountEnd : 0) - (bites.extraData.tab != null ? bites.extraData.tab : 0);
     }
 
 }
@@ -89,8 +89,8 @@ export class AuctionedCollateralStat extends Stat {
         });
     }
 
-    combine ([totals]) {
-        return totals.extraData.ink;
+    combineStats (bucket, [totals]) {
+        return totals.extraData.ink ?? 0;
     }
 
 }
@@ -113,8 +113,8 @@ export class AuctionedCollateralUSDStat extends Stat {
         });
     }
 
-    combine ([bites, ilkSnapshot]) {
-        return bites.extraData.ink * ilkSnapshot.extraData.price;
+    combineStats (bucket, [bites, ilkSnapshot]) {
+        return bites.extraData.ink != null && ilkSnapshot.extraData.price ? bites.extraData.ink * ilkSnapshot.extraData.price : 0;
     }
 
 }
@@ -136,8 +136,8 @@ export class LiquidationsCountStat extends Stat {
         });
     }
 
-    combine ([totals]) {
-        return totals.extraData.count;
+    combineStats (bucket, [totals]) {
+        return totals.extraData.count ?? 0;
     }
 
 }

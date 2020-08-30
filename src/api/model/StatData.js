@@ -18,12 +18,22 @@ export default class StatData {
      * Pack the data into the buckets the query expects.
      */
     async pack (query) {
+        let lastSeenIndex = -1;
         this.data = (await query.getBuckets()).map(bucket => {
+            // Move the last seen value up to the beginning of this bucket
+            while (lastSeenIndex + 1 < this.data.length && this.data[lastSeenIndex + 1].bucket.bucketStart.isSameOrBefore(bucket.bucketStart)) {
+                lastSeenIndex++;
+            }
+
             const filteredData = this.data.filter(d => {
-                return bucket.bucketStart.isSameOrBefore(d.bucket.bucketStart) && bucket.bucketEnd.isSameOrAfter(d.bucket.bucketEnd);
+                return bucket.contains(d.bucket);
             });
+            if (filteredData.length === 0 && this.stat.type === StatTypes.VALUE && lastSeenIndex !== -1) {
+                // Use the last seen value
+                filteredData.push(this.data[lastSeenIndex]);
+            }
             if (filteredData.length > 0) {
-                const mergedData = this.stat.combineTime(bucket, filteredData);
+                const mergedData = this.stat.combineTime(bucket, filteredData).clone();
                 mergedData.bucket = bucket;
                 return mergedData;
             } else {

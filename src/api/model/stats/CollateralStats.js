@@ -20,7 +20,7 @@ export class CollateralPriceStat extends Stat {
         });
     }
 
-    combine ([snapshot]) {
+    combineStats (bucket, [snapshot]) {
         return snapshot.extraData.price;
     }
 

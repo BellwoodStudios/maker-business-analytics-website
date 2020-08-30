@@ -221,7 +221,7 @@ export default class Stat {
         const buckets = await query.getBuckets();
         const results = await Query.multiQuery(buckets.map(bucket => {
             const queryExtra = options.queryExtra != null ? ", " + options.queryExtra : "";
-            return `${tableName}(filter:{ headerId:{ lessThanOrEqualTo:${bucket.block.id} } }, orderBy:HEADER_ID_DESC, first:1${queryExtra}) {
+            return `${tableName}(filter:{ headerId:{ lessThanOrEqualTo:${bucket.blockEnd.id} } }, orderBy:HEADER_ID_DESC, first:1${queryExtra}) {
                 nodes {
                   ${tableValue},
                   headerByHeaderId {

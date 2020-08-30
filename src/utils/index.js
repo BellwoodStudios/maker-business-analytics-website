@@ -56,7 +56,7 @@ export function toDataArray (activeStats, data) {
     const merged = [];
     for (let i = 0; i < packedData[0].length; i++) {
         merged.push([
-            packedData[0][i].timestamp.toDate(),
+            packedData[0][i].bucket.bucketStart.toDate(),
             ...packedData.map(d => d[i].value)
         ]);
     }
