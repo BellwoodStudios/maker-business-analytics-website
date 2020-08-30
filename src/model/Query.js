@@ -140,8 +140,10 @@ export default class Query {
         const granularity = this.granularity === QueryGranularity.WEEK ? `{ days:7 }` : `{ ${this.getMomentGranularity()}s:1 }`;
 
         // Filter takes the form 's:"2020-01-01", e:"2020-03-01", g:{ days:1 }'
-        const endGraphQL = this.end.clone();
-        endGraphQL.add(1, 'second').startOf(this.getMomentGranularity());
+        const endGraphQL = this.start.clone();
+        while (endGraphQL.isSameOrBefore(this.end)) {
+            endGraphQL.add(1, this.getMomentGranularity());
+        }
         return `
             rangeStart: "${this.start.toISOString()}",
             rangeEnd: "${endGraphQL.toISOString()}",
@@ -155,7 +157,7 @@ export default class Query {
     async getBuckets () {
         const buckets = [];
         const granularity = this.getMomentGranularity();
-        let curr = this.start.clone();
+        let curr = this.start.clone().utc();
         while (curr.isBefore(this.end)) {
             buckets.push(new Bucket({ bucketStart: curr, bucketEnd:curr.clone().add(1, granularity) }));
 

@@ -1,7 +1,7 @@
 import { Stat, StatTypes, StatTargets, StatFormats, StatGroups, StatCategories } from 'api/model';
 import { fromRad } from 'utils/MathUtils';
-import { StabilityFeeRevenueStat, SavingsDaiCostStat, FeeProfitStat } from './FeeStats';
-import { CollateralDebtRecoveredStat, CollateralDebtOwedStat, CollateralSurplusStat } from './CollateralAuctionStats';
+import { StabilityFeeRevenueStat, SavingsDaiCostStat } from './FeeStats';
+import { CollateralDebtRecoveredStat, CollateralDebtOwedStat } from './CollateralAuctionStats';
 
 export class SurplusBufferStat extends Stat {
 
@@ -124,22 +124,19 @@ export class SystemProfitStat extends Stat {
             name: "Total Profit",
             color: "#83D17E",
             category: StatCategories.SYSTEM,
-            type: StatTypes.VALUE_OF_EVENT,
+            type: StatTypes.EVENT,
             format: StatFormats.DAI,
             targets: StatTargets.GLOBAL,
             group: StatGroups.SYSTEM_DAI,
             stats: [
-                new FeeProfitStat(),
-                new CollateralSurplusStat()
+                new SystemRevenueStat(),
+                new SystemCostStat()
             ]
         });
     }
 
-    combineStats (bucket, [fees, flips]) {
-        let value = 0;
-        if (fees != null) value += fees.value;
-        if (flips != null) value += flips.value;
-        return value;
+    combineStats (bucket, [revenue, cost]) {
+        return revenue.value - cost.value;
     }
 
 }

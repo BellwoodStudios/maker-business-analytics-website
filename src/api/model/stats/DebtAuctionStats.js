@@ -18,8 +18,8 @@ export class MakerMintedStat extends Stat {
         });
     }
 
-    combine ([totals]) {
-        return totals.extraData.lotEnd;
+    combineStats (bucket, [totals]) {
+        return totals.extraData.lotEnd ?? 0;
     }
 
 }
@@ -41,8 +41,8 @@ export class DaiRecoveredStat extends Stat {
         });
     }
 
-    combine ([totals]) {
-        return totals.extraData.bidAmountEnd;
+    combineStats (bucket, [totals]) {
+        return totals.extraData.bidAmountEnd ?? 0;
     }
 
 }
@@ -64,8 +64,8 @@ export class DebtAuctionsCountStat extends Stat {
         });
     }
 
-    combine ([totals]) {
-        return totals.extraData.count;
+    combineStats (bucket, [totals]) {
+        return totals.extraData.count ?? 0;
     }
 
 }

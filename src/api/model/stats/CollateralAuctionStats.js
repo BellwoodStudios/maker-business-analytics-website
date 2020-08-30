@@ -58,7 +58,7 @@ export class CollateralSurplusStat extends Stat {
             type: StatTypes.EVENT,
             format: StatFormats.DAI,
             targets: StatTargets.ALL,
-            group: StatGroups.AUCTION_DAI,
+            group: StatGroups.SYSTEM_DAI,
             stats: [
                 new BiteTotalsStat(),
                 new FlipBidTotalsStat()
