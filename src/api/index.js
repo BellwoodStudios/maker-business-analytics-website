@@ -13,6 +13,7 @@ import {
 import { MakerBurnedStat, DaiAuctionedStat, SurplusAuctionsCountStat } from 'api/model/stats/SurplusAuctionStats';
 import { MakerMintedStat, DaiRecoveredStat, DebtAuctionsCountStat } from 'api/model/stats/DebtAuctionStats';
 import { SurplusBufferStat, SystemRevenueStat, SystemCostStat, SystemProfitStat } from 'api/model/stats/SystemStats';
+import { LocksStat, FreesStat, DrawsStat, WipesStat } from 'api/model/stats/VaultStats';
 
 let _config = null;
 let _vaults = null;
@@ -31,16 +32,22 @@ const _stats = [
     new DebtCeilingStat(),
     new SavingsDaiStat(),
 
+    // Collateral
+    //new CollateralLockedStat(),
+    new CollateralPriceStat(),
+
+    // Vaults
+    new LocksStat(),
+    new FreesStat(),
+    new DrawsStat(),
+    new WipesStat(),
+
     // System
     new SurplusBufferStat(),
     //new DebtBufferStat(),
     new SystemRevenueStat(),
     new SystemCostStat(),
     new SystemProfitStat(),
-
-    // Collateral
-    //new CollateralLockedStat(),
-    new CollateralPriceStat(),
 
     // Collateral Auctions
     new CollateralDebtOwedStat(),

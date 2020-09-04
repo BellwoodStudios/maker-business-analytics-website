@@ -18,21 +18,25 @@ export const StatCategories = {
         label: "Collateral",
         priority: 2
     },
+    VAULT: {
+        label: "Vault",
+        priority: 3
+    },
     SYSTEM: {
         label: "System",
-        priority: 3
+        priority: 4
     },
     COLLATERAL_AUCTION: {
         label: "Collateral Auction",
-        priority: 4
+        priority: 5
     },
     SURPLUS_AUCTION: {
         label: "Surplus Auction",
-        priority: 5
+        priority: 6
     },
     DEBT_AUCTION: {
         label: "Debt Auction",
-        priority: 6
+        priority: 7
     },
     MISC: {
         label: "Misc",
@@ -107,11 +111,11 @@ export const StatGroups = {
     #FF5252 - Collateral Liquidations
     #B584FF - Auctioned Collateral
     #F4B731 - Auctioned Collateral USD
-    #00E676 - 
     #3FDFC9 - Liquidations Count / Surplus Auctions Count / Debt Auctions Count
-    #FFA143
-    #4AC9F1
-    #567FEE
+    #00E676 - Vault Lock
+    #FFA143 - Vault Free
+    #4AC9F1 - Vault Mint
+    #567FEE - Vault Wipe
     #FA65FF
     #9CCC65
     #FF658F
