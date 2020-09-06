@@ -33,7 +33,7 @@ const List = styled.ul`
 `;
 
 const ListItem = styled.li`
-    padding: 20px 25px;
+    padding: 15px 25px;
     cursor: pointer;
     font-weight: bold;
     display: flex;
