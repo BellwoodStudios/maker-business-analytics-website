@@ -9,9 +9,9 @@ import { StatTypes } from 'api/model';
  */
 function StatDataSummaryPill ({ stat, data }) {
     const hasData = data.length > 0;
-    const firstTimestamp = hasData ? dateShort(data[0].timestamp) : null;
-    const lastTimestamp = hasData ? dateShort(data[data.length - 1].timestamp) : null;
-    const lastTimestampLong = hasData ? dateLong(data[data.length - 1].timestamp) : null;
+    const firstTimestamp = hasData ? dateShort(data[0].bucket.bucketStart) : null;
+    const lastTimestamp = hasData ? dateShort(data[data.length - 1].bucket.bucketStart) : null;
+    const lastTimestampLong = hasData ? dateLong(data[data.length - 1].bucket.bucketStart) : null;
 
     return <SummaryPill label={stat.getLongName()} sublabel={(stat.type === StatTypes.EVENT || stat.type === StatTypes.VALUE_OF_EVENT) ? `${firstTimestamp} - ${lastTimestamp}` : lastTimestampLong} color={stat.color} value={hasData ? statData(stat, data) : "-"} />;
 }

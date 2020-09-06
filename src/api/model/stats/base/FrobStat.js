@@ -20,6 +20,13 @@ export default class FrobStat extends Stat {
         // Sum up all the values because they are total amounts per time period
         const value = values[values.length - 1];
         const vd = value.extraData;
+        if (vd.count == null) vd.count = 0;
+        if (vd.dink == null) vd.dink = 0;
+        if (vd.dart == null) vd.dart = 0;
+        if (vd.lock == null) vd.lock = 0;
+        if (vd.free == null) vd.free = 0;
+        if (vd.draw == null) vd.draw = 0;
+        if (vd.wipe == null) vd.wipe = 0;
         vd.count = arraySum(values, v => v.extraData.count);
         vd.dink = arraySum(values, v => v.extraData.dink);
         vd.dart = arraySum(values, v => v.extraData.dart);
@@ -60,14 +67,13 @@ export default class FrobStat extends Stat {
         }
 
         // Parse each ilk that fits the filter
-        const data = results.map(d => {
+        const statDatas = results.map(d => {
             return d.nodes.filter(n => n != null && query.filterByIlk(n)).map(n => {
                 return new StatDataItem({
                     bucket: new Bucket(n),
                     value: 1,
                     extraData: {
-                        ...n,
-                        // Add in computed fields
+                        count: parseInt(n.count),
                         dink: fromWad(n.dink),
                         dart: fromWad(n.dart),
                         lock: fromWad(n.lock),
@@ -77,20 +83,31 @@ export default class FrobStat extends Stat {
                     }
                 });
             });
-        }).filter(d => d.length > 0);
+        }).filter(d => d.length > 0).map(d => new StatData({ stat:this, data:d }));
+        for (const sd of statDatas) {
+            await sd.pack(query);
+        }
 
         // Combine them across ilks
-        const mergedData = transpose(data).map(row => row.reduce((val, curr) => {
+        const mergedData = transpose(statDatas.map(d => d.data)).map(row => row.reduce((val, curr) => {
             const vd = val.extraData;
             const cd = curr.extraData;
 
-            vd.count += cd.count;
-            vd.dink += cd.dink;
-            vd.dart += cd.dart;
-            vd.lock += cd.lock;
-            vd.free += cd.free;
-            vd.draw += cd.draw;
-            vd.wipe += cd.wipe;
+            if (vd.count == null) vd.count = 0;
+            if (vd.dink == null) vd.dink = 0;
+            if (vd.dart == null) vd.dart = 0;
+            if (vd.lock == null) vd.lock = 0;
+            if (vd.free == null) vd.free = 0;
+            if (vd.draw == null) vd.draw = 0;
+            if (vd.wipe == null) vd.wipe = 0;
+
+            vd.count += cd.count ?? 0;
+            vd.dink += cd.dink ?? 0;
+            vd.dart += cd.dart ?? 0;
+            vd.lock += cd.lock ?? 0;
+            vd.free += cd.free ?? 0;
+            vd.draw += cd.draw ?? 0;
+            vd.wipe += cd.wipe ?? 0;
             
             return val;
         }));

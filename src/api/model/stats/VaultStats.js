@@ -19,7 +19,7 @@ export class LocksStat extends Stat {
     }
 
     combineStats (bucket, [frobs]) {
-        return frobs.extraData.lock;
+        return frobs.extraData.lock ?? 0;
     }
 
 }
@@ -42,7 +42,7 @@ export class FreesStat extends Stat {
     }
 
     combineStats (bucket, [frobs]) {
-        return frobs.extraData.free;
+        return frobs.extraData.free ?? 0;
     }
 
 }
@@ -65,7 +65,7 @@ export class DrawsStat extends Stat {
     }
 
     combineStats (bucket, [frobs]) {
-        return frobs.extraData.draw;
+        return frobs.extraData.draw ?? 0;
     }
 
 }
@@ -88,7 +88,7 @@ export class WipesStat extends Stat {
     }
 
     combineStats (bucket, [frobs]) {
-        return frobs.extraData.wipe;
+        return frobs.extraData.wipe ?? 0;
     }
 
 }
