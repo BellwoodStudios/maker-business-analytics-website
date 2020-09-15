@@ -14,15 +14,15 @@ export function sumFees (fee1, fee2) {
 }
 
 export function fromWad (wadAmount) {
-    return new BigNumber(wadAmount).dividedBy(10e17).toNumber();
+    return new BigNumber(wadAmount).dividedBy(1e18).toNumber();
 }
 
 export function fromRay (rayAmount) {
-    return new BigNumber(rayAmount).dividedBy(10e26).toNumber();
+    return new BigNumber(rayAmount).dividedBy(1e27).toNumber();
 }
 
 export function fromRad (radAmount) {
-    return new BigNumber(radAmount).dividedBy(10e44).toNumber();
+    return new BigNumber(radAmount).dividedBy(1e45).toNumber();
 }
 
 /**
