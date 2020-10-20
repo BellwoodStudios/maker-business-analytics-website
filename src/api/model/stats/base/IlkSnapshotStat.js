@@ -73,8 +73,18 @@ export default class IlkSnapshotStat extends Stat {
             });
         }).filter(d => d.length > 0);
 
+        // Pad out any results which are too small
+        data.sort((a, b) => a.length < b.length ? 1 : -1);
+        for (let i = 1; i < data.length; i++) {
+            while (data[i].length < data[0].length) {
+                data[i].unshift(null);
+            }
+        }
+
         // Combine them across ilks
         const mergedData = transpose(data).map(row => row.reduce((val, curr) => {
+            if (curr == null) return val;
+
             const vd = val.extraData;
             const cd = curr.extraData;
 

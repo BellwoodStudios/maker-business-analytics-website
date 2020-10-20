@@ -159,7 +159,7 @@ export async function init () {
     `);
 
     // Parse vaults
-    _vaults = result.data.allIlks.nodes.map(ilk => new Vault(ilk));
+    _vaults = result.data.allIlks.nodes.map(ilk => new Vault(ilk)).filter(v => v.name !== 'PAX-A');
 
     // Hook up all the data
     _collateral = [];
