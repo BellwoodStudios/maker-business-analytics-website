@@ -149,16 +149,22 @@ export async function init () {
             }
         }
     `);
-    const latestBlockResult = await fetchGraphQL(`
-        {
-            allHeaders(condition:{ blockNumber:"${result.data.allStorageDiffs.nodes[0].blockHeight}" }) {
-                nodes {
-                    blockNumber,
-                    blockTimestamp
+    let latestBlockResult;
+    let blockHeight = result.data.allStorageDiffs.nodes[0].blockHeight;
+    do {
+        latestBlockResult = await fetchGraphQL(`
+            {
+                allHeaders(condition:{ blockNumber:"${blockHeight}" }) {
+                    nodes {
+                        blockNumber,
+                        blockTimestamp
+                    }
                 }
             }
-        }
-    `);
+        `);
+
+        blockHeight--;
+    } while (latestBlockResult.data.allHeaders.nodes.length === 0);
 
     // Parse vaults
     _vaults = result.data.allIlks.nodes.map(ilk => new Vault(ilk)).filter(v => v.name !== 'PAX-A');
