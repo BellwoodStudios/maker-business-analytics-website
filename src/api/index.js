@@ -137,7 +137,9 @@ export async function init () {
         {
             allIlks {
                 nodes {
-                    ilkIdentifier
+                    ilkIdentifier,
+                    art,
+                    rate
                 }
             },
             allStorageDiffs(last:1, condition:{ checked:true }) {
@@ -160,6 +162,9 @@ export async function init () {
 
     // Parse vaults
     _vaults = result.data.allIlks.nodes.map(ilk => new Vault(ilk)).filter(v => v.name !== 'PAX-A');
+
+    // Sort vaults by how much Dai debt they have
+    _vaults.sort((a, b) => a.dai < b.dai ? 1 : -1);
 
     // Hook up all the data
     _collateral = [];

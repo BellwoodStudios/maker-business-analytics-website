@@ -1,3 +1,5 @@
+import { parseDaiSupply } from 'utils/MathUtils';
+
 let NEXT_ID = 0;
 
 /**
@@ -10,6 +12,7 @@ export default class Vault {
         this.ilk = data.ilkIdentifier;
         this.identifier = data.ilkIdentifier;
         this.name = data.ilkIdentifier;
+        this.dai = data.art != null ? parseDaiSupply(data.art, data.rate) : 0;
     }
 
 }
