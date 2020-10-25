@@ -9,7 +9,7 @@ const Wrapper = styled.div`
 `;
 
 const Left = styled.div`
-    width: 120px;
+    width: 100px;
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
     display: flex;
@@ -25,16 +25,16 @@ const Right = styled.div`
 
 const Value = styled.div`
     font-weight: bold;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
 `;
 
 const Label = styled.div`
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: bold;
 `;
 
 const SubLabel = styled.div`
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     font-weight: 300;
     color: var(--color-foreground-30);
 `;

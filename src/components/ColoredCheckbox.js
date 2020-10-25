@@ -6,8 +6,8 @@ const Wrapper = styled.div`
 `;
 
 const Unchecked = styled.div`
-    width: 22px;
-    height: 22px;
+    width: 18px;
+    height: 18px;
     margin: 1px;
     border-radius: 50%;
     border: solid 2px var(--color-foreground-secondary);
@@ -17,7 +17,7 @@ function ColoredCheckbox ({ color, checked }) {
     return (
         <Wrapper>
             { checked ? 
-                <i style={{ color, display: "block" }} className="material-icons">check_circle</i> :
+                <i style={{ color, display: "block", fontSize:"20px" }} className="material-icons">check_circle</i> :
                 <Unchecked />
             }
         </Wrapper>

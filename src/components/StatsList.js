@@ -25,15 +25,17 @@ const Header = styled.h1`
     text-transform: uppercase;
     color: var(--color-foreground-30);
     width: 100%;
-    padding: 10px;
+    padding: 10px 10px 2px 10px;
 `;
 
 const List = styled.ul`
     width: 100%;
+    margin-top: 10px;
 `;
 
 const ListItem = styled.li`
-    padding: 15px 25px;
+    padding: 5px 20px;
+    font-size: 0.9rem;
     cursor: pointer;
     font-weight: bold;
     display: flex;
