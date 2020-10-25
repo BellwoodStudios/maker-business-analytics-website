@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { enumValidValue, arrayEquals } from 'utils';
-import { getVaultByName, getCollateralByName, getStats, getStatByName, defaultGlobalStats, defaultVaultStats, fetchGraphQL } from 'api';
-import { StatData, Bucket } from 'api/model';
+import { getVaultByName, getCollateralByName, getStats, getStatByName, defaultGlobalStats, defaultVaultStats, fetchGraphQL, getLatestBlock } from 'api';
+import { StatData, Bucket, Block } from 'api/model';
 
 export const QueryType = {
     GLOBAL: 'Global',
@@ -179,7 +179,12 @@ export default class Query {
         }));
 
         for (let i = 0; i < buckets.length; i++) {
-            buckets[i].blockEnd = results[i].nodes.length > 0 ? results[i].nodes[0] : null;
+            if (results[i].nodes.length > 0) {
+                buckets[i].blockEnd = new Block(results[i].nodes[0]);
+            } else {
+                // If no result then and we are in the future -- use the latest block
+                buckets[i].blockEnd = moment().isBefore(buckets[i].bucketEnd) ? getLatestBlock() : null;
+            }
         }
 
         return buckets.filter(b => b.blockEnd != null);

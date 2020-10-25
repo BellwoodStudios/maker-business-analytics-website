@@ -167,7 +167,7 @@ export async function init () {
     } while (latestBlockResult.data.allHeaders.nodes.length === 0);
 
     // Parse vaults
-    _vaults = result.data.allIlks.nodes.map(ilk => new Vault(ilk)).filter(v => v.name !== 'PAX-A');
+    _vaults = result.data.allIlks.nodes.map(ilk => new Vault(ilk)).filter(v => v.dai > 0);
 
     // Sort vaults by how much Dai debt they have
     _vaults.sort((a, b) => a.dai < b.dai ? 1 : -1);
