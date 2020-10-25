@@ -13,9 +13,9 @@ const Wrapper = styled.li`
 const NavLinkIcon = styled(NavLink)`
     display: flex;
     position: relative;
-    margin: 0 10px;
+    margin: 0 5px;
     width: 100%;
-    height: 60px;
+    height: 50px;
     align-items: center;
     justify-content: center;
     border-radius: 50%;

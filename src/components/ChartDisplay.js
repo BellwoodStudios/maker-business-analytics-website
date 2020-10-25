@@ -20,29 +20,12 @@ const Content = styled.div`
     padding: 20px;
 `;
 
-const ContentTop = styled.div`
-`;
-
 const Right = styled.div`
     width: 250px;
     background: rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     align-items: center;
-`;
-
-const Label = styled.div`
-    font-size: 1.4rem;
-    font-weight: 300;
-    text-transform: uppercase;
-    color: var(--color-foreground-30);
-`;
-
-const Value = styled.div`
-    font-size: 2.2rem;
-    line-height: 2.5rem;
-    font-weight: bold;
-    color: var(--color-foreground-50);
 `;
 
 const SummaryDetails = styled.div`
@@ -75,25 +58,21 @@ function ChartDisplay () {
         }
     }, [activeQuery, params, dispatch, firstLoad]);
 
-    let filterLabel;
     let filterValue;
 
     switch (activeQuery.type) {
         case QueryType.VAULT:
             // Vault specific view
-            filterLabel = "Vault";
             filterValue = activeQuery.vault.name;
 
             break;
         case QueryType.COLLATERAL:
             // Collateral specific view
-            filterLabel = "Collateral";
             filterValue = activeQuery.collateral.name;
 
             break;
         case QueryType.GLOBAL:
             // Viewing across all collateral types
-            filterLabel = "Collateral";
             filterValue = "All";
 
             break;
@@ -103,11 +82,7 @@ function ChartDisplay () {
     return (
         <Wrapper>
             <Content>
-                <ContentTop>
-                    <Label>{filterLabel}</Label>
-                    <Value>{filterValue}</Value>
-                </ContentTop>
-                <DateRangeToolbar />
+                <DateRangeToolbar title={filterValue} />
                 <Chart query={activeQuery} activeStats={activeStats} data={activeQueryResult?.payload} error={activeQueryResult?.error} />
                 <SummaryDetails>
                     { activeStats.map((stat, i) => {

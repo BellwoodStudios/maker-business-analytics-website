@@ -17,8 +17,14 @@ const Wrapper = styled.div`
     position: relative;
 `;
 
-const Scrubber = styled.div`
+const Title = styled.div`
     flex: 1;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--color-foreground-50);
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
 `;
 
 const Granularity = styled.select`
@@ -92,7 +98,7 @@ const MoreMenuItemAnchor = styled.a`
     font-weight: bold;
 `;
 
-function DateRangeToolbar () {
+function DateRangeToolbar ({ title }) {
     const { activeQuery, results } = useSelector(state => state.query);
     const stats = getStats(activeQuery);
     const activeStats = activeQuery.filterActiveStats(stats);
@@ -122,7 +128,7 @@ function DateRangeToolbar () {
 
     return (
         <Wrapper>
-            <Scrubber />
+            <Title>{title}</Title>
             <Granularity value={activeQuery.granularity} onChange={(e) => dispatch(setActiveQuery(activeQuery.clone({ granularity:e.target.value })))}>
                 { Object.values(QueryGranularity).map((g, i) => <option key={i} value={g}>{g}</option>) }
             </Granularity>

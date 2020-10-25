@@ -12,10 +12,10 @@ const Wrapper = styled.li`
 
 const NavLinkWrapper = styled(NavLink)`
     display: flex;
-    height: 96px;
+    height: 64px;
     width: 100%;
     align-items: center;
-    padding: 0 30px;
+    padding: 0 20px;
     position: relative;
 
     & > .divider {
@@ -55,13 +55,13 @@ const Left = styled.div`
 `;
 
 const Label = styled.div`
-    font-size: 1rem;
+    font-size: 0.8rem;
     font-weight: 300;
     text-transform: uppercase;
 `;
 
 const Value = styled.div`
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: bold;
 `;
 

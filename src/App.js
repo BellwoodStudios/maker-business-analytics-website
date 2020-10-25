@@ -7,7 +7,7 @@ import Content from 'components/Content';
 
 const Root = styled.div`
     display: grid;
-    grid-template-columns: 80px auto;
+    grid-template-columns: 60px auto;
     grid-template-rows: 64px auto;
     min-height: 100vh;
 `;
