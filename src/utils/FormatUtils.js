@@ -45,7 +45,7 @@ export function dollars (num) {
 export function dai (num) {
     if (num == null) return "-";
     
-    return numberShort(num) + " Đ";
+    return numberShort(num);
 }
 
 export function dateShort (date = moment()) {
