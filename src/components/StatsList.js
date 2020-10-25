@@ -9,6 +9,7 @@ import Divider from 'components/Divider';
 
 const Wrapper = styled.div`
     width: 100%;
+    margin-bottom: 40px;
 `;
 
 const SectionWrapper = styled.div`
