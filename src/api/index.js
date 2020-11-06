@@ -156,6 +156,7 @@ export async function init () {
             {
                 allHeaders(condition:{ blockNumber:"${blockHeight}" }) {
                     nodes {
+                        id,
                         blockNumber,
                         blockTimestamp
                     }
