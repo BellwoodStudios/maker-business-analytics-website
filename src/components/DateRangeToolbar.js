@@ -109,10 +109,10 @@ function DateRangeToolbar ({ title }) {
 
     useEffect(() => {
         function onDocumentClick (e) {
+            // Don't hide when clicking the date picker
+            if (e.target.closest('.block-menu-hide')) return;
+            
             if (showDatePicker) {
-                // Don't hide when clicking the date picker
-                if (e.target.closest('.menu-root')) return;
-
                 setShowDatePicker(false);
             }
             if (showMenu) {
@@ -124,7 +124,7 @@ function DateRangeToolbar ({ title }) {
         return function cleanup () {
             document.removeEventListener("click", onDocumentClick);
         };
-    }, [showDatePicker, showMenu])
+    }, [showDatePicker, showMenu]);
 
     return (
         <Wrapper>
@@ -136,11 +136,11 @@ function DateRangeToolbar ({ title }) {
                 <RangeStartText>{dateWithGranularity(activeQuery.start, activeQuery.granularity)}</RangeStartText>
                 <RangeEndText>{dateWithGranularity(activeQuery.end, activeQuery.granularity)}</RangeEndText>
             </RangeText>
-            <DateRangeWrapper>
-                <RangeIcon href="#" onClick={() => setShowDatePicker(!showDatePicker)}>
+            <DateRangeWrapper className="block-menu-hide">
+                <RangeIcon href="#" onClick={(e) => { e.preventDefault(); setShowDatePicker(!showDatePicker); } }>
                     <Icon name="date_range" />
                 </RangeIcon>
-                <DateRangePickerWrapper className="menu-root" style={{ display: showDatePicker ? "block" : "none" }}>
+                <DateRangePickerWrapper style={{ display: showDatePicker ? "block" : "none" }}>
                     <DateRangePicker
                         onChange={({ main }) => dispatch(setActiveQuery(activeQuery.clone({ start:moment(main.startDate), end:moment(main.endDate) })))}
                         ranges={[{ startDate:activeQuery.start.toDate(), endDate:activeQuery.end.toDate(), key:"main" }]}
@@ -148,7 +148,7 @@ function DateRangeToolbar ({ title }) {
                 </DateRangePickerWrapper>
             </DateRangeWrapper>
             <MoreMenuWrapper>
-                <RangeIcon href="#" onClick={() => setShowMenu(!showMenu)}>
+                <RangeIcon className="block-menu-hide" href="#" onClick={(e) => { e.preventDefault(); setShowMenu(!showMenu); } }>
                     <Icon name="more_vert" />
                 </RangeIcon>
                 <MoreMenu style={{ display: showMenu ? "block" : "none" }}>
