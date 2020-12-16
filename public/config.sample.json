@@ -1,5 +1,7 @@
 {
     "api": {
-        "endpoint": "https://vulcanize.mkranalytics.com/graphql"
+        "endpoint": "https://staging-vdb.makerfoundation.com/graphql",
+        "user": "admin",
+        "pass": "secret"
     }
 }

@@ -128,7 +128,9 @@ export async function init () {
     } catch {
         _config = {
             "api": {
-                "endpoint": "https://vulcanize.mkranalytics.com/graphql"
+                "endpoint": "https://staging-vdb.makerfoundation.com/graphql",
+                "user": "admin",
+                "pass": "secret"
             }
         };
     }
@@ -137,7 +139,7 @@ export async function init () {
         {
             allIlks {
                 nodes {
-                    ilkIdentifier,
+                    id,
                     art,
                     rate
                 }

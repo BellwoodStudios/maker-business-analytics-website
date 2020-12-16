@@ -9,9 +9,9 @@ export default class Vault {
 
     constructor (data) {
         this.id = NEXT_ID++;
-        this.ilk = data.ilkIdentifier;
-        this.identifier = data.ilkIdentifier;
-        this.name = data.ilkIdentifier;
+        this.ilk = data.id;
+        this.identifier = data.id;
+        this.name = data.id;
         this.dai = data.art != null ? parseDaiSupply(data.art, data.rate) : 0;
     }
 
