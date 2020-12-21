@@ -28,7 +28,7 @@ export default class Collateral {
         const collateralPart = vaultIdentifier.split("-")[0];
 
         // Sometimes we are using wrapper tokens for the same underlying token
-        const collateralGroups = ["BTC", "USD"];
+        const collateralGroups = ["BTC", "USD", "UNIV2"];
         const collateralGroup = collateralGroups.find(g => collateralPart.indexOf(g) >= 0);
 
         return collateralGroup ?? collateralPart;

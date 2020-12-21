@@ -71,6 +71,8 @@ function VaultMenuItem ({ vault, collateral }) {
 
     if (vault != null) {
         label = vault.identifier;
+        // FIXME - this should be handled better and not hard coded
+        if (label.indexOf("UNIV2") === 0) label = label.substr("UNIV2".length);
         link = `/vaults/${vault.collateral.name}/${vault.name}`;
     } else {
         label = "All";
