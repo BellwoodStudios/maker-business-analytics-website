@@ -29,7 +29,7 @@ export default class Collateral {
         const collateralPart = collateralParts.length >= 2 ? collateralParts.slice(0, collateralParts.length - 1).join("-") : collateralParts[0];
 
         // Sometimes we are using wrapper tokens for the same underlying token
-        const collateralGroups = ["BTC", "USD", "UNIV2"];
+        const collateralGroups = ["UNIV2", "BTC", "USD"];
         const collateralGroup = collateralGroups.find(g => collateralPart.indexOf(g) >= 0);
 
         return collateralGroup ?? collateralPart;
