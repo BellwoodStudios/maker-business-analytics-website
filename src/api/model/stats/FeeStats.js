@@ -66,7 +66,7 @@ export class DaiSavingsRateStat extends Stat {
     async fetch (query) {
         const result = await fetchGraphQL(`
             {
-                allPotFileDsrs {
+                allPotFileDsrs(first:1000) {
                     nodes {
                         id,
                         headerId,

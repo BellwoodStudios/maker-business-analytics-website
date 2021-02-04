@@ -128,35 +128,29 @@ export async function init () {
     } catch {
         _config = {
             "api": {
-                "endpoint": "https://staging-vdb.makerfoundation.com/graphql",
-                "user": "admin",
-                "pass": "secret"
+                "endpoint": "https://api.makerdao.com/graphql"
             }
         };
     }
 
     const result = await fetchGraphQL(`
         {
-            allIlks {
+            allIlks(first:1000) {
                 nodes {
                     id,
                     art,
                     rate
                 }
             },
-            allStorageDiffs(last:1, condition:{ checked:true }) {
-                nodes {
-                    blockHeight
-                }
-            }
+            getMaxTransformedDiffBlock
         }
     `);
     let latestBlockResult;
-    let blockHeight = result.data.allStorageDiffs.nodes[0].blockHeight;
+    let blockHeight = result.data.getMaxTransformedDiffBlock;
     do {
         latestBlockResult = await fetchGraphQL(`
             {
-                allHeaders(condition:{ blockNumber:"${blockHeight}" }) {
+                allHeaders(first:1, condition:{ blockNumber:"${blockHeight}" }) {
                     nodes {
                         id,
                         blockNumber,

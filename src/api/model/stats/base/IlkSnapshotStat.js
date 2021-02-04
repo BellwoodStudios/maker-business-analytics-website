@@ -28,7 +28,7 @@ export default class IlkSnapshotStat extends Stat {
         const args = query.toGraphQLFilter();
         const results = await Query.multiQuery(getVaults().map(v => {
             return `
-                timeIlkSnapshots(ilkIdentifier:"${v.identifier}", ${args}) {
+                timeIlkSnapshots(first:1000, ilkIdentifier:"${v.identifier}", ${args}) {
                     nodes {
                         bucketStart,
                         bucketEnd,

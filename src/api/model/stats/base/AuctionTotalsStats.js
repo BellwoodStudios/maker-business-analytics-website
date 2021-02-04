@@ -33,7 +33,7 @@ export class BiteTotalsStat extends Stat {
         const vaults = getVaults();
         const results = await Query.multiQuery(vaults.map(v => {
             return `
-                timeBiteTotals(ilkIdentifier:"${v.identifier}", ${args}) {
+                timeBiteTotals(first:1000, ilkIdentifier:"${v.identifier}", ${args}) {
                     nodes {
                         bucketStart,
                         bucketEnd,
@@ -130,7 +130,7 @@ export class FlipBidTotalsStat extends Stat {
         const vaults = getVaults();
         const results = await Query.multiQuery(vaults.map(v => {
             return `
-                timeFlipBidTotals(ilkIdentifier:"${v.identifier}", ${args}) {
+                timeFlipBidTotals(first:1000, ilkIdentifier:"${v.identifier}", ${args}) {
                     nodes {
                         bucketStart,
                         bucketEnd,
@@ -229,7 +229,7 @@ export class FlopBidTotalsStat extends Stat {
         const args = query.toGraphQLFilter();
         const result = await fetchGraphQL(`
             {
-                timeFlopBidTotals(${args}) {
+                timeFlopBidTotals(first:1000, ${args}) {
                     nodes {
                         bucketStart,
                         bucketEnd,
@@ -294,7 +294,7 @@ export class FlapBidTotalsStat extends Stat {
 
         const result = await fetchGraphQL(`
             {
-                timeFlapBidTotals(${args}) {
+                timeFlapBidTotals(first:1000, ${args}) {
                     nodes {
                         bucketStart,
                         bucketEnd,

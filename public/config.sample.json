@@ -1,7 +1,5 @@
 {
     "api": {
-        "endpoint": "https://staging-vdb.makerfoundation.com/graphql",
-        "user": "admin",
-        "pass": "secret"
+        "endpoint": "https://api.makerdao.com/graphql"
     }
 }

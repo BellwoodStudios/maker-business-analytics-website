@@ -43,7 +43,7 @@ export default class FrobStat extends Stat {
         const vaults = getVaults();
         const results = await Query.multiQuery(vaults.map(v => {
             return `
-                timeFrobTotals(ilkIdentifier:"${v.identifier}", ${args}) {
+                timeFrobTotals(first:1000, ilkIdentifier:"${v.identifier}", ${args}) {
                     nodes {
                         bucketStart,
                         bucketEnd,
